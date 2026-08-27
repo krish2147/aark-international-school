@@ -11,7 +11,7 @@
 //
 // Required env vars (set in Vercel → Project → Settings → Environment
 // Variables, never committed to the repo):
-//   ADMIN_EMAIL          e.g. admin@horizongate.edu
+//   ADMIN_EMAIL          e.g. admin@your-school-domain.example
 //   ADMIN_PASSWORD_HASH  a bcrypt hash — generate with:
 //                         node -e "console.log(require('bcryptjs').hashSync('your-password', 10))"
 //   SESSION_SECRET        any long random string (e.g. `openssl rand -hex 32`)

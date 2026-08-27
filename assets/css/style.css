@@ -33,7 +33,7 @@ body{
 }
 .demo-data-notice strong{ font-family:'Space Grotesk',monospace; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
 .demo-data-notice + main > section:first-child,
-.demo-data-notice + section:first-child{ padding-top:0 !important; }
+.demo-data-notice + section{ padding-top:0 !important; }
 .modal-open{ overflow:hidden; }
 .sr-only{
   position:absolute; width:1px; height:1px; padding:0; margin:-1px;

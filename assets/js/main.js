@@ -27,6 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Keep booking dates in the future and student birth dates out of the future.
+  const localToday = new Date();
+  const todayValue = `${localToday.getFullYear()}-${String(localToday.getMonth() + 1).padStart(2, '0')}-${String(localToday.getDate()).padStart(2, '0')}`;
+  document.querySelectorAll('input[name="visitDate"], input[name="preferredDate"]').forEach(input => { input.min = todayValue; });
+  document.querySelectorAll('input[name="dateOfBirth"]').forEach(input => { input.max = todayValue; });
+
   /* ---------- Sticky nav + scroll progress ---------- */
   const nav = document.getElementById('site-nav');
   const progress = document.getElementById('scroll-progress');
@@ -523,6 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const show = index => {
       current = Math.max(0, Math.min(index, panels.length - 1));
+      form.dataset.currentStep = String(current);
       panels.forEach((panel, i) => panel.classList.toggle('hidden', i !== current));
       indicators.forEach((item, i) => {
         item.classList.toggle('is-active', i === current);
@@ -570,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateField(field) {
       const errorEl = field.parentElement.querySelector('.field-error');
       const value = (field.value || '').trim();
-      const isEmpty = field.required && (field.type === 'checkbox' ? !field.checked : !value);
+      const isEmpty = field.required && !field.checkValidity();
       const isBadEmail = field.type === 'email' && value && !/^\S+@\S+\.\S+$/.test(value);
       const isBadPhone = field.type === 'tel' && value && value.replace(/\D/g, '').length < 10;
       const bad = isEmpty || isBadEmail || isBadPhone;
@@ -589,6 +596,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Pressing Enter on an early application step advances that step instead
+      // of attempting to submit fields that are intentionally still hidden.
+      if (form.hasAttribute('data-multi-step-form')) {
+        const panels = [...form.querySelectorAll('[data-form-step]')];
+        const currentStep = Number(form.dataset.currentStep || 0);
+        if (currentStep < panels.length - 1) {
+          panels[currentStep]?.querySelector('[data-step-next]')?.click();
+          return;
+        }
+      }
 
       // Compose a hidden field from several visible ones before validating
       // (e.g. "First / Middle / Surname" -> a single studentName value the

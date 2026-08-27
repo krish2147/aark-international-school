@@ -1,14 +1,16 @@
 # ARK INTERNATIONAL SCHOOL — Vercel-ready bundle
 
 Frontend + backend in one deployable project. The static pages live at the
-root; `/api/*` are Vercel serverless functions backed by MongoDB (forms,
-CMS content) and Google Sheets (admission registrations).
+root; `/api/*` are Vercel serverless functions backed by MongoDB for the existing
+enquiry, tour and CMS flows. The redesigned admission and payment experience is
+explicitly demo-only until a restricted admission datastore and private upload
+service are implemented.
 
 ## Deploy
 
-1. **Get a MongoDB connection string.** Free tier of [MongoDB Atlas](https://www.mongodb.com/atlas) works — create a cluster, a database user, and allow access from anywhere (`0.0.0.0/0`) so Vercel's functions can reach it.
+1. **Get a MongoDB connection string.** Use a least-privilege database account and the narrowest network policy supported by the chosen deployment architecture.
 2. **Set up admin login** — see "Admin login" below for the exact two values you need (`ADMIN_PASSWORD_HASH`, `SESSION_SECRET`).
-3. **Set up Google Sheets storage** — see "Google Workspace setup" below. Required for the Admission Registration form to actually store anything.
+3. **Confirm the production data architecture** — the client-demo admission form intentionally does not store student data or upload files.
 4. **Push this folder to a GitHub repo** (or deploy via the Vercel CLI — see below).
 5. **Import the repo in Vercel** ([vercel.com/new](https://vercel.com/new)). Vercel auto-detects this as a static site with an `/api` folder — no framework preset or build command needed.
 6. **Set environment variables** in Vercel → Project → Settings → Environment Variables — see `.env.example` for the full list with explanations.
@@ -36,16 +38,16 @@ The admin dashboard (`/admin.html`) now uses a real login — email + password, 
 
 Sessions last 8 hours, then you'll need to sign in again. Logout clears the cookie server-side.
 
-**Honest scope note:** this is a single-admin system (one login for the whole school), not multi-user accounts with roles — that's what the requirements asked for as the "if a full system would be too large" fallback. It's real server-side auth with hashed passwords and signed sessions, not the previous shared-password-in-every-request approach, but it's not a multi-admin system with audit logs, password reset flows, or granular permissions. Also not implemented: CSRF tokens beyond what `SameSite=Strict` cookies already provide — reasonable for a low-traffic admin tool, worth adding if this ever handles higher-stakes data.
+**Honest scope note:** this is a single-admin system, not multi-user RBAC. It has real server-side authentication with hashed passwords and signed sessions, plus cross-site request rejection, but it does not have Director 2FA, audit logs, password reset, persistent rate limiting, granular permissions, or dedicated CSRF tokens. The `/director` page demonstrates the intended management experience only.
 
-## Google Workspace setup (admission registration data)
+## Legacy Google Sheets endpoint
 
-The Admission Registration form (separate from Book a School Tour and the general enquiry form) stores submissions in a Google Sheet via a service account — never in the browser, never via a client-visible API key.
+The repository retains the previous `/api/admission-registration` Google Sheets endpoint for reference, but the redesigned multi-step form does not call it. Do not wire the new form to a spreadsheet without a privacy, access-control, retention and upload-storage review.
 
 **Steps:**
 1. Go to [console.cloud.google.com](https://console.cloud.google.com), create a project (or use an existing one).
 2. **APIs & Services → Library** → search "Google Sheets API" → Enable.
-3. **APIs & Services → Credentials** → Create Credentials → Service Account. Give it any name (e.g. `horizon-gate-sheets`). No special roles needed at the project level.
+3. **APIs & Services → Credentials** → Create Credentials → Service Account. No special roles are needed at the project level.
 4. Open the new service account → **Keys** tab → Add Key → Create new key → JSON. This downloads a `.json` file — keep it private, don't commit it anywhere.
 5. Open that JSON file. You need two values from it:
    - `client_email` → this is your `GOOGLE_SERVICE_ACCOUNT_EMAIL`
@@ -55,7 +57,7 @@ The Admission Registration form (separate from Book a School Tour and the genera
 8. Copy the Sheet ID from its URL: `docs.google.com/spreadsheets/d/`**`THIS-LONG-ID-PART`**`/edit` → this is your `GOOGLE_SHEET_ID`.
 9. Set `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY`, and `GOOGLE_SHEET_ID` in Vercel's environment variables, redeploy.
 
-The API writes a header row automatically on first use, then appends one row per registration: timestamp, parent name, student name, grade, mobile, email, preferred visit date, time slot, visitors, remarks.
+The legacy API writes the original, limited registration schema and does not support the new application fields or documents.
 
 If these env vars aren't set, the registration form fails **loudly** with a clear error message to the user (not a silent fake success) — it will never pretend a submission was saved when it wasn't.
 
@@ -104,11 +106,11 @@ vercel dev
 ## Known limitations (being direct about what's left)
 
 - **Video** — the homepage hero has a real, working `<video>` element (autoplay/muted/loop/playsinline, gradient overlay, text on top) pointing at `assets/video/campus-hero.mp4`. That file doesn't exist yet — I can't source real campus footage. Until you add one, it gracefully shows its poster image instead (nothing breaks). See `assets/video/README.md`.
-- **Rate limiting** — form endpoints aren't rate-limited on this serverless deployment (in-memory limiting doesn't work across function invocations). Low risk for a school's form volume; add Vercel's Attack Challenge Mode or a Redis-backed limiter if it becomes one.
-- **Enquiry form** — unchanged from the general enquiry form built earlier. I was told this should be "updated per a spec originally provided" but never received that reference — it still works (validation, MongoDB storage, email, success animation), just wasn't redesigned.
+- **Rate limiting** — public form and login endpoints need persistent rate limiting/bot protection before production; in-memory limiting is not reliable across serverless instances.
+- **Admission application** — multi-step validation, review, consent and success states work as a browser demo. No data, documents or payments are sent or stored.
 - **React/Next.js/Framer Motion/GSAP/Lottie** — still static HTML/Tailwind/vanilla JS + AOS. Rebuilding in React is a from-scratch effort, not incremental.
-- **CSRF hardening beyond SameSite cookies** — see admin login section above.
+- **CSRF hardening** — cross-site browser requests are rejected and cookies are SameSite, but dedicated CSRF tokens are still required for a production management system.
 
 ## Editing content/design
 
-Page copy/nav/footer live in `frontend/build.py` + `frontend/pages.py` in the main project zip — edit there, regenerate, and copy the HTML output here (this bundle's structure otherwise matches `frontend/` exactly, plus the `/api` folder and `admin.html`).
+Page copy, navigation and footer markup currently live in the root HTML files. Shared behavior and design rules live in `assets/js/main.js` and `assets/css/style.css`.

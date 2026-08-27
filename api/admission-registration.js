@@ -1,5 +1,6 @@
 const { appendRegistrationRow, isConfigured } = require('./_lib/sheets');
 const { sendMail } = require('./_lib/mail');
+const { rejectCrossSiteRequest } = require('./_lib/requestSecurity');
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
@@ -8,6 +9,7 @@ module.exports = async (req, res) => {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
+  if (rejectCrossSiteRequest(req, res)) return;
 
   try {
     const { parentName, studentName, grade, mobile, email, visitDate, timeSlot, visitors, remarks } = req.body || {};
@@ -50,7 +52,7 @@ module.exports = async (req, res) => {
     sendMail({
       to: fields.email,
       subject: 'Your admission registration is received — ARK INTERNATIONAL SCHOOL',
-      html: `<p>Hi ${fields.parentName},</p><p>We've received your admission registration for <b>${fields.studentName}</b> (${fields.grade}). Our admissions office will be in touch shortly.</p><p>&mdash; ARK INTERNATIONAL Admissions</p>`,
+      html: `<p>Hi ${fields.parentName},</p><p>We've received your admission registration for <b>${fields.studentName}</b> (${fields.grade}). The school team will follow up using its confirmed admission process.</p><p>&mdash; ARK INTERNATIONAL SCHOOL Admissions</p>`,
     }).catch(() => {});
 
     return res.status(201).json({ ok: true });

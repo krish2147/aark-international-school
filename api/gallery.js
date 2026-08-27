@@ -1,8 +1,10 @@
 const { connectToDatabase } = require('./_lib/db');
 const GalleryItem = require('./_lib/models/GalleryItem');
 const { isAdminAuthorized } = require('./_lib/adminAuth');
+const { rejectCrossSiteRequest } = require('./_lib/requestSecurity');
 
 module.exports = async (req, res) => {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method) && rejectCrossSiteRequest(req, res)) return;
   try {
     await connectToDatabase();
     const admin = isAdminAuthorized(req);

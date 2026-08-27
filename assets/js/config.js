@@ -5,7 +5,7 @@
 // served from the same domain (e.g. behind one reverse proxy).
 //
 // Example once deployed:
-//   window.ARK_API_BASE = 'https://api.horizongate.edu';
+//   window.ARK_API_BASE = 'https://api.your-school-domain.example';
 // ------------------------------------------------------------------
 window.ARK_API_BASE = '';
 
@@ -35,4 +35,4 @@ window.SOCIAL_LINKS = {
 // embed instead (no key required, but not literally "Google Maps").
 // ------------------------------------------------------------------
 window.GOOGLE_MAPS_API_KEY = '';
-window.SCHOOL_MAP_QUERY = '42+Meridian+Hill+Road,+Ahmedabad,+Gujarat+380015'; // update to your real address
+window.SCHOOL_MAP_QUERY = ''; // add the school-confirmed address before launch

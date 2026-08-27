@@ -48,7 +48,7 @@ async function sendInquiryEmails({ parentName, email, grade, message }) {
     sendMail({
       to: email,
       subject: 'We received your enquiry — ARK INTERNATIONAL SCHOOL',
-      html: `<p>Hi ${parentName},</p><p>Thanks for reaching out to ARK INTERNATIONAL SCHOOL${grade ? ` about ${grade}` : ''}. An admissions coordinator will call you within one business day.</p><p>&mdash; ARK INTERNATIONAL Admissions</p>`,
+      html: `<p>Hi ${parentName},</p><p>Thanks for reaching out to ARK INTERNATIONAL SCHOOL${grade ? ` about ${grade}` : ''}. The school team will follow up using its confirmed enquiry process.</p><p>&mdash; ARK INTERNATIONAL SCHOOL Admissions</p>`,
     }),
     adminTo ? sendMail({
       to: adminTo,
@@ -65,7 +65,7 @@ async function sendVisitEmails({ parentName, studentName, email, visitDate, time
     sendMail({
       to: email,
       subject: 'Your campus visit is requested — ARK INTERNATIONAL SCHOOL',
-      html: `<p>Hi ${parentName},</p><p>We've received your visit request for <b>${studentName}</b> on <b>${dateStr}</b>, ${timeSlot}. Our admissions office will call to confirm within 24 hours.</p><p>&mdash; ARK INTERNATIONAL Admissions</p>`,
+      html: `<p>Hi ${parentName},</p><p>We've received your school tour request for <b>${studentName}</b> on <b>${dateStr}</b>, ${timeSlot}. The requested slot is not confirmed until the school team reviews availability.</p><p>&mdash; ARK INTERNATIONAL SCHOOL Admissions</p>`,
     }),
     adminTo ? sendMail({
       to: adminTo,

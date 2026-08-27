@@ -2,10 +2,12 @@ const { connectToDatabase } = require('./_lib/db');
 const Inquiry = require('./_lib/models/Inquiry');
 const { isAdminAuthorized } = require('./_lib/adminAuth');
 const { sendInquiryEmails } = require('./_lib/mail');
+const { rejectCrossSiteRequest } = require('./_lib/requestSecurity');
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
 module.exports = async (req, res) => {
+  if (req.method === 'POST' && rejectCrossSiteRequest(req, res)) return;
   try {
     await connectToDatabase();
 
@@ -21,6 +23,9 @@ module.exports = async (req, res) => {
       }
       if (!EMAIL_RE.test(email)) {
         return res.status(400).json({ error: 'Please provide a valid email address.' });
+      }
+      if (String(mobile).replace(/\D/g, '').length < 10) {
+        return res.status(400).json({ error: 'Please provide a valid mobile number.' });
       }
       if (intent && !['enquire', 'appointment'].includes(intent)) {
         return res.status(400).json({ error: 'Invalid intent value.' });

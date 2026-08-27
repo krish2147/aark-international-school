@@ -2,10 +2,12 @@ const { connectToDatabase } = require('./_lib/db');
 const VisitBooking = require('./_lib/models/VisitBooking');
 const { isAdminAuthorized } = require('./_lib/adminAuth');
 const { sendVisitEmails } = require('./_lib/mail');
+const { rejectCrossSiteRequest } = require('./_lib/requestSecurity');
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
 module.exports = async (req, res) => {
+  if (req.method === 'POST' && rejectCrossSiteRequest(req, res)) return;
   try {
     await connectToDatabase();
 
@@ -18,9 +20,17 @@ module.exports = async (req, res) => {
       if (!EMAIL_RE.test(email)) {
         return res.status(400).json({ error: 'Please provide a valid email address.' });
       }
+      if (String(mobile).replace(/\D/g, '').length < 10) {
+        return res.status(400).json({ error: 'Please provide a valid mobile number.' });
+      }
       const parsedDate = new Date(visitDate);
       if (Number.isNaN(parsedDate.getTime())) {
         return res.status(400).json({ error: 'Please provide a valid visit date.' });
+      }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (parsedDate < today) {
+        return res.status(400).json({ error: 'Please choose a current or future tour date.' });
       }
 
       const booking = await VisitBooking.create({
