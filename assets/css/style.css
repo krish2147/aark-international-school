@@ -79,7 +79,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   backdrop-filter: blur(14px);
 }
 #site-nav.scrolled{ box-shadow:0 8px 30px -12px rgba(0,0,0,.4); }
-#site-nav.scrolled, #site-nav.nav-solid{ background:var(--navy); }
+#site-nav.scrolled, #site-nav.nav-solid{ background:rgba(10, 18, 36, 0.96); }
 .nav-link{ position:relative; color:var(--warm-white); opacity:.85; font-size:.9rem; letter-spacing:.02em; background:none; border:none; cursor:pointer; }
 .nav-link:hover{ opacity:1; }
 .nav-link::after{
