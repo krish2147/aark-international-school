@@ -1,7 +1,11 @@
 const { appendRegistrationRow, isConfigured } = require('./_lib/sheets');
 const { sendMail } = require('./_lib/mail');
+const crypto = require('crypto');
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+}[char]));
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -10,17 +14,26 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { parentName, studentName, grade, mobile, email, visitDate, timeSlot, visitors, remarks } = req.body || {};
+    const {
+      academicYear, grade, studentName, dateOfBirth, gender, previousSchool,
+      currentGrade, parentName, relationship, mobile, email, address, remarks,
+      consent, website,
+    } = req.body || {};
 
-    if (!parentName || !studentName || !grade || !mobile || !email || !visitDate || !timeSlot) {
+    if (website) return res.status(200).json({ ok: true });
+    if (!academicYear || !parentName || !studentName || !grade || !dateOfBirth || !gender ||
+        !relationship || !mobile || !email || !address || !consent) {
       return res.status(400).json({ error: 'Missing required fields.' });
     }
     if (!EMAIL_RE.test(email)) {
       return res.status(400).json({ error: 'Please provide a valid email address.' });
     }
-    const parsedDate = new Date(visitDate);
-    if (Number.isNaN(parsedDate.getTime())) {
-      return res.status(400).json({ error: 'Please provide a valid date.' });
+    if (String(mobile).replace(/\D/g, '').length < 10) {
+      return res.status(400).json({ error: 'Please provide a valid mobile number.' });
+    }
+    const birthDate = new Date(dateOfBirth);
+    if (Number.isNaN(birthDate.getTime()) || birthDate >= new Date()) {
+      return res.status(400).json({ error: 'Please provide a valid date of birth.' });
     }
 
     if (!isConfigured()) {
@@ -32,15 +45,21 @@ module.exports = async (req, res) => {
       });
     }
 
+    const reference = `AARK-${new Date().getFullYear()}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
     const fields = {
+      reference,
+      academicYear: String(academicYear).slice(0, 20),
       parentName: String(parentName).slice(0, 120),
       studentName: String(studentName).slice(0, 120),
       grade: String(grade).slice(0, 40),
+      dateOfBirth: birthDate.toISOString().slice(0, 10),
+      gender: String(gender).slice(0, 30),
+      previousSchool: previousSchool ? String(previousSchool).slice(0, 160) : '',
+      currentGrade: currentGrade ? String(currentGrade).slice(0, 40) : '',
+      relationship: String(relationship).slice(0, 40),
       mobile: String(mobile).slice(0, 20),
       email: String(email).slice(0, 160),
-      visitDate: parsedDate.toISOString().slice(0, 10),
-      timeSlot: String(timeSlot).slice(0, 40),
-      visitors: Math.min(Math.max(parseInt(visitors, 10) || 1, 1), 20),
+      address: String(address).slice(0, 500),
       remarks: remarks ? String(remarks).slice(0, 2000) : '',
     };
 
@@ -49,11 +68,11 @@ module.exports = async (req, res) => {
     // Best-effort confirmation email — never blocks the response.
     sendMail({
       to: fields.email,
-      subject: 'Your admission registration is received — ARK INTERNATIONAL SCHOOL',
-      html: `<p>Hi ${fields.parentName},</p><p>We've received your admission registration for <b>${fields.studentName}</b> (${fields.grade}). Our admissions office will be in touch shortly.</p><p>&mdash; ARK INTERNATIONAL Admissions</p>`,
+      subject: 'Your admission registration is received — AARK INTERNATIONAL SCHOOL',
+      html: `<p>Hi ${escapeHtml(fields.parentName)},</p><p>We've received your admission registration for <b>${escapeHtml(fields.studentName)}</b> (${escapeHtml(fields.grade)}). Your reference is <b>${reference}</b>. Our admissions office will be in touch shortly.</p><p>&mdash; AARK International Admissions</p>`,
     }).catch(() => {});
 
-    return res.status(201).json({ ok: true });
+    return res.status(201).json({ ok: true, reference });
   } catch (err) {
     console.error('/api/admission-registration error:', err.message);
     if (err.code === 'SHEETS_NOT_CONFIGURED') {

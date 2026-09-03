@@ -1,5 +1,5 @@
 /* ============================================================
-   ARK INTERNATIONAL SCHOOL — Design System
+   AARK INTERNATIONAL SCHOOL — Design System
    Palette: Campus Navy / Stone Ivory / Brass Gold / Courtyard Sage
    Type: Fraunces (display) + Inter (body) + Space Grotesk (data/stats)
    ============================================================ */
@@ -25,15 +25,6 @@ body{
   background:var(--ivory-soft);
   -webkit-font-smoothing:antialiased;
 }
-.demo-data-notice{
-  position:relative; z-index:45; margin-top:5rem; display:flex; justify-content:center;
-  align-items:center; gap:.65rem; padding:.55rem 1rem; text-align:center;
-  background:#efe5ca; color:var(--navy-deep); border-bottom:1px solid rgba(200,155,60,.35);
-  font-size:.72rem; line-height:1.45;
-}
-.demo-data-notice strong{ font-family:'Space Grotesk',monospace; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
-.demo-data-notice + main > section:first-child,
-.demo-data-notice + section:first-child{ padding-top:0 !important; }
 .modal-open{ overflow:hidden; }
 .sr-only{
   position:absolute; width:1px; height:1px; padding:0; margin:-1px;
@@ -289,13 +280,11 @@ button:disabled{ cursor:not-allowed; opacity:.65; }
 .time-slot-card input{ position:absolute; opacity:0; pointer-events:none; }
 .time-slot-card span{ display:block; padding:.85rem .65rem; border:1px solid rgba(15,26,51,.16); border-radius:4px; text-align:center; font-size:.8rem; cursor:pointer; background:#fff; transition:.2s ease; }
 .time-slot-card input:checked + span{ border-color:var(--gold); background:rgba(200,155,60,.12); box-shadow:0 0 0 2px rgba(200,155,60,.12); color:var(--navy); font-weight:700; }
-.demo-chip{ display:inline-flex; padding:.25rem .55rem; border-radius:999px; background:rgba(200,155,60,.14); color:#73591f; font:600 .67rem 'Space Grotesk',monospace; letter-spacing:.06em; text-transform:uppercase; }
 
 @media (max-width:1100px){
   .site-search-button span,.site-search-button kbd{ display:none; }
 }
 @media (max-width:640px){
-  .demo-data-notice{ align-items:flex-start; flex-direction:column; text-align:left; }
   .application-step{ font-size:0; }
   .application-step span{ font-size:.7rem; }
   .time-slot-grid{ grid-template-columns:1fr 1fr; }

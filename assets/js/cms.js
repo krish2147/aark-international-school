@@ -1,5 +1,5 @@
 // ============================================================
-// ARK INTERNATIONAL SCHOOL — CMS content loader
+// AARK INTERNATIONAL SCHOOL — CMS content loader
 // If /api/news or /api/gallery is reachable and returns data, this
 // swaps in live content. If the backend isn't deployed yet (e.g. a
 // static-only preview), it does nothing and the static HTML already
@@ -16,7 +16,7 @@
   function newsCardHTML(n) {
     const cat = (n.category || 'News').toLowerCase();
     const date = new Date(n.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-    const img = n.imageUrl || 'https://picsum.photos/seed/hg-news-fallback/600/380';
+    const img = n.imageUrl || 'assets/images/brand-mark.svg';
     return `
       <article data-gallery-item data-category="${esc(cat)}" class="group border border-navy/10 rounded-sm overflow-hidden">
         <div class="aspect-[16/10] overflow-hidden"><img src="${esc(img)}" alt="${esc(n.title)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></div>
@@ -58,7 +58,7 @@
   }
 
   function teacherCardHTML(t) {
-    const img = t.photoUrl || 'https://picsum.photos/seed/hg-teacher-fallback/360/440';
+    const img = t.photoUrl || 'assets/images/brand-mark.svg';
     return `
       <div class="shrink-0 w-52 snap-start text-center">
         <img src="${esc(img)}" alt="${esc(t.name)}" loading="lazy" class="rounded-sm w-full aspect-[4/5] object-cover mb-4">

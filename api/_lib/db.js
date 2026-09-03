@@ -16,7 +16,13 @@ async function connectToDatabase() {
   if (!cached.promise) {
     const uri = process.env.MONGODB_URI;
     if (!uri) throw new Error('MONGODB_URI is not set (set it in Vercel → Project → Settings → Environment Variables).');
-    cached.promise = mongoose.connect(uri).then((m) => m);
+    cached.promise = mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 8000,
+      maxPoolSize: 10,
+    }).then((m) => m).catch((error) => {
+      cached.promise = null;
+      throw error;
+    });
   }
 
   cached.conn = await cached.promise;

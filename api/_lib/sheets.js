@@ -8,7 +8,7 @@
 //
 // Required env vars (set in Vercel → Project → Settings →
 // Environment Variables):
-//   GOOGLE_SERVICE_ACCOUNT_EMAIL   e.g. horizon-gate@your-project.iam.gserviceaccount.com
+//   GOOGLE_SERVICE_ACCOUNT_EMAIL   e.g. aark-school@your-project.iam.gserviceaccount.com
 //   GOOGLE_PRIVATE_KEY              the service account's private key (see README for
 //                                    the exact copy-paste steps — newlines need escaping)
 //   GOOGLE_SHEET_ID                 the ID from your Sheet's URL:
@@ -26,8 +26,9 @@ const { google } = require('googleapis');
 
 const SHEET_TAB = 'Admission Registrations';
 const HEADER_ROW = [
-  'Submitted At', 'Parent Name', 'Student Name', 'Student Grade', 'Mobile',
-  'Email', 'Preferred Visit Date', 'Time Slot', 'Number of Visitors', 'Questions / Remarks',
+  'Submitted At', 'Reference', 'Academic Year', 'Grade Applying For',
+  'Student Name', 'Date of Birth', 'Gender', 'Previous School', 'Current Grade',
+  'Parent / Guardian', 'Relationship', 'Mobile', 'Email', 'Address', 'Remarks',
 ];
 
 function isConfigured() {
@@ -56,7 +57,7 @@ async function ensureHeaderRow(sheets, spreadsheetId) {
   try {
     const existing = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: `${SHEET_TAB}!A1:J1`,
+      range: `${SHEET_TAB}!A1:O1`,
     });
     if (!existing.data.values || existing.data.values.length === 0) {
       await sheets.spreadsheets.values.update({
@@ -88,8 +89,10 @@ async function appendRegistrationRow(fields) {
 
   const row = [
     new Date().toISOString(),
-    fields.parentName, fields.studentName, fields.grade, fields.mobile,
-    fields.email, fields.visitDate, fields.timeSlot, fields.visitors, fields.remarks || '',
+    fields.reference, fields.academicYear, fields.grade, fields.studentName,
+    fields.dateOfBirth, fields.gender, fields.previousSchool || '', fields.currentGrade || '',
+    fields.parentName, fields.relationship, fields.mobile, fields.email, fields.address,
+    fields.remarks || '',
   ];
 
   await sheets.spreadsheets.values.append({

@@ -1,18 +1,8 @@
 // ============================================================
-// ARK INTERNATIONAL SCHOOL — shared interactivity
+// AARK INTERNATIONAL SCHOOL — shared interactivity
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-
-  /* ---------- Honest demo-data notice ---------- */
-  const siteNav = document.getElementById('site-nav');
-  if (siteNav && !document.querySelector('.demo-data-notice')) {
-    const notice = document.createElement('div');
-    notice.className = 'demo-data-notice';
-    notice.setAttribute('role', 'note');
-    notice.innerHTML = '<strong>ARK website preview</strong><span>School-specific facts, dates, people, fees, affiliations, achievements and contact details shown in this demo require confirmation by school management.</span>';
-    siteNav.insertAdjacentElement('afterend', notice);
-  }
 
   /* ---------- Accessibility baseline ---------- */
   const mainContent = document.querySelector('main');
@@ -244,24 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
       a.rel = 'noopener';
     } else {
       a.removeAttribute('href');
-      a.setAttribute('aria-disabled', 'true');
-      a.title = 'Not set yet — add it in assets/js/config.js';
-      a.classList.add('opacity-40', 'cursor-not-allowed');
-      a.addEventListener('click', (e) => e.preventDefault());
+      a.hidden = true;
     }
   });
 
-  /* ---------- Google Maps (optional, from config.js) ----------
-     Falls back to the OpenStreetMap embed already in the page if no
-     key is set — see assets/js/config.js for exactly how to switch. */
+  /* ---------- Optional keyed Google Maps embed ---------- */
   const mapFrame = document.getElementById('school-map-embed');
   if (mapFrame && window.GOOGLE_MAPS_API_KEY) {
     const query = window.SCHOOL_MAP_QUERY || '';
     mapFrame.src = `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(window.GOOGLE_MAPS_API_KEY)}&q=${query}`;
-    const badge = document.getElementById('school-map-badge');
-    if (badge) badge.textContent = 'PLACEHOLDER PIN — UPDATE THE ADDRESS IN CONFIG.JS';
-    const attribution = document.getElementById('school-map-attribution');
-    if (attribution) attribution.textContent = 'Placeholder pin — update the address in assets/js/config.js to your real campus location.';
   }
 
   /* ---------- Back to top ---------- */
@@ -557,6 +538,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Forms: validated submission with honest server feedback ---------- */
   document.querySelectorAll('form[data-async-form]').forEach(form => {
+    const spamTrap = document.createElement('div');
+    spamTrap.className = 'absolute -left-[10000px] w-px h-px overflow-hidden';
+    spamTrap.setAttribute('aria-hidden', 'true');
+    spamTrap.innerHTML = '<label>Leave this field empty<input name="website" type="text" tabindex="-1" autocomplete="off"></label>';
+    form.prepend(spamTrap);
     const successBox = document.querySelector(form.dataset.successTarget || '');
     let statusBox = form.querySelector('.form-status');
     if (!statusBox) {
@@ -616,15 +602,14 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.textContent = 'Submitting…';
 
       const endpoint = form.dataset.endpoint;
-      const finish = () => {
+      const finish = (payload = {}) => {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
         form.classList.add('hidden');
         if (successBox) successBox.classList.remove('hidden');
         if (successBox && form.dataset.referencePrefix) {
-          const ref = successBox.querySelector('[data-demo-reference]');
-          const suffix = String(Math.floor(10000 + Math.random() * 90000));
-          if (ref) ref.textContent = `${form.dataset.referencePrefix}-2026-${suffix}`;
+          const ref = successBox.querySelector('[data-application-reference]');
+          if (ref && payload.reference) ref.textContent = payload.reference;
         }
       };
       if (endpoint) {
@@ -639,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
           let payload = {};
           try { payload = await response.json(); } catch (_) { /* non-JSON server response */ }
           if (!response.ok) throw new Error(payload.error || 'We could not submit the form. Please try again.');
-          finish();
+          finish(payload);
           if (successBox) {
             successBox.setAttribute('tabindex', '-1');
             successBox.focus();
@@ -652,7 +637,10 @@ document.addEventListener('DOMContentLoaded', () => {
           statusBox.focus?.();
         }
       } else {
-        setTimeout(finish, 700);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        statusBox.textContent = 'This form is not connected to a submission service. Please contact the school office.';
+        statusBox.className = 'form-status form-status--error';
       }
     });
   });

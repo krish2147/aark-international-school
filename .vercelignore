@@ -1,0 +1,8 @@
+node_modules
+.git
+.env*
+scripts
+brochure.pdf
+assets/brochure.pdf
+README.md
+

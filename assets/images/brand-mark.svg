@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">AARK International School</title>
+  <desc id="desc">A gold school arch and letter A on a navy background.</desc>
+  <rect width="512" height="512" rx="72" fill="#0f1a33"/>
+  <path d="M92 420V196L256 88l164 108v224H92Z" fill="none" stroke="#e0b858" stroke-width="22"/>
+  <path d="M174 370 256 176l82 194M205 300h102" fill="none" stroke="#fffdf9" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

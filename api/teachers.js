@@ -1,6 +1,7 @@
 const { connectToDatabase } = require('./_lib/db');
 const Teacher = require('./_lib/models/Teacher');
 const { isAdminAuthorized } = require('./_lib/adminAuth');
+const { normaliseUrl } = require('./_lib/validate');
 
 module.exports = async (req, res) => {
   try {
@@ -23,7 +24,7 @@ module.exports = async (req, res) => {
         role: String(role).slice(0, 160),
         bio: bio ? String(bio).slice(0, 600) : undefined,
         qualifications: qualifications ? String(qualifications).slice(0, 300) : undefined,
-        photoUrl: photoUrl ? String(photoUrl).slice(0, 500) : undefined,
+        photoUrl: normaliseUrl(photoUrl),
         order: Number.isFinite(Number(order)) ? Number(order) : 0,
         published: published !== false,
       });
@@ -34,6 +35,7 @@ module.exports = async (req, res) => {
       const { id, ...updates } = req.body || {};
       if (!id) return res.status(400).json({ error: 'id is required.' });
       if (updates.order !== undefined) updates.order = Number(updates.order) || 0;
+      if (updates.photoUrl !== undefined) updates.photoUrl = normaliseUrl(updates.photoUrl);
       const teacher = await Teacher.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
       if (!teacher) return res.status(404).json({ error: 'Not found.' });
       return res.status(200).json(teacher);
@@ -50,6 +52,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed.' });
   } catch (err) {
     console.error('/api/teachers error:', err.message);
+    if (err.statusCode === 400) return res.status(400).json({ error: err.message });
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 };

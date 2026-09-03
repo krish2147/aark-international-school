@@ -22,6 +22,12 @@ function getTransport() {
   });
 }
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[char]));
+}
+
 async function sendMail({ to, subject, html }) {
   if (!nodemailer || !isConfigured()) {
     console.log(`[mail] SMTP not configured — skipping email "${subject}" to ${to}`);
@@ -44,16 +50,20 @@ async function sendMail({ to, subject, html }) {
 
 async function sendInquiryEmails({ parentName, email, grade, message }) {
   const adminTo = process.env.NOTIFY_EMAIL_TO;
+  const safeName = escapeHtml(parentName);
+  const safeEmail = escapeHtml(email);
+  const safeGrade = escapeHtml(grade);
+  const safeMessage = escapeHtml(message || '(no message)').replace(/\n/g, '<br>');
   await Promise.all([
     sendMail({
       to: email,
-      subject: 'We received your enquiry — ARK INTERNATIONAL SCHOOL',
-      html: `<p>Hi ${parentName},</p><p>Thanks for reaching out to ARK INTERNATIONAL SCHOOL${grade ? ` about ${grade}` : ''}. An admissions coordinator will call you within one business day.</p><p>&mdash; ARK INTERNATIONAL Admissions</p>`,
+      subject: 'We received your enquiry — AARK INTERNATIONAL SCHOOL',
+      html: `<p>Hi ${safeName},</p><p>Thanks for reaching out to AARK INTERNATIONAL SCHOOL${safeGrade ? ` about ${safeGrade}` : ''}. An admissions coordinator will contact you shortly.</p><p>&mdash; AARK International Admissions</p>`,
     }),
     adminTo ? sendMail({
       to: adminTo,
-      subject: `New enquiry: ${parentName}`,
-      html: `<p><b>${parentName}</b> (${email})${grade ? ` — interested in ${grade}` : ''}</p><p>${message || '(no message)'}</p>`,
+      subject: `New enquiry: ${String(parentName).slice(0, 120)}`,
+      html: `<p><b>${safeName}</b> (${safeEmail})${safeGrade ? ` — interested in ${safeGrade}` : ''}</p><p>${safeMessage}</p>`,
     }) : Promise.resolve(),
   ]);
 }
@@ -61,16 +71,20 @@ async function sendInquiryEmails({ parentName, email, grade, message }) {
 async function sendVisitEmails({ parentName, studentName, email, visitDate, timeSlot }) {
   const adminTo = process.env.NOTIFY_EMAIL_TO;
   const dateStr = new Date(visitDate).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const safeName = escapeHtml(parentName);
+  const safeStudent = escapeHtml(studentName);
+  const safeEmail = escapeHtml(email);
+  const safeTime = escapeHtml(timeSlot);
   await Promise.all([
     sendMail({
       to: email,
-      subject: 'Your campus visit is requested — ARK INTERNATIONAL SCHOOL',
-      html: `<p>Hi ${parentName},</p><p>We've received your visit request for <b>${studentName}</b> on <b>${dateStr}</b>, ${timeSlot}. Our admissions office will call to confirm within 24 hours.</p><p>&mdash; ARK INTERNATIONAL Admissions</p>`,
+      subject: 'Your campus visit is requested — AARK INTERNATIONAL SCHOOL',
+      html: `<p>Hi ${safeName},</p><p>We've received your visit request for <b>${safeStudent}</b> on <b>${dateStr}</b>, ${safeTime}. Our admissions office will contact you to confirm.</p><p>&mdash; AARK International Admissions</p>`,
     }),
     adminTo ? sendMail({
       to: adminTo,
       subject: `New visit request: ${parentName} — ${dateStr}`,
-      html: `<p><b>${parentName}</b> (${email}) requested a visit for <b>${studentName}</b> on ${dateStr}, ${timeSlot}.</p>`,
+      html: `<p><b>${safeName}</b> (${safeEmail}) requested a visit for <b>${safeStudent}</b> on ${dateStr}, ${safeTime}.</p>`,
     }) : Promise.resolve(),
   ]);
 }

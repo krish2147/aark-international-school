@@ -1,6 +1,7 @@
 const { connectToDatabase } = require('./_lib/db');
 const GalleryItem = require('./_lib/models/GalleryItem');
 const { isAdminAuthorized } = require('./_lib/adminAuth');
+const { normaliseUrl } = require('./_lib/validate');
 
 module.exports = async (req, res) => {
   try {
@@ -25,8 +26,8 @@ module.exports = async (req, res) => {
       const item = await GalleryItem.create({
         caption: String(caption).slice(0, 200),
         category,
-        imageUrl: String(imageUrl).slice(0, 500),
-        fullImageUrl: fullImageUrl ? String(fullImageUrl).slice(0, 500) : undefined,
+        imageUrl: normaliseUrl(imageUrl, { required: true }),
+        fullImageUrl: normaliseUrl(fullImageUrl),
         published: published !== false,
       });
       return res.status(201).json(item);
@@ -35,6 +36,8 @@ module.exports = async (req, res) => {
     if (req.method === 'PUT') {
       const { id, ...updates } = req.body || {};
       if (!id) return res.status(400).json({ error: 'id is required.' });
+      if (updates.imageUrl !== undefined) updates.imageUrl = normaliseUrl(updates.imageUrl, { required: true });
+      if (updates.fullImageUrl !== undefined) updates.fullImageUrl = normaliseUrl(updates.fullImageUrl);
       const item = await GalleryItem.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
       if (!item) return res.status(404).json({ error: 'Not found.' });
       return res.status(200).json(item);
@@ -51,6 +54,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed.' });
   } catch (err) {
     console.error('/api/gallery error:', err.message);
+    if (err.statusCode === 400) return res.status(400).json({ error: err.message });
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 };

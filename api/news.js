@@ -1,6 +1,7 @@
 const { connectToDatabase } = require('./_lib/db');
 const NewsPost = require('./_lib/models/NewsPost');
 const { isAdminAuthorized } = require('./_lib/adminAuth');
+const { normaliseUrl } = require('./_lib/validate');
 
 module.exports = async (req, res) => {
   try {
@@ -27,7 +28,7 @@ module.exports = async (req, res) => {
         category,
         date: new Date(date),
         excerpt: excerpt ? String(excerpt).slice(0, 500) : undefined,
-        imageUrl: imageUrl ? String(imageUrl).slice(0, 500) : undefined,
+        imageUrl: normaliseUrl(imageUrl),
         published: published !== false,
       });
       return res.status(201).json(post);
@@ -37,6 +38,7 @@ module.exports = async (req, res) => {
       const { id, ...updates } = req.body || {};
       if (!id) return res.status(400).json({ error: 'id is required.' });
       if (updates.date) updates.date = new Date(updates.date);
+      if (updates.imageUrl !== undefined) updates.imageUrl = normaliseUrl(updates.imageUrl);
       const post = await NewsPost.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
       if (!post) return res.status(404).json({ error: 'Not found.' });
       return res.status(200).json(post);
@@ -53,6 +55,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed.' });
   } catch (err) {
     console.error('/api/news error:', err.message);
+    if (err.statusCode === 400) return res.status(400).json({ error: err.message });
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 };

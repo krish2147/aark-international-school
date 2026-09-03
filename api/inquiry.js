@@ -7,14 +7,14 @@ const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
 module.exports = async (req, res) => {
   try {
-    await connectToDatabase();
-
     if (req.method === 'POST') {
       // studentName comes from the redesigned admissions enquiry form;
       // parentName still comes from the Contact page form. Either one
       // identifies the submission — a form only needs to send whichever
       // one it actually collects.
-      const { studentName, parentName, grade, mobile, email, message, referralSource, intent, preferredDate, source } = req.body || {};
+      const { studentName, parentName, grade, mobile, email, message, referralSource, intent, preferredDate, source, website } = req.body || {};
+
+      if (website) return res.status(200).json({ ok: true });
 
       if ((!studentName && !parentName) || !mobile || !email) {
         return res.status(400).json({ error: 'A name, mobile number, and email are required.' });
@@ -22,10 +22,14 @@ module.exports = async (req, res) => {
       if (!EMAIL_RE.test(email)) {
         return res.status(400).json({ error: 'Please provide a valid email address.' });
       }
+      if (String(mobile).replace(/\D/g, '').length < 10) {
+        return res.status(400).json({ error: 'Please provide a valid mobile number.' });
+      }
       if (intent && !['enquire', 'appointment'].includes(intent)) {
         return res.status(400).json({ error: 'Invalid intent value.' });
       }
 
+      await connectToDatabase();
       const inquiry = await Inquiry.create({
         studentName: studentName ? String(studentName).slice(0, 120) : undefined,
         parentName: parentName ? String(parentName).slice(0, 120) : undefined,
@@ -53,6 +57,7 @@ module.exports = async (req, res) => {
 
     if (req.method === 'GET') {
       if (!isAdminAuthorized(req)) return res.status(401).json({ error: 'Invalid admin password.' });
+      await connectToDatabase();
       const items = await Inquiry.find().sort({ createdAt: -1 }).limit(200);
       return res.status(200).json(items);
     }

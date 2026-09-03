@@ -1,4 +1,4 @@
-# ARK INTERNATIONAL SCHOOL — Vercel-ready bundle
+# AARK INTERNATIONAL SCHOOL — Production website
 
 Frontend + backend in one deployable project. The static pages live at the
 root; `/api/*` are Vercel serverless functions backed by MongoDB (forms,
@@ -45,7 +45,7 @@ The Admission Registration form (separate from Book a School Tour and the genera
 **Steps:**
 1. Go to [console.cloud.google.com](https://console.cloud.google.com), create a project (or use an existing one).
 2. **APIs & Services → Library** → search "Google Sheets API" → Enable.
-3. **APIs & Services → Credentials** → Create Credentials → Service Account. Give it any name (e.g. `horizon-gate-sheets`). No special roles needed at the project level.
+3. **APIs & Services → Credentials** → Create Credentials → Service Account. Give it any name (e.g. `aark-school-sheets`). No special roles needed at the project level.
 4. Open the new service account → **Keys** tab → Add Key → Create new key → JSON. This downloads a `.json` file — keep it private, don't commit it anywhere.
 5. Open that JSON file. You need two values from it:
    - `client_email` → this is your `GOOGLE_SERVICE_ACCOUNT_EMAIL`
@@ -83,7 +83,7 @@ Edit `assets/js/config.js` → `window.SOCIAL_LINKS`. Any left blank show as vis
 - **Teachers** — name, role, bio, qualifications, photo, display order. Feeds the "Meet the Faculty" section on the About page.
 - **Visit Requests / Admission Enquiries** — read-only views of MongoDB-stored form submissions (Admission Registration submissions are in your Google Sheet instead — see above, not in this dashboard).
 
-The public pages fetch this content client-side via `assets/js/cms.js`. If the API isn't reachable, pages fall back to the static placeholder content already in the HTML — nothing breaks either way.
+The public pages fetch this content client-side via `assets/js/cms.js`. If the API isn't reachable, pages fall back to the clear empty states already in the HTML — nothing breaks either way.
 
 ## Or deploy from the CLI
 

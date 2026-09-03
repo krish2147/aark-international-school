@@ -7,10 +7,10 @@ const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
 module.exports = async (req, res) => {
   try {
-    await connectToDatabase();
-
     if (req.method === 'POST') {
-      const { parentName, studentName, grade, mobile, email, visitDate, timeSlot, visitors, remarks } = req.body || {};
+      const { parentName, studentName, grade, mobile, email, visitDate, timeSlot, visitors, remarks, website } = req.body || {};
+
+      if (website) return res.status(200).json({ ok: true });
 
       if (!parentName || !studentName || !grade || !mobile || !email || !visitDate || !timeSlot) {
         return res.status(400).json({ error: 'Missing required fields.' });
@@ -18,11 +18,20 @@ module.exports = async (req, res) => {
       if (!EMAIL_RE.test(email)) {
         return res.status(400).json({ error: 'Please provide a valid email address.' });
       }
+      if (String(mobile).replace(/\D/g, '').length < 10) {
+        return res.status(400).json({ error: 'Please provide a valid mobile number.' });
+      }
       const parsedDate = new Date(visitDate);
       if (Number.isNaN(parsedDate.getTime())) {
         return res.status(400).json({ error: 'Please provide a valid visit date.' });
       }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (parsedDate < today) {
+        return res.status(400).json({ error: 'Visit date cannot be in the past.' });
+      }
 
+      await connectToDatabase();
       const booking = await VisitBooking.create({
         parentName: String(parentName).slice(0, 120),
         studentName: String(studentName).slice(0, 120),
@@ -42,6 +51,7 @@ module.exports = async (req, res) => {
 
     if (req.method === 'GET') {
       if (!isAdminAuthorized(req)) return res.status(401).json({ error: 'Invalid admin password.' });
+      await connectToDatabase();
       const items = await VisitBooking.find().sort({ visitDate: 1 }).limit(200);
       return res.status(200).json(items);
     }
