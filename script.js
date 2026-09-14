@@ -22,6 +22,7 @@ const growthData=[
   <div class="container nav-shell">
     <a class="brand" href="index.html" aria-label="AARK International School home"><img class="official-full-logo" src="assets/aark-full-logo.png" alt="AARK International School Vadodara"></a>
     <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="index.html" data-nav-home>Home</a>
       <a href="index.html#approach">Our Approach</a>
       <a href="index.html#journey">Learning Journey</a>
       <div class="nav-dropdown">
@@ -64,6 +65,7 @@ const growthData=[
   </div>
   <div class="mobile-menu" id="mobile-menu" hidden>
     <div class="mobile-menu-inner">
+      <a href="index.html">Home</a>
       <a href="index.html#approach">Our Approach</a>
       <a href="index.html#journey">Learning Journey</a>
       <a href="index.html#campus">Campus</a>
@@ -162,7 +164,8 @@ window.addEventListener('scroll',updateStickyHeader,{passive:true});updateSticky
   const file=(location.pathname.split('/').pop()||'index.html').toLowerCase();
   const nav=document.querySelector('.site-header'); if(!nav) return;
   const mark=(selector)=>nav.querySelectorAll(selector).forEach(el=>{el.classList.add('active');if(el.tagName==='A') el.setAttribute('aria-current','page')});
-  if(file==='admissions.html') mark('.nav-drop-button[data-menu="admissions"]');
+  if(file==='index.html' || file==='') mark('a[data-nav-home]');
+  else if(file==='admissions.html') mark('.nav-drop-button[data-menu="admissions"]');
   else if(file==='careers.html') mark('a[href*="careers.html"]');
   else if(['disclosures.html','circulars.html','policies.html'].includes(file)) mark('.nav-drop-button[data-menu="resources"]');
   else if(file==='campus-detail.html') mark('.nav-drop-button[data-menu="campus"]');
