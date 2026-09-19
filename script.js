@@ -11,3 +11,20 @@ const dropButtons=document.querySelectorAll('.nav-drop-button');dropButtons.forE
 const siteHeader=document.querySelector('.site-header');function updateStickyHeader(){if(siteHeader)siteHeader.classList.toggle('is-scrolled',window.scrollY>12)}window.addEventListener('scroll',updateStickyHeader,{passive:true});updateStickyHeader();
 (function(){const header=document.querySelector('.site-header');if(!header)return;let spacer=document.querySelector('.nav-spacer');if(!spacer){spacer=document.createElement('div');spacer.className='nav-spacer';header.insertAdjacentElement('afterend',spacer)}let triggerY=0;function measure(){const wasFollowing=header.classList.contains('nav-following');if(wasFollowing){header.classList.remove('nav-following');spacer.classList.remove('active')}const rect=header.getBoundingClientRect();triggerY=rect.top+window.scrollY;const h=header.offsetHeight;spacer.style.height=h+'px';document.documentElement.style.setProperty('--nav-current-h',h+'px');if(wasFollowing)update()}function update(){const shouldFollow=window.scrollY>=triggerY;if(shouldFollow){const h=header.offsetHeight;spacer.style.height=h+'px';spacer.classList.add('active');header.classList.add('nav-following');document.documentElement.style.setProperty('--nav-current-h',h+'px')}else{header.classList.remove('nav-following');spacer.classList.remove('active')}}window.addEventListener('load',()=>{measure();update()});window.addEventListener('resize',()=>{measure();update()},{passive:true});window.addEventListener('scroll',update,{passive:true});setTimeout(()=>{measure();update()},50)})();
 (function(){const file=(location.pathname.split('/').pop()||'index.html').toLowerCase(),nav=document.querySelector('.site-header');if(!nav)return;const mark=selector=>nav.querySelectorAll(selector).forEach(el=>{el.classList.add('active');if(el.tagName==='A')el.setAttribute('aria-current','page')});if(file==='index.html'||file==='')mark('a[data-nav-home]');else if(file==='about.html')mark('a[data-nav-about]');else if(file==='student-life.html')mark('a[data-nav-student]');else if(file==='admissions.html')mark('.nav-drop-button[data-menu="admissions"]');else if(file==='careers.html')mark('a[href*="careers.html"]');else if(['disclosures.html','circulars.html','policies.html'].includes(file))mark('.nav-drop-button[data-menu="resources"]');else if(file==='campus-detail.html')mark('.nav-drop-button[data-menu="campus"]')})();
+
+/* v18: enquiry + visit forms */
+document.querySelectorAll('[data-school-form]').forEach(form=>{
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const data=new FormData(form);
+    const name=(data.get('name')||'Parent').toString().trim();
+    const phone=(data.get('phone')||'').toString().trim();
+    const child=(data.get('child')||'').toString().trim();
+    const grade=(data.get('grade')||'').toString().trim();
+    const type=form.dataset.schoolForm==='visit'?'Campus Visit Request':'Admissions Enquiry';
+    const subject=encodeURIComponent(type+' - '+name);
+    const body=encodeURIComponent(type+'\n\nParent: '+name+'\nPhone: '+phone+'\nChild: '+child+'\nGrade: '+grade+'\n\nPlease contact me regarding AARK International School.');
+    window.location.href='mailto:info@theaarkinternational.com?subject='+subject+'&body='+body;
+    const status=form.querySelector('.form-status'); if(status) status.textContent='Your email app will open with the enquiry ready to send.';
+  });
+});
