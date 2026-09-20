@@ -703,3 +703,26 @@ body{padding-top:0 !important;}
 .school-enquiry-form .form-status{min-height:20px;margin:0;font-size:13px;color:var(--muted)}
 .form-alt{margin-top:12px;font-size:14px}
 @media(max-width:620px){.school-enquiry-form{grid-template-columns:1fr}.school-enquiry-form .button,.school-enquiry-form .form-status{grid-column:auto}}
+
+/* v19 — premium shared footer */
+.site-footer{background:#17101d;color:#f8f3fb;padding:0!important;border-top:0}
+.footer-main{display:grid;grid-template-columns:1.55fr .8fr .85fr 1.15fr;gap:52px;padding-top:68px;padding-bottom:52px}
+.footer-logo{display:inline-flex;background:#fff;border-radius:16px;padding:7px 12px;margin-bottom:19px}
+.footer-logo img{display:block;width:225px;height:60px;object-fit:contain}
+.footer-brand>p{max-width:420px;color:rgba(255,255,255,.67);line-height:1.75;margin:0 0 21px}
+.footer-credentials{display:flex;gap:8px;flex-wrap:wrap}
+.footer-credentials span{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);padding:8px 10px;border-radius:999px;font-size:11px;font-weight:700;color:rgba(255,255,255,.82)}
+.footer-column{display:flex;flex-direction:column;align-items:flex-start;gap:11px}
+.footer-column h3{font-family:inherit;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#e4bd5d;margin:5px 0 9px}
+.footer-column a{color:rgba(255,255,255,.74);text-decoration:none;font-size:14px;line-height:1.45;transition:color .2s,transform .2s}
+.footer-column a:hover{color:#fff;transform:translateX(2px)}
+.footer-contact p{color:rgba(255,255,255,.66);font-size:14px;line-height:1.7;margin:0}
+.footer-column .footer-cta{display:inline-flex;align-items:center;justify-content:space-between;gap:24px;margin-top:9px;padding:12px 15px;border-radius:12px;background:#fff;color:#3f2056;font-weight:800}
+.footer-column .footer-cta:hover{color:#3f2056;transform:translateY(-1px)}
+.footer-lower{min-height:72px;border-top:1px solid rgba(255,255,255,.11);display:flex;align-items:center;justify-content:space-between;gap:24px;color:rgba(255,255,255,.5);font-size:12px}
+.footer-lower nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:flex-end}
+.footer-lower a{color:rgba(255,255,255,.62);text-decoration:none}
+.footer-lower a:hover{color:#fff}.footer-lower .footer-top{color:#e4bd5d;font-weight:700}
+@media(max-width:1000px){.footer-main{grid-template-columns:1fr 1fr 1fr;gap:38px}.footer-brand{grid-column:1/-1}.footer-brand>p{max-width:620px}}
+@media(max-width:700px){.footer-main{grid-template-columns:1fr 1fr;padding-top:48px;padding-bottom:38px;gap:34px 24px}.footer-brand,.footer-contact{grid-column:1/-1}.footer-logo img{width:205px;height:56px}.footer-lower{padding-top:22px;padding-bottom:22px;align-items:flex-start;flex-direction:column}.footer-lower nav{justify-content:flex-start;gap:14px 18px}}
+@media(max-width:430px){.footer-main{grid-template-columns:1fr}.footer-brand,.footer-contact{grid-column:auto}.footer-column{gap:9px}.footer-credentials span{font-size:10px}.footer-lower nav{display:grid;grid-template-columns:1fr 1fr}}
