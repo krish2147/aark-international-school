@@ -15,13 +15,20 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
     const status=form.querySelector('.form-status');
     const submitBtn=form.querySelector('button[type="submit"]');
     const data=new FormData(form);
+    if((data.get('company')||'').toString().trim()){
+      // Honeypot field filled in: silently pretend success without contacting the API.
+      form.reset();
+      if(status){status.textContent="Thank you — we've received your request and the school team will contact you shortly.";status.classList.add('is-success');status.classList.remove('is-error')}
+      return;
+    }
     const payload={
       type:form.dataset.schoolForm==='visit'?'visit':'admission',
       name:(data.get('name')||'').toString().trim(),
       phone:(data.get('phone')||'').toString().trim(),
       child:(data.get('child')||'').toString().trim(),
       grade:(data.get('grade')||'').toString().trim(),
-      email:(data.get('email')||'').toString().trim()
+      email:(data.get('email')||'').toString().trim(),
+      company:(data.get('company')||'').toString().trim()
     };
     if(!payload.name||!payload.phone||!payload.grade){
       if(status){status.textContent='Please fill in the required fields.';status.classList.add('is-error');status.classList.remove('is-success')}
@@ -72,45 +79,4 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
   bar.addEventListener('touchstart',pause,{passive:true});
   bar.addEventListener('touchend',resume,{passive:true});
   bar.addEventListener('touchcancel',resume,{passive:true});
-})();
-
-/* Cinematic hero: background campus-tour video + "Experience AARK"
-   click-to-expand + scroll-to-restore. One persistent <video> element
-   throughout - never reloaded, never has currentTime touched, so it's
-   never restarted by any part of this interaction. */
-(function(){
-  const hero=document.querySelector('.hero-cinematic'),video=document.querySelector('.hero-video'),trigger=document.querySelector('.hero-tour-trigger');
-  if(!hero||!video)return;
-  const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Fade the video in once it actually has a frame to show; fall back
-  // silently (keep the CSS gradient + poster) if the source 404s, so a
-  // missing video file never shows a broken-video icon.
-  video.addEventListener('loadeddata',()=>video.classList.add('is-ready'));
-  video.addEventListener('error',()=>video.classList.add('is-errored'));
-
-  if(reduceMotion){
-    video.pause();
-    video.removeAttribute('autoplay');
-  }else{
-    // Defensive retry: some browsers only allow play() after a real
-    // user gesture even with the autoplay attribute present.
-    const playPromise=video.play();
-    if(playPromise&&playPromise.catch)playPromise.catch(()=>{});
-  }
-
-  if(!trigger)return;
-
-  trigger.addEventListener('click',()=>{
-    hero.classList.add('tour-active');
-    if(!reduceMotion){
-      const p=video.play();
-      if(p&&p.catch)p.catch(()=>{});
-    }
-  });
-
-  function restore(){
-    if(hero.classList.contains('tour-active'))hero.classList.remove('tour-active');
-  }
-  window.addEventListener('scroll',()=>{if(window.scrollY>4)restore()},{passive:true});
 })();

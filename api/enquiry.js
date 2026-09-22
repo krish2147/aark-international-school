@@ -48,7 +48,13 @@ module.exports = async (req, res) => {
   const child = (body.child || '').toString().trim().slice(0, 200);
   const grade = (body.grade || '').toString().trim().slice(0, 100);
   const email = (body.email || '').toString().trim().slice(0, 200);
+  const company = (body.company || '').toString().trim();
   const type = ENQUIRY_TYPES[body.type] ? body.type : 'admission';
+
+  if (company) {
+    // Honeypot field filled in by a bot: pretend success without sending mail.
+    return res.status(200).json({ ok: true });
+  }
 
   if (!name || !phone || !grade) {
     return res.status(400).json({ ok: false, error: 'Name, phone and grade are required.' });
