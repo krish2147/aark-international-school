@@ -1,0 +1,16 @@
+{
+  "name": "AARK International School",
+  "short_name": "AARK",
+  "description": "CBSE school in Sevasi, Vadodara — Pre-Nursery to Grade 12.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#fbf7ef",
+  "theme_color": "#4f256d",
+  "icons": [
+    {
+      "src": "assets/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

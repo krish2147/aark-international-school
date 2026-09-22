@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://theaarkinternational.com/</loc></url>
-  <url><loc>https://theaarkinternational.com/about.html</loc></url>
-  <url><loc>https://theaarkinternational.com/admissions.html</loc></url>
-  <url><loc>https://theaarkinternational.com/curriculum.html</loc></url>
-  <url><loc>https://theaarkinternational.com/campus-detail.html</loc></url>
-  <url><loc>https://theaarkinternational.com/student-life.html</loc></url>
-  <url><loc>https://theaarkinternational.com/careers.html</loc></url>
-  <url><loc>https://theaarkinternational.com/disclosures.html</loc></url>
-  <url><loc>https://theaarkinternational.com/circulars.html</loc></url>
-  <url><loc>https://theaarkinternational.com/policies.html</loc></url>
+  <url><loc>https://theaarkinternational.com/</loc><lastmod>2026-09-22</lastmod><priority>1.0</priority></url>
+  <url><loc>https://theaarkinternational.com/about.html</loc><lastmod>2026-09-22</lastmod><priority>0.8</priority></url>
+  <url><loc>https://theaarkinternational.com/admissions.html</loc><lastmod>2026-09-22</lastmod><priority>0.9</priority></url>
+  <url><loc>https://theaarkinternational.com/curriculum.html</loc><lastmod>2026-09-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://theaarkinternational.com/campus-detail.html</loc><lastmod>2026-09-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://theaarkinternational.com/student-life.html</loc><lastmod>2026-09-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://theaarkinternational.com/careers.html</loc><lastmod>2026-09-22</lastmod><priority>0.5</priority></url>
+  <url><loc>https://theaarkinternational.com/disclosures.html</loc><lastmod>2026-09-22</lastmod><priority>0.6</priority></url>
+  <url><loc>https://theaarkinternational.com/circulars.html</loc><lastmod>2026-09-22</lastmod><priority>0.6</priority></url>
+  <url><loc>https://theaarkinternational.com/policies.html</loc><lastmod>2026-09-22</lastmod><priority>0.5</priority></url>
 </urlset>
