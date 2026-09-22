@@ -57,26 +57,22 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
   });
 });
 
-/* Growth Record: on mobile, vertical scroll drives the horizontal step row
-   (pinned briefly via position:sticky), then releases back to normal
-   vertical scroll once the row finishes. Desktop is a static 5-col grid
-   and is untouched. */
+/* Growth Record: vertical scroll drives the horizontal step row (pinned
+   briefly via position:sticky), then releases back to normal vertical
+   scroll once the row finishes. Works at all screen sizes - if the row
+   ever fits without overflow (e.g. a very wide viewport), overflow is 0
+   and this simply does nothing. */
 (function(){
   const pin=document.querySelector('.growth-scroll-pin'),sticky=document.querySelector('.growth-scroll-sticky'),steps=document.querySelector('.growth-steps');
   if(!pin||!sticky||!steps)return;
-  const mq=window.matchMedia('(max-width:820px)');
   let overflow=0,ticking=false;
   function measure(){
-    if(mq.matches){
-      overflow=Math.max(0,steps.scrollWidth-steps.clientWidth);
-      pin.style.height=(sticky.offsetHeight+overflow)+'px';
-    }else{
-      pin.style.height='';
-      steps.scrollLeft=0;
-    }
+    overflow=Math.max(0,steps.scrollWidth-steps.clientWidth);
+    pin.style.height=overflow>0?(sticky.offsetHeight+overflow)+'px':'';
+    if(overflow<=0)steps.scrollLeft=0;
   }
   function update(){
-    if(!mq.matches||overflow<=0){ticking=false;return}
+    if(overflow<=0){ticking=false;return}
     const rect=pin.getBoundingClientRect();
     const progress=Math.max(0,Math.min(1,-rect.top/overflow));
     steps.scrollLeft=progress*overflow;
