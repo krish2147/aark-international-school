@@ -56,3 +56,36 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
     }
   });
 });
+
+/* Growth Record: on mobile, vertical scroll drives the horizontal step row
+   (pinned briefly via position:sticky), then releases back to normal
+   vertical scroll once the row finishes. Desktop is a static 5-col grid
+   and is untouched. */
+(function(){
+  const pin=document.querySelector('.growth-scroll-pin'),sticky=document.querySelector('.growth-scroll-sticky'),steps=document.querySelector('.growth-steps');
+  if(!pin||!sticky||!steps)return;
+  const mq=window.matchMedia('(max-width:820px)');
+  let overflow=0,ticking=false;
+  function measure(){
+    if(mq.matches){
+      overflow=Math.max(0,steps.scrollWidth-steps.clientWidth);
+      pin.style.height=(sticky.offsetHeight+overflow)+'px';
+    }else{
+      pin.style.height='';
+      steps.scrollLeft=0;
+    }
+  }
+  function update(){
+    if(!mq.matches||overflow<=0){ticking=false;return}
+    const rect=pin.getBoundingClientRect();
+    const progress=Math.max(0,Math.min(1,-rect.top/overflow));
+    steps.scrollLeft=progress*overflow;
+    ticking=false;
+  }
+  function onScroll(){if(!ticking){requestAnimationFrame(update);ticking=true}}
+  function onResize(){measure();update()}
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onResize,{passive:true});
+  window.addEventListener('load',onResize);
+  onResize();
+})();
