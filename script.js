@@ -57,31 +57,53 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
   });
 });
 
-/* Growth Record: vertical scroll drives the horizontal step row (pinned
-   briefly via position:sticky), then releases back to normal vertical
-   scroll once the row finishes. Works at all screen sizes - if the row
-   ever fits without overflow (e.g. a very wide viewport), overflow is 0
-   and this simply does nothing. */
+/* Growth Record: smooth scroll-triggered carousel.
+   Vertical scroll drives horizontal position, eased toward the target
+   each frame (not a hard 1:1 snap) for a smoother feel. The active
+   step + detail text update to whichever step is currently nearest as
+   you scroll - selection is driven by scroll position, not just clicks.
+   Clicking a step still works: it smooth-scrolls the page to the
+   matching depth so scroll position and selection stay in sync. */
 (function(){
-  const pin=document.querySelector('.growth-scroll-pin'),sticky=document.querySelector('.growth-scroll-sticky'),steps=document.querySelector('.growth-steps');
-  if(!pin||!sticky||!steps)return;
-  let overflow=0,ticking=false;
+  const pin=document.querySelector('.growth-scroll-pin'),sticky=document.querySelector('.growth-scroll-sticky'),steps=document.querySelector('.growth-steps'),stepEls=[...document.querySelectorAll('.growth-step')];
+  if(!pin||!sticky||!steps||!stepEls.length)return;
+  let overflow=0,target=0,current=0,activeIndex=-1;
   function measure(){
     overflow=Math.max(0,steps.scrollWidth-steps.clientWidth);
     pin.style.height=overflow>0?(sticky.offsetHeight+overflow)+'px':'';
-    if(overflow<=0)steps.scrollLeft=0;
   }
-  function update(){
-    if(overflow<=0){ticking=false;return}
+  function computeTarget(){
+    if(overflow<=0){target=0;return}
     const rect=pin.getBoundingClientRect();
     const progress=Math.max(0,Math.min(1,-rect.top/overflow));
-    steps.scrollLeft=progress*overflow;
-    ticking=false;
+    target=progress*overflow;
   }
-  function onScroll(){if(!ticking){requestAnimationFrame(update);ticking=true}}
-  function onResize(){measure();update()}
-  window.addEventListener('scroll',onScroll,{passive:true});
+  function indexFromProgress(scrollLeft){
+    if(overflow<=0)return 0;
+    const frac=Math.max(0,Math.min(1,scrollLeft/overflow));
+    return Math.round(frac*(stepEls.length-1));
+  }
+  function tick(){
+    computeTarget();
+    current+=(target-current)*.15;
+    if(Math.abs(target-current)<.5)current=target;
+    steps.scrollLeft=current;
+    const idx=indexFromProgress(current);
+    if(idx!==activeIndex){activeIndex=idx;setGrowthStep(idx)}
+    requestAnimationFrame(tick);
+  }
+  function onResize(){
+    measure();computeTarget();current=target;steps.scrollLeft=current;
+    activeIndex=indexFromProgress(current);setGrowthStep(activeIndex);
+  }
+  stepEls.forEach((el,i)=>el.addEventListener('click',()=>{
+    if(overflow<=0)return;
+    const stepProgress=Math.min(1,Math.max(0,el.offsetLeft/overflow));
+    const rect=pin.getBoundingClientRect();
+    window.scrollBy({top:rect.top+stepProgress*overflow,behavior:'smooth'});
+  }));
   window.addEventListener('resize',onResize,{passive:true});
   window.addEventListener('load',onResize);
   onResize();
+  requestAnimationFrame(tick);
 })();
