@@ -67,15 +67,17 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
 (function(){
   const pin=document.querySelector('.growth-scroll-pin'),sticky=document.querySelector('.growth-scroll-sticky'),steps=document.querySelector('.growth-steps'),stepEls=[...document.querySelectorAll('.growth-step')];
   if(!pin||!sticky||!steps||!stepEls.length)return;
-  let overflow=0,target=0,current=0,activeIndex=-1;
+  const SCROLL_MULTIPLIER=3.2; // require this many px of vertical scroll per px of horizontal travel, so the pin phase is long enough to actually feel like a distinct pause
+  let overflow=0,scrollRange=0,target=0,current=0,activeIndex=-1;
   function measure(){
     overflow=Math.max(0,steps.scrollWidth-steps.clientWidth);
-    pin.style.height=overflow>0?(sticky.offsetHeight+overflow)+'px':'';
+    scrollRange=overflow*SCROLL_MULTIPLIER;
+    pin.style.height=overflow>0?(sticky.offsetHeight+scrollRange)+'px':'';
   }
   function computeTarget(){
     if(overflow<=0){target=0;return}
     const rect=pin.getBoundingClientRect();
-    const progress=Math.max(0,Math.min(1,-rect.top/overflow));
+    const progress=Math.max(0,Math.min(1,-rect.top/scrollRange));
     target=progress*overflow;
   }
   function indexFromProgress(scrollLeft){
@@ -85,7 +87,7 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
   }
   function tick(){
     computeTarget();
-    current+=(target-current)*.15;
+    current+=(target-current)*.22;
     if(Math.abs(target-current)<.5)current=target;
     steps.scrollLeft=current;
     const idx=indexFromProgress(current);
@@ -100,7 +102,7 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
     if(overflow<=0)return;
     const stepProgress=Math.min(1,Math.max(0,el.offsetLeft/overflow));
     const rect=pin.getBoundingClientRect();
-    window.scrollBy({top:rect.top+stepProgress*overflow,behavior:'smooth'});
+    window.scrollBy({top:rect.top+stepProgress*scrollRange,behavior:'smooth'});
   }));
   window.addEventListener('resize',onResize,{passive:true});
   window.addEventListener('load',onResize);
