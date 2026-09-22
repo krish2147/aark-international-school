@@ -49,10 +49,10 @@ main,section,header,footer{width:100%;max-width:100%}
 .container{width:min(1180px,calc(100% - 48px));max-width:1180px;margin-inline:auto;padding-inline:0}
 .utility-bar{background:var(--brand);color:#fff;font-size:11px;letter-spacing:.025em;overflow:hidden}
 .utility-track{display:flex;width:max-content;animation:utility-marquee 26s linear infinite}
-.utility-bar:hover .utility-track{animation-play-state:paused}
+.utility-bar.is-paused .utility-track{animation-play-state:paused}
 .utility-set{display:flex;align-items:center;gap:22px;min-height:32px;flex-shrink:0;padding-inline:22px}
 .utility-set span{white-space:nowrap}
-@keyframes utility-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes utility-marquee{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 @media(prefers-reduced-motion:reduce){.utility-track{animation:none}}
 .site-header{top:0}.nav-shell{min-height:76px;gap:18px}.brand{display:flex;flex:0 0 auto}.brand img{width:185px;max-height:52px}
 .desktop-nav{gap:15px;min-width:0}.desktop-nav>a,.nav-drop-button{font-size:13px;white-space:nowrap}

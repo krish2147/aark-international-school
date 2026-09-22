@@ -55,3 +55,21 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
   });
 });
 
+
+/* Utility bar marquee: pause on hover (desktop) and press-and-hold
+   (touch), resume from the exact same position on release - CSS
+   animation-play-state:paused/running preserves elapsed time natively,
+   so no manual position tracking is needed. A single .is-paused class
+   driven from JS (not CSS :hover) so touch devices, which don't
+   reliably support :hover, behave the same as desktop. */
+(function(){
+  const bar=document.querySelector('.utility-bar');
+  if(!bar)return;
+  const pause=()=>bar.classList.add('is-paused');
+  const resume=()=>bar.classList.remove('is-paused');
+  bar.addEventListener('mouseenter',pause);
+  bar.addEventListener('mouseleave',resume);
+  bar.addEventListener('touchstart',pause,{passive:true});
+  bar.addEventListener('touchend',resume,{passive:true});
+  bar.addEventListener('touchcancel',resume,{passive:true});
+})();
