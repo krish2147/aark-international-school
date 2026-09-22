@@ -701,6 +701,9 @@ body{padding-top:0 !important;}
 .school-enquiry-form input:focus,.school-enquiry-form select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
 .school-enquiry-form .button,.school-enquiry-form .form-status{grid-column:1/-1}
 .school-enquiry-form .form-status{min-height:20px;margin:0;font-size:13px;color:var(--muted)}
+.school-enquiry-form .form-status.is-success{color:#1a7f37;font-weight:600}
+.school-enquiry-form .form-status.is-error{color:#c0362c;font-weight:600}
+.field-optional{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);opacity:.8}
 .form-alt{margin-top:12px;font-size:14px}
 @media(max-width:620px){.school-enquiry-form{grid-template-columns:1fr}.school-enquiry-form .button,.school-enquiry-form .form-status{grid-column:auto}}
 

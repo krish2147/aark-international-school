@@ -1,0 +1,9 @@
+{
+  "name": "aark-international-school",
+  "private": true,
+  "version": "1.0.0",
+  "description": "AARK International School website — static site + Vercel serverless enquiry API",
+  "dependencies": {
+    "nodemailer": "^6.9.14"
+  }
+}

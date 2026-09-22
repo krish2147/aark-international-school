@@ -5,7 +5,6 @@ const menuButton=document.querySelector('.menu-toggle'),mobileMenu=document.quer
 const journeyPanel=document.querySelector('#journey-panel'),journeyLayout=document.querySelector('.journey-layout'),journeyTabs=document.querySelector('.journey-tabs');function renderJourney(tab){if(!journeyPanel)return;document.querySelectorAll('.journey-tab').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false')});tab.classList.add('active');tab.setAttribute('aria-selected','true');const d=stageData[tab.dataset.stage];if(!d)return;journeyPanel.innerHTML=`<div class="journey-stage-copy"><p class="panel-kicker">${d.kicker}</p><h3>${d.title}</h3><p>${d.body}</p><div class="panel-points">${d.points.map(p=>`<span>${p}</span>`).join('')}</div></div><div class="journey-stage-image"><img src="${d.image}" alt="AARK school life" loading="lazy"></div>`;positionJourneyPanel()}function positionJourneyPanel(){const active=document.querySelector('.journey-tab.active');if(!active||!journeyPanel||!journeyLayout||!journeyTabs)return;if(window.matchMedia('(max-width: 640px)').matches)active.insertAdjacentElement('afterend',journeyPanel);else journeyLayout.appendChild(journeyPanel)}document.querySelectorAll('.journey-tab').forEach(tab=>tab.addEventListener('click',()=>renderJourney(tab)));window.addEventListener('resize',positionJourneyPanel,{passive:true});positionJourneyPanel();
 const growthFill=document.querySelector('#growth-fill'),growthDetail=document.querySelector('#growth-detail');document.querySelectorAll('.growth-step').forEach((step,i)=>step.addEventListener('click',()=>{document.querySelectorAll('.growth-step').forEach(s=>s.classList.remove('active'));step.classList.add('active');if(growthFill)growthFill.style.width=`${i/(growthData.length-1)*100}%`;if(growthDetail)growthDetail.textContent=growthData[i]}));
 if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el))}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible'));
-const enquiry=document.querySelector('#enquiry');enquiry?.addEventListener('submit',e=>{e.preventDefault();if(!enquiry.reportValidity())return;const fd=new FormData(enquiry),subject=encodeURIComponent(`${fd.get('intent')} — ${fd.get('grade')}`),body=encodeURIComponent(`Parent / Guardian: ${fd.get('parentName')}\nMobile: ${fd.get('phone')}\nEmail: ${fd.get('email')}\nGrade / Stage: ${fd.get('grade')}\nRequest: ${fd.get('intent')}`);window.location.href=`mailto:admissions@theaarkinternational.com?subject=${subject}&body=${body}`});
 const resourceModal=document.querySelector('#resource-modal');document.querySelectorAll('.resource-popup-open').forEach(btn=>btn.addEventListener('click',()=>resourceModal?.showModal()));document.querySelector('.modal-close')?.addEventListener('click',()=>resourceModal?.close());resourceModal?.addEventListener('click',e=>{if(e.target===resourceModal)resourceModal.close()});
 const dropButtons=document.querySelectorAll('.nav-drop-button');dropButtons.forEach(btn=>{btn.addEventListener('click',e=>{e.preventDefault();const wrap=btn.closest('.nav-dropdown'),open=wrap.classList.toggle('menu-open');btn.setAttribute('aria-expanded',String(open));document.querySelectorAll('.nav-dropdown').forEach(other=>{if(other!==wrap){other.classList.remove('menu-open');other.querySelector('.nav-drop-button')?.setAttribute('aria-expanded','false')}})})});document.addEventListener('click',e=>{if(!e.target.closest('.nav-dropdown'))document.querySelectorAll('.nav-dropdown').forEach(d=>{d.classList.remove('menu-open');d.querySelector('.nav-drop-button')?.setAttribute('aria-expanded','false')})});
 const siteHeader=document.querySelector('.site-header');function updateStickyHeader(){if(siteHeader)siteHeader.classList.toggle('is-scrolled',window.scrollY>12)}window.addEventListener('scroll',updateStickyHeader,{passive:true});updateStickyHeader();
@@ -13,18 +12,49 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
 (function(){const file=(location.pathname.split('/').pop()||'index.html').toLowerCase(),nav=document.querySelector('.site-header');if(!nav)return;const mark=selector=>nav.querySelectorAll(selector).forEach(el=>{el.classList.add('active');if(el.tagName==='A')el.setAttribute('aria-current','page')});if(file==='index.html'||file==='')mark('a[data-nav-home]');else if(file==='about.html')mark('a[data-nav-about]');else if(file==='student-life.html')mark('a[data-nav-student]');else if(file==='admissions.html')mark('.nav-drop-button[data-menu="admissions"]');else if(file==='careers.html')mark('a[href*="careers.html"]');else if(['disclosures.html','circulars.html','policies.html'].includes(file))mark('.nav-drop-button[data-menu="resources"]');else if(file==='campus-detail.html')mark('.nav-drop-button[data-menu="campus"]')})();
 
 /* v18: enquiry + visit forms */
+/* v19: enquiry + visit forms — submitted to /api/enquiry, no mailto fallback */
 document.querySelectorAll('[data-school-form]').forEach(form=>{
-  form.addEventListener('submit',e=>{
+  form.addEventListener('submit',async e=>{
     e.preventDefault();
+    const status=form.querySelector('.form-status');
+    const submitBtn=form.querySelector('button[type="submit"]');
     const data=new FormData(form);
-    const name=(data.get('name')||'Parent').toString().trim();
-    const phone=(data.get('phone')||'').toString().trim();
-    const child=(data.get('child')||'').toString().trim();
-    const grade=(data.get('grade')||'').toString().trim();
-    const type=form.dataset.schoolForm==='visit'?'Campus Visit Request':'Admissions Enquiry';
-    const subject=encodeURIComponent(type+' - '+name);
-    const body=encodeURIComponent(type+'\n\nParent: '+name+'\nPhone: '+phone+'\nChild: '+child+'\nGrade: '+grade+'\n\nPlease contact me regarding AARK International School.');
-    window.location.href='mailto:info@theaarkinternational.com?subject='+subject+'&body='+body;
-    const status=form.querySelector('.form-status'); if(status) status.textContent='Your email app will open with the enquiry ready to send.';
+    const payload={
+      type:form.dataset.schoolForm==='visit'?'visit':'admission',
+      name:(data.get('name')||'').toString().trim(),
+      phone:(data.get('phone')||'').toString().trim(),
+      child:(data.get('child')||'').toString().trim(),
+      grade:(data.get('grade')||'').toString().trim(),
+      email:(data.get('email')||'').toString().trim()
+    };
+    if(!payload.name||!payload.phone||!payload.grade){
+      if(status){status.textContent='Please fill in the required fields.';status.classList.add('is-error');status.classList.remove('is-success')}
+      return;
+    }
+    if(submitBtn)submitBtn.disabled=true;
+    if(status){status.textContent='Sending your request…';status.classList.remove('is-error','is-success')}
+    try{
+      const res=await fetch('/api/enquiry',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      const result=await res.json().catch(()=>({}));
+      if(!res.ok||!result.ok) throw new Error(result.error||'Request failed');
+      form.reset();
+      if(status){
+        status.textContent="Thank you — we've received your request and the school team will contact you shortly."+(payload.email?' A confirmation has also been sent to your email.':'');
+        status.classList.add('is-success');
+        status.classList.remove('is-error');
+      }
+    }catch(err){
+      if(status){
+        status.textContent='Something went wrong sending your request. Please call the school directly at +91 99091 15550.';
+        status.classList.add('is-error');
+        status.classList.remove('is-success');
+      }
+    }finally{
+      if(submitBtn)submitBtn.disabled=false;
+    }
   });
 });
