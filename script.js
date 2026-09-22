@@ -56,37 +56,3 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
     }
   });
 });
-
-/* v20: Learning Journey — drive the progress pipe fill and grade-card reveal off scroll.
-   Previously neither had any JS behind them: the pipe's clip-rect stayed at height=0
-   forever, and every grade-card stayed at opacity:.35 since nothing ever added .active. */
-(function(){
-  const road=document.querySelector('.journey-road'),fillRect=document.querySelector('#journey-fill-rect'),stops=document.querySelectorAll('.grade-stop');
-  if(!road&&!stops.length)return;
-  const VIEWBOX_H=1400;
-  let ticking=false;
-  function updateFill(){
-    if(road&&fillRect){
-      const rect=road.getBoundingClientRect();
-      const vh=window.innerHeight||document.documentElement.clientHeight;
-      const total=rect.height+vh;
-      let progress=total>0?(vh-rect.top)/total:0;
-      progress=Math.max(0,Math.min(1,progress));
-      fillRect.setAttribute('height',(progress*VIEWBOX_H).toFixed(1));
-    }
-    ticking=false;
-  }
-  function onScroll(){if(!ticking){requestAnimationFrame(updateFill);ticking=true}}
-  window.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('resize',onScroll,{passive:true});
-  window.addEventListener('load',updateFill);
-  updateFill();
-  if('IntersectionObserver'in window&&stops.length){
-    const stopObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      if(entry.isIntersecting){entry.target.classList.add('active');stopObserver.unobserve(entry.target)}
-    }),{threshold:.3,rootMargin:'0px 0px -10% 0px'});
-    stops.forEach(stop=>stopObserver.observe(stop));
-  }else{
-    stops.forEach(stop=>stop.classList.add('active'));
-  }
-})();
