@@ -1,0 +1,131 @@
+[
+  {
+    "id": "hero-campus",
+    "description": "Wide exterior/campus shot — front gate, building facade or grounds. Used as the homepage hero and About welcome image.",
+    "current_stock_url": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=82",
+    "used_in_files": [
+      "about.html",
+      "campus-detail.html",
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "students-together",
+    "description": "Students learning/working together indoors — used for 'more than a classroom' and student-life imagery.",
+    "current_stock_url": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1600&q=82",
+    "used_in_files": [
+      "about.html",
+      "index.html",
+      "student-life.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "nursery",
+    "description": "Nursery-age child in a hands-on early-years activity.",
+    "current_stock_url": "https://images.unsplash.com/photo-1587323655395-b1c77a12c89a?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "kindergarten",
+    "description": "Kindergarten children playing together.",
+    "current_stock_url": "https://images.unsplash.com/photo-1578349035260-9f3d4042f1f7?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "grade-1-2",
+    "description": "Grade 1-2 student practicing early literacy.",
+    "current_stock_url": "https://images.unsplash.com/photo-1620398722262-969d8f2bc875?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "grade-3-5",
+    "description": "Grade 3-5 project-based/STEM classroom.",
+    "current_stock_url": "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?auto=format&fit=crop&w=800&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "grade-6-8",
+    "description": "Grade 6-8 hands-on classroom.",
+    "current_stock_url": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "grade-9-10",
+    "description": "Grade 9-10 students collaborating.",
+    "current_stock_url": "https://images.unsplash.com/photo-1758270705290-62b6294dd044?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "grade-11-12",
+    "description": "Grade 11-12 senior student portrait.",
+    "current_stock_url": "https://images.unsplash.com/photo-1765005343987-6bf51ae692c4?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "classrooms",
+    "description": "Classroom interior — used for the Classrooms facility card/page.",
+    "current_stock_url": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=82",
+    "used_in_files": [
+      "about.html",
+      "campus-detail.html",
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "robotics",
+    "description": "AI & Robotics lab — used for that facility card/page.",
+    "current_stock_url": "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1600&q=82",
+    "used_in_files": [
+      "about.html",
+      "campus-detail.html",
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "swimming-sports",
+    "description": "Swimming pool or sports facility.",
+    "current_stock_url": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1600&q=82",
+    "used_in_files": [
+      "about.html",
+      "campus-detail.html",
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "arts-music",
+    "description": "Arts/music room or performance space.",
+    "current_stock_url": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1600&q=82",
+    "used_in_files": [
+      "about.html",
+      "campus-detail.html",
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  }
+]
