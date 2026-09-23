@@ -15,19 +15,23 @@ quotes, each with:
 - The quote itself
 - Written consent to publish it with their name
 
-## 3. Staff directory (if wanted)
-Not on the old site either, but worth asking if AARK wants one. Per staff
-member: name, role/subject, photo, and a one-line bio.
+## 3. Staff directory — page built, needs real data
+`staff.html` is live with sample placeholder entries (nav: Community →
+Our Staff). Per staff member we still need: name, role/subject, photo, and a
+one-line bio, to replace the "Sample Entry" cards.
 
-## 4. Transport / bus routes
-The admissions FAQ currently says "the school does not own the buses... the
-admissions team can provide contact details for the transport facilitator."
-If AARK wants routes published on-site: route list, stops, and the
-facilitator's contact details.
+## 4. Transport / bus routes — page built, needs real data
+`transport.html` is live (nav: Community → Transport). The explanatory text
+is real (mirrors the admissions FAQ: the school doesn't own the buses; the
+admissions team shares the transport facilitator's contact details). The
+route table is still placeholder rows — need the actual route list, stops,
+approximate pickup times, and the facilitator's contact details.
 
-## 5. Photo gallery (if wanted)
-Neither site has one currently. If AARK wants a gallery page (events, sports
-day, annual function, etc.), we need the photo set plus captions/dates.
+## 5. Photo gallery — page built, needs photos
+`gallery.html` is live (nav: Community → Gallery), structured around the
+real 2026–27 calendar events (Swimming Expo, Annual Function, Annual Sports
+Day, Annual Result Day) pulled from `circulars.html`. Each event card is a
+placeholder until AARK supplies the actual photos for that event.
 
 ## 6. Fee PDF
 `README.md` already flags this: the final downloadable 2026–27 fee structure
