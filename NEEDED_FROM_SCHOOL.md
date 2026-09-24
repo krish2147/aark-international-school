@@ -15,23 +15,35 @@ quotes, each with:
 - The quote itself
 - Written consent to publish it with their name
 
-## 3. Staff directory — page built, needs real data
-`staff.html` is live with sample placeholder entries (nav: Community →
-Our Staff). Per staff member we still need: name, role/subject, photo, and a
-one-line bio, to replace the "Sample Entry" cards.
+## 3. Staff directory — page built, admin panel ready
+`staff.html` is live (nav: Community → Our Staff). It now shows sample
+placeholder entries until real staff are added through the **admin panel**
+(`/admin.html` → Staff tab) — no code changes needed once that's set up
+(see README's "Admin panel setup"). Per staff member: name, role/subject,
+photo, and a one-line bio.
 
 ## 4. Transport / bus routes — page built, needs real data
 `transport.html` is live (nav: Community → Transport). The explanatory text
 is real (mirrors the admissions FAQ: the school doesn't own the buses; the
 admissions team shares the transport facilitator's contact details). The
 route table is still placeholder rows — need the actual route list, stops,
-approximate pickup times, and the facilitator's contact details.
+approximate pickup times, and the facilitator's contact details. (Routes
+aren't in the admin panel yet — still a manual HTML edit.)
 
-## 5. Photo gallery — page built, needs photos
+## 5. Photo gallery — page built, admin panel ready
 `gallery.html` is live (nav: Community → Gallery), structured around the
 real 2026–27 calendar events (Swimming Expo, Annual Function, Annual Sports
-Day, Annual Result Day) pulled from `circulars.html`. Each event card is a
-placeholder until AARK supplies the actual photos for that event.
+Day, Annual Result Day) pulled from `circulars.html`. Real event photos can
+now be uploaded directly through the **admin panel** (`/admin.html` →
+Gallery tab) — the placeholder cards are replaced automatically once photos
+are added.
+
+## 8. Admin panel — new capability
+AARK (or Krish) can now log in at `/admin.html` to manage the Gallery,
+Staff directory, a site-wide popup announcement banner (e.g. "Admissions
+Open"), admission Schemes/offers, and the Fees table — all without a code
+change. See README's "Admin panel setup" for the one-time setup steps
+(Blob storage + admin credentials).
 
 ## 6. Fee PDF
 `README.md` already flags this: the final downloadable 2026–27 fee structure

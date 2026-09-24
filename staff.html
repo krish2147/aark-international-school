@@ -6,4 +6,22 @@
 <div class="footer-column footer-contact"><h3>Visit & Contact</h3><p>Nr. Shyam Icon, Bhayli-Sevasi Ring Road, Sevasi, Vadodara – 391101</p><a href="tel:+919909115550">+91 99091 15550</a><a href="mailto:info@theaarkinternational.com">info@theaarkinternational.com</a><a class="footer-cta" href="admissions.html">Explore Admissions <span>→</span></a></div>
 </div>
 <div class="container footer-lower"><span>© AARK International School. All rights reserved.</span><nav aria-label="Footer resources"><a href="disclosures.html">Public Disclosure</a><a href="circulars.html">Circulars</a><a href="policies.html">Policies</a><a href="index.html#top" class="footer-top">Back to top ↑</a></nav></div>
-</footer><script src="script.js"></script></body></html>
+</footer><script src="script.js"></script><script>
+(function(){
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+  fetch('/api/content/staff').then(r=>r.json()).then(data=>{
+    if(!data.ok||!data.items||!data.items.length) return;
+    const grid=document.querySelector('.staff-grid');
+    const note=document.querySelector('.placeholder-note');
+    if(!grid) return;
+    if(note) note.remove();
+    grid.innerHTML=data.items.map(item=>{
+      const initial=(item.name||'?').trim().charAt(0).toUpperCase();
+      const avatar=item.photoUrl
+        ? `<img src="${esc(item.photoUrl)}" alt="${esc(item.name||'')}" style="width:86px;height:86px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block">`
+        : `<div class="staff-avatar">${esc(initial)}</div>`;
+      return `<article class="staff-card">${avatar}<h3>${esc(item.name||'')}</h3><p class="role">${esc(item.role||'')}</p><p class="bio">${esc(item.bio||'')}</p></article>`;
+    }).join('');
+  }).catch(()=>{});
+})();
+</script></body></html>

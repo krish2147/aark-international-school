@@ -80,3 +80,49 @@ document.querySelectorAll('[data-school-form]').forEach(form=>{
   bar.addEventListener('touchend',resume,{passive:true});
   bar.addEventListener('touchcancel',resume,{passive:true});
 })();
+
+/* Site-wide popup event banner, driven by the admin panel's "Popup Events".
+   Shown at most once per browser tab per event (sessionStorage), and built
+   via DOM APIs (not innerHTML interpolation) since the title/message/link
+   come from admin-entered content. */
+(function(){
+  fetch('/api/content/events').then(r=>r.json()).then(data=>{
+    if(!data.ok||!data.items||!data.items.length) return;
+    const item=(data.items||[]).find(i=>i.active);
+    if(!item) return;
+    const seenKey='aark_popup_seen_'+item.id;
+    if(sessionStorage.getItem(seenKey)) return;
+
+    const style=document.createElement('style');
+    style.textContent='.aark-popup-overlay{position:fixed;inset:0;background:rgba(20,13,25,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}.aark-popup-card{background:#fff;border-radius:22px;max-width:420px;width:100%;padding:30px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3)}.aark-popup-card h3{margin:0 0 10px;font-size:22px}.aark-popup-card p{color:var(--muted,#687083);margin:0 0 18px;line-height:1.6}.aark-popup-close{position:absolute;top:14px;right:14px;background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted,#687083);line-height:1}';
+    document.head.appendChild(style);
+
+    const overlay=document.createElement('div');
+    overlay.className='aark-popup-overlay';
+    const card=document.createElement('div');
+    card.className='aark-popup-card';
+    const closeBtn=document.createElement('button');
+    closeBtn.className='aark-popup-close';
+    closeBtn.setAttribute('aria-label','Close');
+    closeBtn.textContent='×';
+    const h3=document.createElement('h3');
+    h3.textContent=item.title||'';
+    const p=document.createElement('p');
+    p.textContent=item.message||'';
+    card.append(closeBtn,h3,p);
+    if(item.link){
+      const a=document.createElement('a');
+      a.className='button button-primary';
+      a.href=item.link;
+      a.textContent='Learn More';
+      card.appendChild(a);
+    }
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+    sessionStorage.setItem(seenKey,'1');
+
+    function close(){overlay.remove()}
+    closeBtn.addEventListener('click',close);
+    overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
+  }).catch(()=>{});
+})();

@@ -1,0 +1,79 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin | AARK International School</title><meta name="robots" content="noindex,nofollow"><link rel="icon" type="image/png" href="assets/favicon.png"><link rel="stylesheet" href="styles.css"><style>
+body{background:var(--cream)}
+.admin-shell{display:none;min-height:100vh;grid-template-columns:220px 1fr}
+.admin-shell.is-active{display:grid}
+.admin-sidebar{background:var(--ink);color:#fff;padding:24px 0;display:flex;flex-direction:column}
+.admin-sidebar h1{font-size:16px;padding:0 20px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin:0 0 10px}
+.admin-nav button{display:block;width:100%;text-align:left;background:none;border:0;color:rgba(255,255,255,.75);padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;font-size:14px}
+.admin-nav button.active,.admin-nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+.admin-logout{margin-top:auto;padding:14px 20px;background:none;border:0;border-top:1px solid rgba(255,255,255,.12);color:#f3b3b3;font:inherit;font-weight:700;cursor:pointer;text-align:left}
+.admin-main{padding:34px 40px;max-width:900px}
+.admin-main h2{margin:0 0 4px;font-size:28px}
+.admin-main>p.hint{color:var(--muted);margin:0 0 24px}
+.admin-form{display:grid;gap:12px;padding:22px;background:#fff;border:1px solid var(--line);border-radius:18px;margin-bottom:28px}
+.admin-form label{display:grid;gap:5px;font-weight:700;font-size:13px}
+.admin-form input,.admin-form textarea{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;width:100%}
+.admin-form textarea{min-height:70px;resize:vertical}
+.admin-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-form .checkline{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.admin-form .checkline input{width:auto}
+.admin-btn{justify-self:start;background:var(--brand);color:#fff;border:0;border-radius:999px;padding:11px 20px;font:inherit;font-weight:700;cursor:pointer}
+.admin-btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.admin-btn.danger{background:#fff;color:#b23b3b;border:1px solid #f0cccc}
+.admin-status{font-size:13px;font-weight:700}
+.admin-status.ok{color:#1c8a4a}
+.admin-status.err{color:#b23b3b}
+.admin-list{display:grid;gap:10px}
+.admin-item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.admin-item img{width:64px;height:64px;object-fit:cover;border-radius:10px;background:var(--soft-purple)}
+.admin-item .noimg{width:64px;height:64px;border-radius:10px;background:var(--soft-purple)}
+.admin-item h3{margin:0 0 2px;font-size:15px}
+.admin-item p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.admin-item .actions{display:flex;gap:8px}
+.admin-item .actions button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;margin-left:8px}
+.pill.on{background:#dff5e4;color:#1c8a4a}
+.pill.off{background:#f1eef4;color:var(--muted)}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-card{width:min(380px,90vw);background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px}
+.login-card h1{font-size:22px;margin:0 0 6px}
+.login-card p{color:var(--muted);margin:0 0 20px;font-size:14px}
+.login-card label{display:grid;gap:5px;font-weight:700;font-size:13px;margin-bottom:14px}
+.login-card input{border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit}
+@media(max-width:760px){.admin-shell.is-active{grid-template-columns:1fr}.admin-sidebar{position:sticky;top:0;z-index:5}.admin-nav{display:flex;overflow-x:auto}.admin-nav button{white-space:nowrap}.admin-main{padding:24px 18px}}
+</style></head><body>
+
+<div id="login-screen">
+  <form class="login-card" id="login-form">
+    <h1>AARK Admin</h1>
+    <p>Sign in to manage the website's staff, gallery, events, schemes and fees.</p>
+    <label>Username<input name="username" autocomplete="username" required></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+    <button class="admin-btn" type="submit" style="width:100%;justify-self:stretch;text-align:center">Sign In</button>
+    <p class="admin-status err" id="login-status" style="margin-top:12px"></p>
+  </form>
+</div>
+
+<div class="admin-shell" id="admin-shell">
+  <aside class="admin-sidebar">
+    <h1>AARK Admin</h1>
+    <nav class="admin-nav" id="admin-nav">
+      <button data-tab="gallery" class="active">Gallery</button>
+      <button data-tab="staff">Staff</button>
+      <button data-tab="events">Popup Events</button>
+      <button data-tab="schemes">Schemes</button>
+      <button data-tab="fees">Fees</button>
+    </nav>
+    <button class="admin-logout" id="logout-btn">Log Out</button>
+  </aside>
+  <main class="admin-main">
+    <div id="panel-gallery" class="panel"></div>
+    <div id="panel-staff" class="panel" hidden></div>
+    <div id="panel-events" class="panel" hidden></div>
+    <div id="panel-schemes" class="panel" hidden></div>
+    <div id="panel-fees" class="panel" hidden></div>
+  </main>
+</div>
+
+<script src="admin.js"></script>
+</body></html>
