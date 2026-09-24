@@ -1,21 +1,24 @@
 [
   {
     "id": "hero-campus",
-    "description": "Wide exterior/campus shot — front gate, building facade or grounds. Used as the homepage hero and About welcome image.",
+    "description": "Wide exterior/campus shot \u2014 front gate, building facade or grounds. Used as the homepage hero and About welcome image.",
     "current_stock_url": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=82",
     "used_in_files": [
       "about.html",
+      "admissions.html",
       "campus-detail.html",
-      "index.html"
+      "index.html",
+      "transport.html"
     ],
     "replacement_url_or_path": ""
   },
   {
     "id": "students-together",
-    "description": "Students learning/working together indoors — used for 'more than a classroom' and student-life imagery.",
+    "description": "Students learning/working together indoors \u2014 used for 'more than a classroom' and student-life imagery.",
     "current_stock_url": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1600&q=82",
     "used_in_files": [
       "about.html",
+      "careers.html",
       "index.html",
       "student-life.html"
     ],
@@ -86,22 +89,25 @@
   },
   {
     "id": "classrooms",
-    "description": "Classroom interior — used for the Classrooms facility card/page.",
+    "description": "Classroom interior \u2014 used for the Classrooms facility card/page.",
     "current_stock_url": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=82",
     "used_in_files": [
       "about.html",
       "campus-detail.html",
+      "curriculum.html",
+      "disclosures.html",
       "index.html"
     ],
     "replacement_url_or_path": ""
   },
   {
     "id": "robotics",
-    "description": "AI & Robotics lab — used for that facility card/page.",
+    "description": "AI & Robotics lab \u2014 used for that facility card/page.",
     "current_stock_url": "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1600&q=82",
     "used_in_files": [
       "about.html",
       "campus-detail.html",
+      "curriculum.html",
       "index.html"
     ],
     "replacement_url_or_path": ""
@@ -113,7 +119,8 @@
     "used_in_files": [
       "about.html",
       "campus-detail.html",
-      "index.html"
+      "index.html",
+      "policies.html"
     ],
     "replacement_url_or_path": ""
   },
@@ -124,6 +131,8 @@
     "used_in_files": [
       "about.html",
       "campus-detail.html",
+      "circulars.html",
+      "curriculum.html",
       "index.html"
     ],
     "replacement_url_or_path": ""
