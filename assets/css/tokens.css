@@ -1,0 +1,101 @@
+/*
+  AARK V2 design tokens — translated from the approved Figma design system
+  (page "02 — Design System"). Components consume these variables; avoid
+  scattered raw color/spacing values in new CSS.
+*/
+:root{
+  /* ---- Color: brand ---- */
+  --v2-ink-900:#182033;
+  --v2-ink-700:#263047;
+  --v2-ink-500:#6d7083;
+  --v2-brand-700:#351649;
+  --v2-brand-500:#4f256d;
+  --v2-brand-300:#a37ebb;
+  --v2-gold-500:#fac803;
+  --v2-gold-300:#fff5bd;
+  --v2-terracotta-500:#d9653a;
+  --v2-paper-50:#fffdf9;
+  --v2-paper-100:#fbf7ef;
+  --v2-paper-200:#f1e9f5;
+  --v2-line:#e7ded2;
+  --v2-white:#fff;
+
+  /* ---- Color roles (semantic — components reference these) ---- */
+  --v2-color-primary: var(--v2-brand-500);
+  --v2-color-primary-dark: var(--v2-brand-700);
+  --v2-color-accent: var(--v2-terracotta-500);   /* highest-intent CTA only */
+  --v2-color-signal: var(--v2-gold-500);          /* milestones / journey */
+  --v2-color-ground: var(--v2-paper-100);         /* default section canvas */
+  --v2-color-ground-alt: var(--v2-paper-50);
+  --v2-color-ground-tint: var(--v2-paper-200);
+  --v2-color-depth: var(--v2-ink-900);            /* used deliberately, max 1-of-2 adjacent sections */
+  --v2-color-text: var(--v2-ink-900);
+  --v2-color-text-soft: var(--v2-ink-700);
+  --v2-color-text-muted: var(--v2-ink-500);
+  --v2-color-text-on-dark: #fff;
+  --v2-color-text-on-dark-muted: #c3bdd4;
+  --v2-color-border: var(--v2-line);
+
+  /* ---- Typography ---- */
+  --v2-font-display:"Fraunces",Georgia,serif;
+  --v2-font-body:"Work Sans",system-ui,-apple-system,sans-serif;
+
+  --v2-text-hero: clamp(38px,5.6vw,76px);
+  --v2-text-display-xl: clamp(32px,4.4vw,52px);
+  --v2-text-display-l: clamp(26px,3.2vw,38px);
+  --v2-text-display-m: clamp(22px,2.4vw,28px);
+  --v2-text-italic-accent: clamp(19px,2.2vw,26px);
+  --v2-text-body-l: clamp(16px,1.6vw,19px);
+  --v2-text-body-m: 16px;
+  --v2-text-body-s: 14px;
+  --v2-text-eyebrow: 12px;
+  --v2-text-stat: clamp(24px,2.6vw,36px);
+
+  --v2-lh-tight: 1.05;
+  --v2-lh-snug: 1.2;
+  --v2-lh-normal: 1.5;
+  --v2-lh-relaxed: 1.65;
+
+  /* ---- Spacing scale ---- */
+  --v2-space-xs: 8px;
+  --v2-space-sm: 16px;
+  --v2-space-md: 24px;
+  --v2-space-lg: 40px;
+  --v2-space-xl: 64px;
+  --v2-space-2xl: 96px;
+  --v2-space-3xl: 144px;
+
+  /* ---- Containers / grid ---- */
+  --v2-container: 1296px;
+  --v2-gutter-desktop: 72px;
+  --v2-gutter-tablet: 40px;
+  --v2-gutter-mobile: 20px;
+
+  /* ---- Radii ---- */
+  --v2-radius-sm: 8px;
+  --v2-radius-md: 16px;
+  --v2-radius-lg: 28px;
+  --v2-radius-pill: 999px;
+
+  /* ---- Image aspect ratios (see Figma "Image Treatment") ---- */
+  --v2-ratio-hero: 5/6;
+  --v2-ratio-editorial: 4/5;
+  --v2-ratio-facility: 3/4;
+  --v2-ratio-wide: 16/9;
+  --v2-ratio-square: 1/1;
+
+  /* ---- Motion ---- */
+  --v2-ease-standard: cubic-bezier(.22,.61,.36,1);
+  --v2-ease-out: cubic-bezier(.16,1,.3,1);
+  --v2-duration-fast: 150ms;
+  --v2-duration-base: 400ms;
+  --v2-duration-slow: 700ms;
+
+  /* ---- Shadow ---- */
+  --v2-shadow-soft: 0 20px 60px rgba(24,32,51,.10);
+  --v2-shadow-lift: 0 14px 30px rgba(24,32,51,.16);
+}
+
+@media (prefers-reduced-motion: reduce){
+  :root{ --v2-duration-fast:1ms; --v2-duration-base:1ms; --v2-duration-slow:1ms; }
+}
