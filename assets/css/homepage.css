@@ -1,0 +1,211 @@
+/*
+  AARK V2 — homepage only. Built from tokens.css. Reproduces the approved
+  Figma "03 — Homepage (Desktop)" / "04 — Homepage (Mobile)" pages.
+  Loaded only by index.html; other pages keep their existing styles.css
+  presentation until they're migrated to V2 (see Phase 5 scope note).
+*/
+.v2{font-family:var(--v2-font-body);color:var(--v2-color-text)}
+.v2 .container{width:min(var(--v2-container),calc(100% - var(--v2-gutter-mobile)*2));margin-inline:auto}
+@media(min-width:701px){.v2 .container{width:min(var(--v2-container),calc(100% - var(--v2-gutter-tablet)*2))}}
+@media(min-width:1160px){.v2 .container{width:min(var(--v2-container),calc(100% - var(--v2-gutter-desktop)*2))}}
+
+.v2 h1,.v2 h2,.v2 h3{font-family:var(--v2-font-display);font-weight:400;margin:0;color:var(--v2-color-text)}
+.v2 p{margin:0}
+
+/* ---------- shared chapter primitives ---------- */
+.v2-chapter{padding:var(--v2-space-3xl) var(--v2-gutter-mobile)}
+@media(min-width:701px){.v2-chapter{padding-inline:var(--v2-gutter-tablet)}}
+@media(min-width:1160px){.v2-chapter{padding-inline:0}}
+.v2-marker{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px}
+.v2-marker .dot{width:6px;height:6px;border-radius:50%;background:var(--v2-color-accent);flex:0 0 auto}
+.v2-marker .num{font-size:12px;font-weight:600;color:var(--v2-color-text-muted);letter-spacing:.05em}
+.v2-eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:var(--v2-text-eyebrow);font-weight:600;color:var(--v2-color-accent)}
+.v2-title-xl{font-size:var(--v2-text-display-xl);line-height:var(--v2-lh-tight);letter-spacing:-.01em}
+.v2-title-l{font-size:var(--v2-text-display-l);line-height:var(--v2-lh-snug)}
+.v2-italic{font-family:var(--v2-font-display);font-style:italic}
+.v2-body{font-size:var(--v2-text-body-l);line-height:var(--v2-lh-relaxed);color:var(--v2-color-text-soft)}
+.v2-muted{color:var(--v2-color-text-muted)}
+
+/* ---------- buttons (consume CTA hierarchy tokens) ---------- */
+.v2-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:13px 26px;border-radius:var(--v2-radius-pill);font-weight:600;font-size:15px;text-decoration:none;border:1.5px solid transparent;transition:transform var(--v2-duration-fast) var(--v2-ease-standard),box-shadow var(--v2-duration-fast)}
+.v2-btn:hover{transform:translateY(-2px)}
+.v2-btn-primary{background:var(--v2-color-accent);color:#fff}
+.v2-btn-primary:hover{box-shadow:var(--v2-shadow-lift)}
+.v2-btn-secondary{background:var(--v2-color-primary);color:#fff}
+.v2-btn-tertiary{background:transparent;border-color:var(--v2-color-text-soft);color:var(--v2-color-text)}
+.v2-btn-tertiary.on-dark{border-color:rgba(255,255,255,.5);color:#fff}
+.v2-btn-quiet{color:var(--v2-color-accent);font-weight:600;text-decoration:none;font-size:14px;min-height:44px;display:inline-flex;align-items:center;gap:6px}
+.v2-btn-row{display:flex;flex-wrap:wrap;gap:16px}
+
+/* ---------- images ---------- */
+.v2-img{display:block;width:100%;height:100%;object-fit:cover;background:var(--v2-color-ground-tint)}
+.v2-ratio-hero{aspect-ratio:var(--v2-ratio-hero)}
+.v2-ratio-editorial{aspect-ratio:var(--v2-ratio-editorial)}
+.v2-ratio-facility{aspect-ratio:var(--v2-ratio-facility)}
+.v2-ratio-wide{aspect-ratio:var(--v2-ratio-wide)}
+.v2-ratio-square{aspect-ratio:var(--v2-ratio-square)}
+.v2-media{border-radius:var(--v2-radius-lg);overflow:hidden}
+
+/* reveal-on-scroll (reuses script.js's IntersectionObserver .reveal mechanism) */
+.v2 .reveal{opacity:0;transform:translateY(20px);transition:opacity var(--v2-duration-slow) var(--v2-ease-standard),transform var(--v2-duration-slow) var(--v2-ease-standard)}
+.v2 .reveal.is-visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.v2 .reveal{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* ================= HERO =================
+   Mobile: full-bleed photo with text overlaid at the bottom (per Figma's
+   mobile hero — photo-forward, not a shrunk desktop stack).
+   Desktop (>=901px): side-by-side split, photo right. */
+.v2-hero{position:relative;display:flex;flex-direction:column;min-height:640px;color:#fff;overflow:hidden}
+@media(min-width:901px){.v2-hero{flex-direction:row;align-items:stretch;min-height:0;color:var(--v2-color-text)}}
+.v2-hero-media{position:absolute;inset:0;z-index:0}
+@media(min-width:901px){.v2-hero-media{position:relative;inset:auto;flex:0 0 46%;order:2}}
+.v2-hero-media img{width:100%;height:100%;object-fit:cover;display:block}
+.v2-hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(24,32,51,.92) 10%,rgba(24,32,51,.15) 62%,rgba(24,32,51,0) 80%)}
+@media(min-width:901px){.v2-hero::before{display:none}}
+.v2-hero-text{position:relative;z-index:2;margin-top:auto;padding:var(--v2-space-xl) var(--v2-gutter-mobile) var(--v2-space-xl);display:flex;flex-direction:column;gap:var(--v2-space-md)}
+@media(min-width:901px){.v2-hero-text{order:1;margin-top:0;flex:0 0 54%;justify-content:center;padding:var(--v2-space-2xl) var(--v2-gutter-desktop);background:var(--v2-color-ground)}}
+h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-.02em;color:#fff}
+@media(min-width:901px){h1.v2-hero-title{color:var(--v2-color-text)}}
+.v2-hero-lead{font-size:var(--v2-text-body-l);line-height:var(--v2-lh-relaxed);color:rgba(255,255,255,.88);max-width:38em}
+@media(min-width:901px){.v2-hero-lead{color:var(--v2-color-text-soft)}}
+.v2-hero-stats{display:flex;gap:var(--v2-space-lg);flex-wrap:wrap;margin-top:var(--v2-space-sm);padding-top:var(--v2-space-md);border-top:1px solid rgba(255,255,255,.25)}
+@media(min-width:901px){.v2-hero-stats{border-top-color:var(--v2-color-border)}}
+.v2-hero-stats div{display:flex;flex-direction:column;gap:2px}
+.v2-hero-stats strong{font-family:var(--v2-font-display);font-size:var(--v2-text-stat);color:var(--v2-color-signal);line-height:1}
+@media(min-width:901px){.v2-hero-stats strong{color:var(--v2-color-primary)}}
+.v2-hero-stats small{color:rgba(255,255,255,.75);font-size:13px}
+@media(min-width:901px){.v2-hero-stats small{color:var(--v2-color-text-muted)}}
+.v2-hero .v2-eyebrow{color:var(--v2-color-signal)}
+@media(min-width:901px){.v2-hero .v2-eyebrow{color:var(--v2-color-accent)}}
+
+/* ================= WHY AARK ================= */
+.v2-why{background:var(--v2-color-ground-alt);display:grid;gap:var(--v2-space-2xl)}
+@media(min-width:901px){.v2-why{grid-template-columns:.9fr 1.1fr;align-items:start}}
+.v2-why-quote{font-size:var(--v2-text-display-l);line-height:1.35;color:var(--v2-color-text)}
+.v2-why-photo{margin-bottom:var(--v2-space-md)}
+.v2-why-caption{color:var(--v2-color-text-muted);font-size:14px;margin-top:var(--v2-space-sm)}
+.v2-why-list{display:flex;flex-direction:column}
+.v2-why-item{display:grid;grid-template-columns:44px 1fr;gap:var(--v2-space-md);padding:var(--v2-space-md) 0;border-bottom:1px solid var(--v2-color-border)}
+.v2-why-item:first-child{padding-top:0}
+.v2-why-num{font-family:var(--v2-font-display);font-size:20px;color:var(--v2-color-accent)}
+.v2-why-item h3{font-size:22px;margin-bottom:6px}
+.v2-why-item p{color:var(--v2-color-text-soft);line-height:var(--v2-lh-relaxed)}
+
+/* ================= LEARNING PHILOSOPHY ================= */
+.v2-philosophy{background:var(--v2-color-ground-tint);display:flex;flex-direction:column;padding:0}
+@media(min-width:901px){.v2-philosophy{flex-direction:row;align-items:stretch}}
+.v2-philosophy-media{min-height:280px}
+@media(min-width:901px){.v2-philosophy-media{flex:0 0 46%;min-height:auto}}
+.v2-philosophy-media img{width:100%;height:100%;object-fit:cover;display:block}
+.v2-philosophy-text{padding:var(--v2-space-2xl) var(--v2-gutter-mobile);display:flex;flex-direction:column;gap:var(--v2-space-lg);justify-content:center}
+@media(min-width:901px){.v2-philosophy-text{flex:0 0 54%;padding:var(--v2-space-2xl) var(--v2-gutter-desktop)}}
+.v2-principles{display:flex;flex-direction:column;gap:var(--v2-space-sm)}
+.v2-principle{display:grid;grid-template-columns:8px 1fr;gap:var(--v2-space-sm);align-items:start}
+.v2-principle .dot{width:7px;height:7px;border-radius:50%;background:var(--v2-color-accent);margin-top:8px}
+.v2-principle strong{display:block;font-size:16px;font-weight:600}
+.v2-principle span{color:var(--v2-color-text-muted);font-size:14px;line-height:var(--v2-lh-relaxed)}
+
+/* ================= LEARNING JOURNEY ================= */
+.v2-journey{background:var(--v2-color-depth);color:#fff;overflow:hidden}
+.v2-journey-head{text-align:center;max-width:640px;margin:0 auto var(--v2-space-2xl)}
+.v2-journey-head .v2-marker{justify-content:center}
+.v2-journey-head .v2-eyebrow{color:var(--v2-color-signal)}
+.v2-journey-head h2{font-size:var(--v2-text-display-xl);line-height:1.15;color:#fff;margin:var(--v2-space-sm) 0}
+.v2-journey-head p{color:var(--v2-color-text-on-dark-muted);font-size:16px;line-height:var(--v2-lh-relaxed)}
+
+/* Desktop: horizontal path (kept + restyled from the working scroll-driven mechanism) */
+.v2-journey-path-desktop{display:none;position:relative;padding:var(--v2-space-lg) 0 var(--v2-space-2xl)}
+@media(min-width:1020px){.v2-journey-path-desktop{display:block}}
+.v2-journey-path-desktop .rail{position:relative;height:2px;background:rgba(255,255,255,.16);margin:0 20px}
+.v2-journey-path-desktop .rail-fill{position:absolute;inset:0 auto 0 0;width:0%;background:linear-gradient(90deg,var(--v2-color-signal),var(--v2-color-accent));transition:width var(--v2-duration-fast) linear}
+.v2-journey-stops{position:relative;display:flex;justify-content:space-between;margin-top:-1px}
+.v2-journey-stop{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center}
+.v2-journey-stop .stop-dot{width:16px;height:16px;border-radius:50%;border:3px solid var(--v2-color-depth);background:var(--stage-color,var(--v2-color-signal));position:relative;z-index:2;transition:transform var(--v2-duration-base) var(--v2-ease-out)}
+.v2-journey-stop.is-active .stop-dot{transform:scale(1.35)}
+.v2-journey-stop .stop-label{margin-top:14px;font-family:var(--v2-font-display);font-size:16px}
+.v2-journey-stop .stop-sub{font-size:11px;color:var(--v2-color-text-on-dark-muted);margin-top:2px}
+.v2-journey-stop .stop-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.9);margin-bottom:10px;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.v2-journey-finale{text-align:center;margin-top:var(--v2-space-lg)}
+.v2-journey-finale span{display:inline-flex;padding:12px 24px;border-radius:var(--v2-radius-pill);background:var(--v2-color-signal);color:var(--v2-color-depth);font-weight:600;font-size:14px}
+
+/* Mobile: vertical rail — a distinct composition, not a rotated desktop path */
+.v2-journey-path-mobile{display:block;position:relative;padding:0}
+@media(min-width:1020px){.v2-journey-path-mobile{display:none}}
+.v2-journey-rail-wrap{position:relative;padding-left:44px}
+.v2-journey-rail-track{position:absolute;left:15px;top:8px;bottom:8px;width:2px;background:rgba(255,255,255,.16)}
+.v2-journey-rail-fill{position:absolute;left:15px;top:8px;width:2px;height:0%;background:linear-gradient(180deg,var(--v2-color-signal),var(--v2-color-accent));transition:height var(--v2-duration-fast) linear}
+.v2-journey-stop-m{position:relative;padding-bottom:var(--v2-space-lg)}
+.v2-journey-stop-m:last-child{padding-bottom:0}
+.v2-journey-stop-m .stop-dot-m{position:absolute;left:-44px;top:2px;width:16px;height:16px;border-radius:50%;border:3px solid var(--v2-color-depth);background:var(--stage-color,var(--v2-color-signal));z-index:2;transition:transform var(--v2-duration-base) var(--v2-ease-out)}
+.v2-journey-stop-m.is-active .stop-dot-m{transform:scale(1.3)}
+.v2-journey-stop-m .stop-label-m{font-family:var(--v2-font-display);font-size:19px}
+.v2-journey-stop-m .stop-photo-caption{font-size:12px;color:var(--v2-color-text-on-dark-muted);margin-top:2px;display:flex;align-items:center;gap:6px}
+.v2-journey-stop-m .stop-photo-caption img{width:22px;height:22px;border-radius:50%;object-fit:cover}
+
+/* ================= LIFE AT AARK ================= */
+.v2-life{background:var(--v2-color-ground);text-align:center}
+.v2-life-head{max-width:600px;margin:0 auto var(--v2-space-2xl)}
+.v2-life-head .v2-marker{justify-content:center}
+.v2-life-collage{display:flex;flex-direction:column;gap:var(--v2-space-sm);text-align:left}
+@media(min-width:701px){.v2-life-collage{display:grid;grid-template-columns:1.4fr 1fr;gap:var(--v2-space-sm)}}
+.v2-life-big{border-radius:var(--v2-radius-lg);overflow:hidden}
+.v2-life-big img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.v2-life-pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--v2-space-sm)}
+.v2-life-pair div{border-radius:var(--v2-radius-md);overflow:hidden}
+.v2-life-pair img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.v2-life-pair div:last-child{margin-top:var(--v2-space-lg)}
+@media(max-width:700px){.v2-life-pair div:last-child{margin-top:0}}
+
+/* ================= CAMPUS & EXPERIENCES ================= */
+.v2-campus{background:var(--v2-color-ground-tint);text-align:center}
+.v2-campus-head{max-width:600px;margin:0 auto var(--v2-space-2xl)}
+.v2-campus-head .v2-marker{justify-content:center}
+.v2-filmstrip{display:flex;align-items:flex-start;gap:var(--v2-space-md);overflow-x:auto;padding-bottom:8px;text-align:left;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.v2-filmstrip::-webkit-scrollbar{height:6px}
+.v2-filmstrip::-webkit-scrollbar-thumb{background:var(--v2-color-border);border-radius:99px}
+.v2-filmstrip-item{flex:0 0 200px;scroll-snap-align:start}
+.v2-filmstrip-item img{width:100%;aspect-ratio:var(--v2-ratio-facility);object-fit:cover;background:var(--v2-color-ground);border-radius:var(--v2-radius-md);display:block;margin-bottom:10px;transition:transform var(--v2-duration-base) var(--v2-ease-standard)}
+.v2-filmstrip-item:hover img{transform:scale(1.02)}
+.v2-filmstrip-item.is-tall{margin-top:0}
+.v2-filmstrip-item.is-short{margin-top:40px}
+@media(max-width:700px){.v2-filmstrip-item.is-short{margin-top:0}}
+.v2-filmstrip-item strong{font-size:15px;font-weight:600;color:var(--v2-color-text)}
+.v2-swipe-hint{display:block;margin-top:var(--v2-space-sm);font-size:12px;color:var(--v2-color-text-muted);text-align:left}
+@media(min-width:900px){.v2-swipe-hint{display:none}}
+
+/* ================= ACADEMIC TRUST ================= */
+.v2-trust{background:var(--v2-color-ground-tint);text-align:center;display:flex;flex-direction:column;align-items:center;gap:var(--v2-space-lg)}
+.v2-trust .v2-marker{justify-content:center}
+.v2-trust-stats{display:flex;gap:var(--v2-space-2xl);flex-wrap:wrap;justify-content:center}
+.v2-trust-stats div{display:flex;flex-direction:column;gap:2px;align-items:center}
+.v2-trust-stats strong{font-family:var(--v2-font-display);font-size:var(--v2-text-display-m);color:var(--v2-color-primary)}
+.v2-trust-stats small{color:var(--v2-color-text-muted);font-size:13px}
+.v2-trust-quote{font-family:var(--v2-font-display);font-style:italic;font-size:var(--v2-text-display-l);line-height:1.35;max-width:32em;color:var(--v2-color-text)}
+.v2-trust-attr{display:flex;align-items:center;gap:12px}
+.v2-trust-attr img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.v2-trust-attr span{font-weight:600;font-size:14px;color:var(--v2-color-text-soft)}
+
+/* ================= ADMISSIONS ================= */
+.v2-admissions{background:var(--v2-color-ground);text-align:center}
+.v2-admissions-head{max-width:600px;margin:0 auto var(--v2-space-2xl)}
+.v2-admissions-head .v2-marker{justify-content:center}
+.v2-stepper{display:flex;justify-content:center;gap:var(--v2-space-xl);flex-wrap:wrap;text-align:left}
+.v2-step{display:flex;gap:var(--v2-space-sm);max-width:220px;align-items:flex-start}
+.v2-step .step-circle{flex:0 0 44px;width:44px;height:44px;border-radius:50%;background:var(--v2-color-primary);color:#fff;font-family:var(--v2-font-display);font-size:17px;display:flex;align-items:center;justify-content:center}
+.v2-step h3{font-size:18px;margin-bottom:4px}
+.v2-step p{color:var(--v2-color-text-muted);font-size:14px;line-height:var(--v2-lh-normal)}
+.v2-admissions-nudge{display:block;margin-top:var(--v2-space-xl);color:var(--v2-color-accent);font-weight:600;text-decoration:none}
+
+/* ================= CAMPUS VISIT CTA ================= */
+.v2-visit-cta{position:relative;min-height:440px;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;color:#fff}
+.v2-visit-cta img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.v2-visit-cta::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(53,22,73,.9),rgba(53,22,73,.4));z-index:1}
+.v2-visit-cta-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:var(--v2-space-md);max-width:640px;padding:0 var(--v2-gutter-mobile)}
+.v2-visit-cta h2{font-size:var(--v2-text-display-xl);color:#fff;line-height:1.1}
+.v2-visit-cta p{color:var(--v2-color-text-on-dark-muted);font-size:16px}
+
+/* ---------- Visit form (reuses existing .school-enquiry-form structure/CSS from styles.css; only section chrome is new) ---------- */
+.v2-visit-form-section{background:var(--v2-color-ground-alt)}
+.v2-visit-form-wrap{display:grid;gap:var(--v2-space-xl)}
+@media(min-width:901px){.v2-visit-form-wrap{grid-template-columns:.8fr 1.2fr;align-items:start}}
+.v2-visit-form-card{background:#fff;border:1px solid var(--v2-color-border);border-radius:var(--v2-radius-lg);padding:var(--v2-space-lg);box-shadow:var(--v2-shadow-soft)}
