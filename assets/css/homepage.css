@@ -105,43 +105,6 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 .v2-principle strong{display:block;font-size:16px;font-weight:600}
 .v2-principle span{color:var(--v2-color-text-muted);font-size:14px;line-height:var(--v2-lh-relaxed)}
 
-/* ================= LEARNING JOURNEY ================= */
-.v2-journey{background:var(--v2-color-depth);color:#fff;overflow:hidden}
-.v2-journey-head{text-align:center;max-width:640px;margin:0 auto var(--v2-space-2xl)}
-.v2-journey-head .v2-marker{justify-content:center}
-.v2-journey-head .v2-eyebrow{color:var(--v2-color-signal)}
-.v2-journey-head h2{font-size:var(--v2-text-display-xl);line-height:1.15;color:#fff;margin:var(--v2-space-sm) 0}
-.v2-journey-head p{color:var(--v2-color-text-on-dark-muted);font-size:16px;line-height:var(--v2-lh-relaxed)}
-
-/* Desktop: horizontal path (kept + restyled from the working scroll-driven mechanism) */
-.v2-journey-path-desktop{display:none;position:relative;padding:var(--v2-space-lg) 0 var(--v2-space-2xl)}
-@media(min-width:1020px){.v2-journey-path-desktop{display:block}}
-.v2-journey-path-desktop .rail{position:relative;height:2px;background:rgba(255,255,255,.16);margin:0 20px}
-.v2-journey-path-desktop .rail-fill{position:absolute;inset:0 auto 0 0;width:0%;background:linear-gradient(90deg,var(--v2-color-signal),var(--v2-color-accent));transition:width var(--v2-duration-fast) linear}
-.v2-journey-stops{position:relative;display:flex;justify-content:space-between;margin-top:-1px}
-.v2-journey-stop{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center}
-.v2-journey-stop .stop-dot{width:16px;height:16px;border-radius:50%;border:3px solid var(--v2-color-depth);background:var(--stage-color,var(--v2-color-signal));position:relative;z-index:2;transition:transform var(--v2-duration-base) var(--v2-ease-out)}
-.v2-journey-stop.is-active .stop-dot{transform:scale(1.35)}
-.v2-journey-stop .stop-label{margin-top:14px;font-family:var(--v2-font-display);font-size:16px}
-.v2-journey-stop .stop-sub{font-size:11px;color:var(--v2-color-text-on-dark-muted);margin-top:2px}
-.v2-journey-stop .stop-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.9);margin-bottom:10px;box-shadow:0 8px 20px rgba(0,0,0,.35)}
-.v2-journey-finale{text-align:center;margin-top:var(--v2-space-lg)}
-.v2-journey-finale span{display:inline-flex;padding:12px 24px;border-radius:var(--v2-radius-pill);background:var(--v2-color-signal);color:var(--v2-color-depth);font-weight:600;font-size:14px}
-
-/* Mobile: vertical rail — a distinct composition, not a rotated desktop path */
-.v2-journey-path-mobile{display:block;position:relative;padding:0}
-@media(min-width:1020px){.v2-journey-path-mobile{display:none}}
-.v2-journey-rail-wrap{position:relative;padding-left:44px}
-.v2-journey-rail-track{position:absolute;left:15px;top:8px;bottom:8px;width:2px;background:rgba(255,255,255,.16)}
-.v2-journey-rail-fill{position:absolute;left:15px;top:8px;width:2px;height:0%;background:linear-gradient(180deg,var(--v2-color-signal),var(--v2-color-accent));transition:height var(--v2-duration-fast) linear}
-.v2-journey-stop-m{position:relative;padding-bottom:var(--v2-space-lg)}
-.v2-journey-stop-m:last-child{padding-bottom:0}
-.v2-journey-stop-m .stop-dot-m{position:absolute;left:-44px;top:2px;width:16px;height:16px;border-radius:50%;border:3px solid var(--v2-color-depth);background:var(--stage-color,var(--v2-color-signal));z-index:2;transition:transform var(--v2-duration-base) var(--v2-ease-out)}
-.v2-journey-stop-m.is-active .stop-dot-m{transform:scale(1.3)}
-.v2-journey-stop-m .stop-label-m{font-family:var(--v2-font-display);font-size:19px}
-.v2-journey-stop-m .stop-photo-caption{font-size:12px;color:var(--v2-color-text-on-dark-muted);margin-top:2px;display:flex;align-items:center;gap:6px}
-.v2-journey-stop-m .stop-photo-caption img{width:22px;height:22px;border-radius:50%;object-fit:cover}
-
 /* ================= LIFE AT AARK ================= */
 .v2-life{background:var(--v2-color-ground);text-align:center}
 .v2-life-head{max-width:600px;margin:0 auto var(--v2-space-2xl)}

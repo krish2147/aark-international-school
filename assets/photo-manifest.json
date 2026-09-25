@@ -26,35 +26,45 @@
     "id": "nursery",
     "description": "Nursery-age child in a hands-on early-years activity (internal-page 800x500 crop; see nursery-journey-circle for the homepage's circular Journey-stage crop).",
     "current_stock_url": "https://images.unsplash.com/photo-1587323655395-b1c77a12c89a?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
-    "used_in_files": [],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "kindergarten",
     "description": "Kindergarten children playing together.",
     "current_stock_url": "https://images.unsplash.com/photo-1578349035260-9f3d4042f1f7?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
-    "used_in_files": [],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "grade-1-2",
     "description": "Grade 1-2 student practicing early literacy.",
     "current_stock_url": "https://images.unsplash.com/photo-1620398722262-969d8f2bc875?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
-    "used_in_files": [],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "grade-6-8",
     "description": "Grade 6-8 hands-on classroom.",
     "current_stock_url": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=75",
-    "used_in_files": [],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "grade-9-10",
     "description": "Grade 9-10 students collaborating.",
     "current_stock_url": "https://images.unsplash.com/photo-1758270705290-62b6294dd044?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
-    "used_in_files": [],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
@@ -103,131 +113,130 @@
     ],
     "replacement_url_or_path": ""
   },
-
   {
     "id": "homepage-hero-arrival",
     "description": "HOMEPAGE HERO — parent-child arrival at the campus gate, golden hour, candid. 5:6 portrait crop, full-bleed on mobile with a dark gradient overlay for the headline.",
     "current_stock_url": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=82",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-visit-cta-background",
     "description": "HOMEPAGE CAMPUS VISIT CTA — parent-child arrival, golden hour, wide crop, sits behind a dark gradient overlay as the closing section's background.",
     "current_stock_url": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=75",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-why-aark-teacher",
     "description": "HOMEPAGE WHY AARK — teacher-child moment: teacher crouched at eye level with 2-3 students, genuine engagement. 16:9 crop.",
     "current_stock_url": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1000&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-philosophy-classroom",
     "description": "HOMEPAGE LEARNING PHILOSOPHY — classroom interaction: child mid-explanation during a hands-on project, natural light. 4:5 portrait crop (also reused at small circular crop for the Journey's Grade 3-5 stage photo).",
     "current_stock_url": "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?auto=format&fit=crop&w=900&q=80",
-    "used_in_files": ["index.html"],
-    "replacement_url_or_path": ""
-  },
-  {
-    "id": "homepage-journey-grade3-5-circle-desktop",
-    "description": "HOMEPAGE LEARNING JOURNEY — Grade 3-5 stage circular portrait (desktop, 200x200). Same subject/crop as homepage-philosophy-classroom, cropped square.",
-    "current_stock_url": "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?auto=format&fit=crop&w=200&h=200&q=75",
-    "used_in_files": ["index.html"],
-    "replacement_url_or_path": ""
-  },
-  {
-    "id": "homepage-journey-grade3-5-circle-mobile",
-    "description": "HOMEPAGE LEARNING JOURNEY — Grade 3-5 stage circular portrait (mobile vertical rail, 100x100).",
-    "current_stock_url": "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?auto=format&fit=crop&w=100&h=100&q=75",
-    "used_in_files": ["index.html"],
-    "replacement_url_or_path": ""
-  },
-  {
-    "id": "homepage-journey-nursery-circle-desktop",
-    "description": "HOMEPAGE LEARNING JOURNEY — Nursery stage circular child portrait (desktop, 200x200), 1:1 crop.",
-    "current_stock_url": "https://images.unsplash.com/photo-1587323655395-b1c77a12c89a?auto=format&fit=crop&crop=faces&w=200&h=200&q=75",
-    "used_in_files": ["index.html"],
-    "replacement_url_or_path": ""
-  },
-  {
-    "id": "homepage-journey-nursery-circle-mobile",
-    "description": "HOMEPAGE LEARNING JOURNEY — Nursery stage circular child portrait (mobile, 100x100).",
-    "current_stock_url": "https://images.unsplash.com/photo-1587323655395-b1c77a12c89a?auto=format&fit=crop&crop=faces&w=100&h=100&q=75",
-    "used_in_files": ["index.html"],
-    "replacement_url_or_path": ""
-  },
-  {
-    "id": "homepage-journey-beyond-circle-desktop",
-    "description": "HOMEPAGE LEARNING JOURNEY — 'Beyond' (graduating senior) stage circular portrait (desktop, 200x200).",
-    "current_stock_url": "https://images.unsplash.com/photo-1765005343987-6bf51ae692c4?auto=format&fit=crop&crop=faces&w=200&h=200&q=75",
-    "used_in_files": ["index.html"],
-    "replacement_url_or_path": ""
-  },
-  {
-    "id": "homepage-journey-beyond-circle-mobile",
-    "description": "HOMEPAGE LEARNING JOURNEY — 'Beyond' stage circular portrait (mobile, 100x100).",
-    "current_stock_url": "https://images.unsplash.com/photo-1765005343987-6bf51ae692c4?auto=format&fit=crop&crop=faces&w=100&h=100&q=75",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-life-sports-big",
     "description": "HOMEPAGE LIFE AT AARK — sports: students in mid-action during a sports-day event, candid. Large collage tile, 4:3 crop.",
     "current_stock_url": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-life-friends",
     "description": "HOMEPAGE LIFE AT AARK — candid: friends laughing together at break time, unposed. 3:4 crop.",
     "current_stock_url": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=500&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-life-performance",
     "description": "HOMEPAGE LIFE AT AARK — performing arts: student performing on stage during an arts and music event. 3:4 crop (also reused in the Campus & Experiences filmstrip).",
     "current_stock_url": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=500&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-campus-robotics",
     "description": "HOMEPAGE CAMPUS & EXPERIENCES filmstrip — classroom interaction: students collaborating in the AI/robotics lab. 3:4 crop.",
     "current_stock_url": "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=500&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-campus-swimming",
     "description": "HOMEPAGE CAMPUS & EXPERIENCES filmstrip — sports: student mid-stroke during a swimming session. 3:4 crop (same source as homepage-life-sports-big).",
     "current_stock_url": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=500&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-campus-library",
     "description": "HOMEPAGE CAMPUS & EXPERIENCES filmstrip — campus architecture: reading nook interior, warm natural light. 3:4 crop. NEW photo not previously in the manifest.",
     "current_stock_url": "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=500&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-campus-classrooms",
     "description": "HOMEPAGE CAMPUS & EXPERIENCES filmstrip — classroom interaction: science demonstration, student's hands visible on the material. 3:4 crop.",
     "current_stock_url": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   },
   {
     "id": "homepage-trust-parent-avatar",
     "description": "HOMEPAGE ACADEMIC TRUST — parent portrait, 1:1 circular, warm/smiling/natural light. PLACEHOLDER ONLY — must be replaced with a real, permissioned parent photo (or removed in favour of a text-only quote) before launch; do not use a stock photo of an unrelated person as if they were a real AARK parent in production.",
     "current_stock_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&crop=faces&w=100&h=100&q=80",
-    "used_in_files": ["index.html"],
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "grade-3-5",
+    "description": "Grade 3-5 project-based/STEM classroom. (Learning Journey card photo, 16:10 crop.)",
+    "current_stock_url": "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?auto=format&fit=crop&w=800&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
+    "replacement_url_or_path": ""
+  },
+  {
+    "id": "grade-11-12",
+    "description": "Grade 11-12 senior student portrait. (Learning Journey card photo, 16:10 crop.)",
+    "current_stock_url": "https://images.unsplash.com/photo-1765005343987-6bf51ae692c4?auto=format&fit=crop&crop=faces&w=800&h=500&q=75",
+    "used_in_files": [
+      "index.html"
+    ],
     "replacement_url_or_path": ""
   }
 ]
