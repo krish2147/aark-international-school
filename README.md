@@ -2,6 +2,13 @@
 
 Admissions-focused showcase website for AARK International School, Sevasi, Vadodara.
 
+## Design note
+The V2 homepage redesign (Figma) is a UI/UX upgrade only — it keeps AARK's
+original logo and wordmark exactly as supplied (`assets/aark-full-logo.png`,
+preserved at its native aspect ratio, not redrawn/recolored/cropped) in the
+nav and footer, both in code and in the Figma source file. It is not a
+rebrand.
+
 ## Current build
 - Responsive shared navigation and mobile menu
 - Continuous Learning Journey from Nursery to Grade 12
