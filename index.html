@@ -203,36 +203,54 @@
   </div>
 </section>
 
-<!-- Visit form + contact (functionality preserved from V1) -->
-<section class="v2-chapter v2-visit-form-section" id="visit-form">
-  <div class="v2-visit-form-wrap">
-    <div class="reveal">
-      <div class="v2-marker"><span class="dot"></span><span class="v2-eyebrow">Visit & Contact</span></div>
-      <h2 class="v2-title-l">Plan your visit.</h2>
-      <p class="v2-body" style="margin-top:12px">A campus visit gives families the opportunity to experience the environment and discuss admissions with the school team.</p>
-      <p style="margin-top:20px">
-        <a href="tel:+919909115550">+91 99091 15550</a><br>
-        <a href="mailto:info@theaarkinternational.com">info@theaarkinternational.com</a><br>
-        <a href="https://maps.google.com/?q=AARK+International+School,+Nr.+Shyam+Icon,+Bhayli-Sevasi+Ring+Road,+Sevasi,+Vadodara+391101" target="_blank" rel="noopener">Get Directions →</a>
-      </p>
-      <div class="v2-media" style="margin-top:18px;border:1px solid var(--v2-color-border)">
-        <iframe title="AARK International School location" src="https://www.google.com/maps?q=AARK+International+School,+Nr.+Shyam+Icon,+Bhayli-Sevasi+Ring+Road,+Sevasi,+Vadodara+391101&output=embed" width="100%" height="240" style="border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<!-- Visit & Contact -->
+<section class="v2-chapter v2-contact" id="visit-form">
+  <div class="v2-contact-grid">
+    <div class="v2-contact-intro reveal">
+      <div class="v2-marker"><span class="dot"></span><span class="v2-eyebrow">Visit &amp; Contact</span></div>
+      <h2 class="v2-title-xl">Plan your visit.</h2>
+      <p class="v2-body">Walk the campus, meet the teachers and ask anything about admissions. Share a few details and the school team will call you to arrange a time.</p>
+    </div>
+
+    <div class="v2-contact-details reveal">
+      <ul class="v2-contact-list">
+        <li>
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+          <div><span class="label">Address</span><address class="value">Nr. Shyam Icon, Bhayli–Sevasi Ring Road, Sevasi, Vadodara, Gujarat 391101</address></div>
+        </li>
+        <li>
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
+          <div><span class="label">Call</span><a class="value" href="tel:+919909115550">+91 99091 15550</a></div>
+        </li>
+        <li>
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+          <div><span class="label">Email</span><a class="value" href="mailto:info@theaarkinternational.com">info@theaarkinternational.com</a></div>
+        </li>
+        <li>
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div><span class="label">Office hours</span><span class="value">9:00 AM – 12:00 PM</span></div>
+        </li>
+      </ul>
+      <div class="v2-contact-map">
+        <iframe title="Map showing AARK International School, Sevasi, Vadodara" src="https://www.google.com/maps?q=AARK+International+School,+Nr.+Shyam+Icon,+Bhayli-Sevasi+Ring+Road,+Sevasi,+Vadodara+391101&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <a href="https://maps.google.com/?q=AARK+International+School,+Nr.+Shyam+Icon,+Bhayli-Sevasi+Ring+Road,+Sevasi,+Vadodara+391101" target="_blank" rel="noopener">Get directions in Google Maps <span aria-hidden="true">→</span></a>
       </div>
     </div>
-    <div class="v2-visit-form-card reveal" id="visit">
-      <h3 style="font-size:28px;margin-bottom:6px">Book a Campus Visit</h3>
-      <p class="v2-muted">Share a few details and the school team can follow up to arrange a suitable visit time.</p>
-      <form class="school-enquiry-form" data-school-form="visit">
+
+    <div class="v2-contact-form-card reveal" id="visit">
+      <h3>Book a Campus Visit</h3>
+      <p class="v2-muted">Fields marked <span class="req">*</span> are required.</p>
+      <form class="v2-form" data-school-form="visit">
         <label class="hp-field" aria-hidden="true">Leave this field empty<input name="company" tabindex="-1" autocomplete="off"></label>
-        <label>Parent name<input name="name" required autocomplete="name" placeholder="Your name"></label>
-        <label>Phone number<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="+91"></label>
-        <label>Child's name<input name="child" autocomplete="name" placeholder="Child's name"></label>
-        <label>Grade interested in<select name="grade" required><option value="">Select grade</option><option>Nursery</option><option>Junior KG</option><option>Senior KG</option><option>Grade 1</option><option>Grades 2–5</option><option>Grades 6–8</option><option>Grades 9–10</option><option>Grades 11–12</option></select></label>
-        <label>Email <span class="field-optional">(optional, for confirmation)</span><input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
-        <button class="button button-primary" type="submit">Request a Campus Visit</button>
-        <p class="form-status" role="status" aria-live="polite"></p>
+        <label>Parent name <span class="req" aria-hidden="true">*</span><input name="name" required autocomplete="name" placeholder="Your full name"></label>
+        <label>Phone number <span class="req" aria-hidden="true">*</span><input name="phone" type="tel" required inputmode="tel" autocomplete="tel" placeholder="+91 98765 43210"></label>
+        <label>Child's name<input name="child" autocomplete="off" placeholder="Child's name"></label>
+        <label>Grade interested in <span class="req" aria-hidden="true">*</span><select name="grade" required><option value="">Select a grade</option><option>Nursery</option><option>Junior KG</option><option>Senior KG</option><option>Grade 1</option><option>Grades 2–5</option><option>Grades 6–8</option><option>Grades 9–10</option><option>Grades 11–12</option></select></label>
+        <label class="full">Email <span class="optional">(optional — we'll send a confirmation)</span><input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <button class="v2-btn v2-btn-primary full" type="submit">Request a Campus Visit</button>
+        <p class="form-status full" role="status" aria-live="polite"></p>
       </form>
-      <p class="form-alt">Prefer calling? <a href="tel:+919909115550">+91 99091 15550</a></p>
+      <p class="v2-contact-alt">Prefer to talk? Call <a href="tel:+919909115550">+91 99091 15550</a></p>
     </div>
   </div>
 </section>

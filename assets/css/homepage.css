@@ -15,7 +15,7 @@
 /* ---------- shared chapter primitives ---------- */
 .v2-chapter{padding:var(--v2-space-3xl) var(--v2-gutter-mobile)}
 @media(min-width:701px){.v2-chapter{padding-inline:var(--v2-gutter-tablet)}}
-@media(min-width:1160px){.v2-chapter{padding-inline:0}}
+@media(min-width:1160px){.v2-chapter{padding-inline:max(var(--v2-gutter-desktop),calc((100% - var(--v2-container))/2))}}
 .v2-marker{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px}
 .v2-marker .dot{width:6px;height:6px;border-radius:50%;background:var(--v2-color-accent);flex:0 0 auto}
 .v2-marker .num{font-size:12px;font-weight:600;color:var(--v2-color-text-muted);letter-spacing:.05em}
@@ -204,8 +204,58 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 .v2-visit-cta h2{font-size:var(--v2-text-display-xl);color:#fff;line-height:1.1}
 .v2-visit-cta p{color:var(--v2-color-text-on-dark-muted);font-size:16px}
 
-/* ---------- Visit form (reuses existing .school-enquiry-form structure/CSS from styles.css; only section chrome is new) ---------- */
-.v2-visit-form-section{background:var(--v2-color-ground-alt)}
-.v2-visit-form-wrap{display:grid;gap:var(--v2-space-xl)}
-@media(min-width:901px){.v2-visit-form-wrap{grid-template-columns:.8fr 1.2fr;align-items:start}}
-.v2-visit-form-card{background:#fff;border:1px solid var(--v2-color-border);border-radius:var(--v2-radius-lg);padding:var(--v2-space-lg);box-shadow:var(--v2-shadow-soft)}
+/* ================= VISIT & CONTACT =================
+   Desktop: intro + contact details on the left, form card spanning the right.
+   Mobile: intro -> form -> details, so the primary action comes first. */
+.v2-contact{background:var(--v2-color-ground-alt)}
+.v2-contact-grid{display:grid;gap:var(--v2-space-lg);grid-template-areas:"intro" "form" "details"}
+.v2-contact-intro{grid-area:intro}
+.v2-contact-form-card{grid-area:form}
+.v2-contact-details{grid-area:details}
+@media(min-width:961px){
+  .v2-contact-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:"intro form" "details form";column-gap:var(--v2-space-2xl);row-gap:var(--v2-space-lg);align-items:start}
+}
+.v2-contact-intro .v2-body{margin-top:var(--v2-space-sm);max-width:34em}
+
+.v2-contact-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--v2-color-border)}
+.v2-contact-list li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:var(--v2-space-sm);align-items:start;padding:18px 0;border-bottom:1px solid var(--v2-color-border)}
+.v2-contact-list .icon{width:40px;height:40px;border-radius:50%;background:var(--v2-color-ground-tint);color:var(--v2-color-primary);display:grid;place-items:center}
+.v2-contact-list .icon svg{width:18px;height:18px}
+.v2-contact-list .label{display:block;margin-bottom:4px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--v2-color-text-muted)}
+.v2-contact-list .value{display:inline-block;font-style:normal;font-size:16px;line-height:var(--v2-lh-normal);color:var(--v2-color-text);text-decoration:none;overflow-wrap:anywhere}
+.v2-contact-list a.value{min-height:24px;transition:color var(--v2-duration-fast)}
+.v2-contact-list a.value:hover,.v2-contact-list a.value:focus-visible{color:var(--v2-color-accent)}
+
+.v2-contact-map{margin-top:var(--v2-space-md);border:1px solid var(--v2-color-border);border-radius:var(--v2-radius-md);overflow:hidden;background:#fff}
+.v2-contact-map iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;background:var(--v2-color-ground-tint)}
+.v2-contact-map a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:12px 18px;border-top:1px solid var(--v2-color-border);font-weight:600;font-size:15px;color:var(--v2-color-primary);text-decoration:none}
+.v2-contact-map a:hover,.v2-contact-map a:focus-visible{color:var(--v2-color-accent)}
+
+.v2-contact-form-card{background:#fff;border:1px solid var(--v2-color-border);border-radius:var(--v2-radius-lg);padding:clamp(24px,4vw,44px);box-shadow:var(--v2-shadow-soft)}
+@media(min-width:961px){.v2-contact-form-card{position:sticky;top:100px}}
+.v2-contact-form-card h3{font-size:var(--v2-text-display-m);line-height:var(--v2-lh-snug)}
+.v2-contact-form-card > .v2-muted{margin-top:6px;font-size:14px}
+.v2-contact-form-card .req{color:var(--v2-color-accent)}
+.v2-contact-alt{margin-top:var(--v2-space-md);padding-top:var(--v2-space-md);border-top:1px solid var(--v2-color-border);font-size:15px;color:var(--v2-color-text-soft)}
+.v2-contact-alt a{color:var(--v2-color-primary);font-weight:600;text-decoration:none}
+.v2-contact-alt a:hover{color:var(--v2-color-accent)}
+
+/* Form fields */
+.v2-form{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px;margin-top:var(--v2-space-md)}
+.v2-form .full{grid-column:1/-1}
+.v2-form label{display:block;font-size:14px;font-weight:600;color:var(--v2-color-text-soft)}
+.v2-form label > input,.v2-form label > select{display:block;margin-top:8px}
+.v2-form label .optional{font-weight:400;color:var(--v2-color-text-muted)}
+.v2-form input,.v2-form select{width:100%;min-height:50px;padding:12px 14px;border:1.5px solid var(--v2-color-border);border-radius:12px;background:var(--v2-paper-50);font:400 15px/1.4 var(--v2-font-body);color:var(--v2-color-text);transition:border-color var(--v2-duration-fast),box-shadow var(--v2-duration-fast),background var(--v2-duration-fast)}
+.v2-form input::placeholder{color:#9b97a8}
+.v2-form select{appearance:none;-webkit-appearance:none;padding-right:42px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f256d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;cursor:pointer}
+.v2-form select:invalid{color:#9b97a8}
+.v2-form select option{color:var(--v2-color-text)}
+.v2-form input:hover,.v2-form select:hover{border-color:#d5c9da}
+.v2-form input:focus-visible,.v2-form select:focus-visible{outline:none;border-color:var(--v2-color-primary);background-color:#fff;box-shadow:0 0 0 3px rgba(79,37,109,.16)}
+.v2-form button{width:100%;margin-top:6px;font-size:16px;cursor:pointer}
+.v2-form button:disabled{opacity:.6;cursor:progress;transform:none}
+.v2-form .form-status{min-height:22px;font-size:14px;line-height:1.5;color:var(--v2-color-text-muted)}
+.v2-form .form-status.is-success{color:#1d7a3e;font-weight:600}
+.v2-form .form-status.is-error{color:#b3311f;font-weight:600}
+@media(max-width:560px){.v2-form{grid-template-columns:1fr}}
