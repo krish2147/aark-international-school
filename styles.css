@@ -241,4 +241,5 @@ h3{font-size:clamp(24px,2.4vw,34px);line-height:1.1}
 .field-optional{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);opacity:.8}
 .form-alt{margin-top:12px;font-size:14px}
 @media(max-width:620px){.school-enquiry-form{grid-template-columns:1fr}.school-enquiry-form .button,.school-enquiry-form .form-status{grid-column:auto}}
+.hp-field{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
 
