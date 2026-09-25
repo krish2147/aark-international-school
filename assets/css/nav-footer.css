@@ -16,31 +16,32 @@
 /* ---------- Header / nav ---------- */
 .site-header{
   position:sticky;top:0;z-index:500;width:100%;
-  background:rgba(255,253,249,.96);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--v2-color-border);
+  /* Dark header: the official AARK lockup has white lettering and is used unaltered. */
+  background:var(--v2-color-depth);
+  border-bottom:1px solid rgba(255,255,255,.08);
   transition:box-shadow var(--v2-duration-base) var(--v2-ease-standard);
 }
-.site-header.is-scrolled{box-shadow:0 10px 28px rgba(24,17,30,.08)}
-.nav-shell{display:flex;align-items:center;gap:20px;min-height:76px}
+.site-header.is-scrolled{box-shadow:0 10px 28px rgba(24,17,30,.28)}
+.nav-shell{display:flex;align-items:center;gap:20px;min-height:76px;padding-block:6px}
 .brand{display:inline-flex;align-items:center;flex:0 0 auto;text-decoration:none;min-width:0}
-.brand img.official-full-logo{display:block;width:190px;max-width:190px;height:52px;object-fit:contain;object-position:left center}
+/* Lockup is ~2.3:1 with small lettering; below ~200px wide "International School" becomes unreadable. */
+.brand img.official-full-logo{display:block;width:250px;max-width:250px;height:auto;max-height:none}
 
 .desktop-nav{margin-left:auto;display:flex;align-items:center;gap:14px;min-width:0}
 .desktop-nav a,.nav-drop-button{
   font-family:var(--v2-font-body);font-size:var(--v2-text-body-s);font-weight:600;
-  color:var(--v2-color-text-soft);text-decoration:none;white-space:nowrap;
+  color:rgba(255,255,255,.86);text-decoration:none;white-space:nowrap;
   position:relative;padding:8px 2px;border:0;background:none;display:inline-flex;align-items:center;gap:5px;cursor:pointer;
 }
 .desktop-nav a::after,.nav-drop-button::after{
   content:"";position:absolute;left:2px;right:2px;bottom:2px;height:2px;background:var(--v2-color-accent);
   transform:scaleX(0);transform-origin:left;transition:transform var(--v2-duration-fast) var(--v2-ease-standard);
 }
-.desktop-nav a:hover,.desktop-nav a:focus-visible,.nav-drop-button:hover,.nav-drop-button:focus-visible{color:var(--v2-color-text)}
+.desktop-nav a:hover,.desktop-nav a:focus-visible,.nav-drop-button:hover,.nav-drop-button:focus-visible{color:#fff}
 .desktop-nav a:hover::after,.desktop-nav a:focus-visible::after,.nav-drop-button:hover::after,.nav-drop-button:focus-visible::after{transform:scaleX(1)}
-.desktop-nav a.active,.nav-drop-button.active{color:var(--v2-color-primary)}
-.desktop-nav a.active::after,.nav-drop-button.active::after{transform:scaleX(1);background:var(--v2-color-primary)}
-.nav-drop-button span{font-size:11px;color:var(--v2-color-text-muted)}
+.desktop-nav a.active,.nav-drop-button.active{color:var(--v2-color-signal)}
+.desktop-nav a.active::after,.nav-drop-button.active::after{transform:scaleX(1);background:var(--v2-color-signal)}
+.nav-drop-button span{font-size:11px;color:rgba(255,255,255,.6)}
 
 .nav-dropdown{position:relative}
 .nav-drop-menu{
@@ -68,10 +69,10 @@
 
 .menu-toggle{
   display:none;flex:0 0 auto;margin-left:auto;
-  width:44px;height:44px;border:1px solid var(--v2-color-border);border-radius:50%;background:#fff;
+  width:44px;height:44px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:transparent;
   align-items:center;justify-content:center;flex-direction:column;gap:5px;
 }
-.menu-toggle span{width:18px;height:2px;background:var(--v2-color-text);transition:transform var(--v2-duration-fast),opacity var(--v2-duration-fast)}
+.menu-toggle span{width:18px;height:2px;background:#fff;transition:transform var(--v2-duration-fast),opacity var(--v2-duration-fast)}
 .menu-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
 .menu-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
@@ -92,23 +93,23 @@
   .desktop-nav{gap:8px}
   .desktop-nav a,.nav-drop-button{font-size:12.5px}
   .header-cta{padding:9px 14px;font-size:12.5px}
-  .brand img.official-full-logo{width:150px;max-width:150px;height:42px}
+  .brand img.official-full-logo{width:220px;max-width:220px}
 }
-@media(max-width:1180px){
+@media(max-width:1210px){
   .desktop-nav,.header-cta{display:none}
   .menu-toggle{display:flex}
   .nav-shell{min-height:68px}
-  .brand img.official-full-logo{width:160px;max-width:160px;height:44px}
+  .brand img.official-full-logo{width:210px;max-width:210px}
 }
 @media(max-width:430px){
-  .brand img.official-full-logo{width:148px;max-width:148px;height:40px}
+  .brand img.official-full-logo{width:200px;max-width:200px}
 }
 
 /* ---------- Footer (shared across every public page) ---------- */
 .site-footer{background:var(--v2-color-depth);color:#f4f1fa;padding:0;border-top:0;font-family:var(--v2-font-body)}
 .footer-main{display:grid;grid-template-columns:1.5fr .8fr .85fr 1.15fr;gap:var(--v2-space-2xl);padding-top:var(--v2-space-2xl);padding-bottom:var(--v2-space-xl)}
-.footer-logo{display:inline-flex;background:#fff;border-radius:var(--v2-radius-md);padding:8px 12px;margin-bottom:var(--v2-space-md)}
-.footer-logo img{display:block;width:190px;height:52px;object-fit:contain}
+.footer-logo{display:inline-flex;margin-bottom:var(--v2-space-md)}
+.footer-logo img{display:block;width:280px;max-width:100%;height:auto}
 .footer-brand>p{max-width:420px;color:var(--v2-color-text-on-dark-muted);line-height:var(--v2-lh-relaxed);margin:0 0 var(--v2-space-md)}
 .footer-credentials{display:flex;gap:var(--v2-space-xs);flex-wrap:wrap}
 .footer-credentials span{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);padding:8px 10px;border-radius:var(--v2-radius-pill);font-size:11px;font-weight:600;color:rgba(255,255,255,.82)}
