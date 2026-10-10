@@ -1,5 +1,13 @@
 # Operations: configuration, backups, restore and rollback
 
+## 0. Project state as checked on 10 Oct 2026 (Vercel project `aark-international-school`)
+
+- Node.js version: 24.x (meets the ≥ 20 requirement).
+- The existing public Blob store's `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` and `BLOB_WEBHOOK_PUBLIC_KEY` apply to **Production and Preview**, so a Preview can currently write production content. Section 4 fixes this.
+- `GMAIL_USER` and `SCHOOL_RECEIVING_EMAIL` (both `admissions@theaarkinternational.com`) and `ADMIN_*` apply to Production, Preview and Development. `GMAIL_APP_PASSWORD` is not set, which is why the live form returns 500.
+- theaarkinternational.com mail is Google Workspace (MX → aspmx.l.google.com), so a Gmail App Password works for that mailbox.
+- Production admin content is empty: every `/api/content/*` returns no items and there are no `content/versions/`.
+
 ## 1. Environment variables (Vercel → Project → Settings → Environment Variables)
 
 Set Production and Preview **separately**. Preview must never point at production storage or the school's real inbox.
@@ -34,13 +42,17 @@ This release never modifies or deletes `content/db.json`. The first admin save a
 
 ## 4. Testing on a Preview deployment
 
-1. Connect a **separate** test Blob store (public) and a separate **private** test store with prefix `ENQUIRY` to the Preview environment only.
-2. Set Preview-only Gmail variables for a test account, and set `SCHOOL_RECEIVING_EMAIL` to a test inbox.
-3. Push the branch, then open the Preview URL:
-    - submit one visit and one admission enquiry and check they appear in Admin → Enquiries and in the test inbox;
-    - unset the Preview Gmail password, redeploy, submit again: the parent still sees success, and the admin shows "Email failed" with a working "Retry email";
+1. Take Preview off production storage: on `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` and `BLOB_WEBHOOK_PUBLIC_KEY`, untick **Preview** so they apply to Production only.
+2. Take Preview off the school inbox: on `GMAIL_USER` and `SCHOOL_RECEIVING_EMAIL`, untick **Preview** (and Development).
+3. Connect a **separate** test Blob store (public, prefix `BLOB`) and a separate **private** test store (prefix `ENQUIRY`) to **Preview only**.
+4. Optional, to test a real email failure: add Preview-only `GMAIL_USER` = any made-up address and `GMAIL_APP_PASSWORD` = any made-up text. Gmail rejects the sign-in, so enquiries show "Email failed" with Retry. Never use real credentials here.
+5. Redeploy the branch's Preview (Deployments → the branch deployment → Redeploy) so it picks up the new variables.
+6. Open the Preview URL and check:
+    - one visit and one admission enquiry appear in Admin → Enquiries;
+    - submitting the same form twice stores it once;
+    - with the made-up Gmail values the admin shows "Email failed" and "Retry email" works as a retry;
     - add, edit and delete a gallery entry, then restore an older version from Content History.
-4. Run `npm test` and `npm run test:e2e` locally before merging.
+7. Run `npm test` and `npm run test:e2e` locally before merging.
 
 ## 5. Rolling back
 
