@@ -7,7 +7,8 @@
       "about.html",
       "admissions.html",
       "campus-detail.html",
-      "transport.html"
+      "transport.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },
@@ -86,7 +87,8 @@
     "used_in_files": [
       "about.html",
       "campus-detail.html",
-      "curriculum.html"
+      "curriculum.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },
@@ -97,7 +99,8 @@
     "used_in_files": [
       "about.html",
       "campus-detail.html",
-      "policies.html"
+      "policies.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },
@@ -109,7 +112,8 @@
       "about.html",
       "campus-detail.html",
       "circulars.html",
-      "curriculum.html"
+      "curriculum.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },

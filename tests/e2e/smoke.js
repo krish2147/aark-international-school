@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..', '..');
-const PAGES = ['index.html', 'about.html', 'admissions.html', 'curriculum.html', 'campus-detail.html',
+const PAGES = ['admin.html', 'index.html', 'about.html', 'admissions.html', 'curriculum.html', 'campus-detail.html',
   'student-life.html', 'careers.html', 'staff.html', 'gallery.html', 'transport.html', 'disclosures.html',
   'circulars.html', 'policies.html', '404.html'];
 const WIDTHS = [375, 768, 1024, 1440];
@@ -27,8 +27,13 @@ function loadPlaywright() {
 }
 
 const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json' };
+// Apply vercel.json's global headers (including the CSP) so the local run enforces them too.
+const VERCEL_HEADERS = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')).headers
+  .filter(h => h.source === '/(.*)').flatMap(h => h.headers);
+
 function serve() {
   const server = http.createServer((req, res) => {
+    for (const h of VERCEL_HEADERS) res.setHeader(h.key, h.value);
     const url = decodeURIComponent(req.url.split('?')[0]);
     const file = path.join(ROOT, url === '/' ? 'index.html' : url);
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); return res.end('not found'); }
@@ -59,6 +64,7 @@ function serve() {
       await p.route('**/api/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"items":[]}' }));
       const errors = [];
       p.on('pageerror', e => errors.push(e.message));
+      await p.addInitScript(() => document.addEventListener('securitypolicyviolation', e => (window.__csp = window.__csp || []).push(`${e.violatedDirective} ${e.blockedURI}`)));
       await p.goto(base + page, { waitUntil: 'load' });
       // Layout checks are only meaningful with the real web font (a fallback font is wider).
       const fontOk = await p.evaluate(() => document.fonts.load('600 14px "Work Sans"').then(f => f.length > 0).catch(() => false));
@@ -68,6 +74,7 @@ function serve() {
         ids: [...document.querySelectorAll('[id]')].map(e => e.id),
         hrefs: [...document.querySelectorAll('a[href]')].map(a => a.getAttribute('href')),
         text: document.body.innerText,
+        csp: window.__csp || [],
         navLinks: [...document.querySelectorAll('.site-header a, #mobile-menu a')].map(a => a.getAttribute('href')),
         pill: (() => { const a = document.querySelector('.apply-pill'); return a ? getComputedStyle(a).backgroundColor : null; })(),
         navOverlap: (() => {
@@ -78,6 +85,7 @@ function serve() {
         })(),
       }));
       ids[page] = new Set(m.ids);
+      if (m.csp.length) fail(`${page}@${width}: CSP violations ${[...new Set(m.csp)].join(' | ')}`);
       if (errors.length) fail(`${page}@${width}: JS errors ${errors.join(' | ')}`);
       if (m.overflow > 0) fail(`${page}@${width}: horizontal overflow ${m.overflow}px`);
       if (m.navOverlap) fail(`${page}@${width}: ${m.navOverlap} nav item(s) overlap the header CTA`);
@@ -117,6 +125,31 @@ function serve() {
     await p.waitForFunction(() => document.querySelector('form[data-school-form="visit"] .form-status')?.classList.contains('is-error'));
     const links = await form.locator('.form-status a').evaluateAll(as => as.map(a => a.getAttribute('href')));
     if (!links.includes('tel:+919909115550') || !links.includes('mailto:info@theaarkinternational.com')) fail(`enquiry error state lacks phone/email links: ${links}`);
+    await ctx.close();
+  }
+
+  // Success path: payload carries a UUID requestId, which rotates after a successful send.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const p = await ctx.newPage();
+    await p.route(/images\.unsplash\.com|maps\.google|google\.com\/maps|fonts\./, r => r.abort());
+    await p.route('**/api/content/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"items":[]}' }));
+    await p.route('**/api/public-config', r => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"turnstileSiteKey":null}' }));
+    const payloads = [];
+    await p.route('**/api/enquiry', r => { payloads.push(JSON.parse(r.request().postData())); r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"confirmationSent":false}' }); });
+    await p.goto(base + 'admissions.html');
+    const form = p.locator('form[data-school-form="admission"]');
+    for (let i = 0; i < 2; i++) {
+      await form.locator('[name=name]').fill('Smoke Test');
+      await form.locator('[name=phone]').fill('9000000000');
+      await form.locator('[name=grade]').fill('Grade 4');
+      await form.locator('button[type=submit]').click();
+      await p.waitForFunction(() => document.querySelector('form[data-school-form="admission"] .form-status')?.classList.contains('is-success'));
+    }
+    const uuid = /^[0-9a-f-]{36}$/;
+    if (payloads.length !== 2 || !payloads.every(x => uuid.test(x.requestId))) fail(`enquiry payloads lack requestId: ${JSON.stringify(payloads)}`);
+    else if (payloads[0].requestId === payloads[1].requestId) fail('requestId did not rotate after a successful submission');
+    if (payloads[0] && payloads[0].type !== 'admission') fail('admissions form sent the wrong enquiry type');
     await ctx.close();
   }
 
