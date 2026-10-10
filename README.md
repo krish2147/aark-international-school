@@ -22,14 +22,14 @@ rebrand.
 
 ## Before production launch
 1. Replace temporary imagery with approved AARK photography — see `PHOTOS_NEEDED.md` and `assets/photo-manifest.json`.
-2. Set `GMAIL_USER` / `GMAIL_APP_PASSWORD` (and optionally `SCHOOL_RECEIVING_EMAIL`) as environment variables on the Vercel project — see `.env.example`. Without these, `api/enquiry.js` returns a 500 on every submission.
+2. Set up enquiry storage and email — `ENQUIRY_BLOB_READ_WRITE_TOKEN` (private Blob store) and `GMAIL_USER` / `GMAIL_APP_PASSWORD` (optionally `SCHOOL_RECEIVING_EMAIL`). With neither, the form tells parents to call or email instead; see `docs/OPERATIONS.md`.
 3. Set up the admin panel — see "Admin panel setup" below. Without this, `/admin.html` can't be used at all.
 4. Confirm that https://theaarkinternational.com/ is the final production domain before launch; canonical and sitemap URLs currently target it.
 5. Add the final downloadable 2026–27 fee PDF when supplied.
 6. Reconfirm current fees, admission dates, policies and contact information with the school before publishing — see `NEEDED_FROM_SCHOOL.md` for the full content checklist (testimonials, staff directory, transport info, gallery, etc.).
 
 ## Enquiry form backend
-`api/enquiry.js` is a Vercel serverless function that emails form submissions via Gmail (using `nodemailer`). It requires `GMAIL_USER` and `GMAIL_APP_PASSWORD` to be set as environment variables — copy `.env.example` for the full list and where to get each value.
+`api/enquiry.js` saves every campus-visit and admission enquiry to a private Vercel Blob store **before** emailing the school via Gmail (`nodemailer`), so an email failure never loses a lead. Enquiries appear in the admin panel (**Enquiries** tab) with their email status, a "Retry email" button, a follow-up status and a monthly CSV export. Repeat submissions of the same form are stored once; same-day repeats from the same phone number don't email the school twice. Per-IP rate limits apply, and a confirmation email to the parent is sent only when Cloudflare Turnstile is configured (fixed wording, at most once per address per day). See `.env.example` for every variable and `docs/OPERATIONS.md` for setup, backup, restore and rollback.
 
 ## Admin panel setup
 The admin panel at `/admin.html` lets a signed-in admin manage:
@@ -47,6 +47,12 @@ It's built on **Vercel Blob** (for both uploaded photos and a small JSON content
 
 Public pages (`gallery.html`, `staff.html`, `admissions.html`, and the site-wide popup) fetch this content client-side and fall back to their existing static placeholder content if nothing has been added yet — so the site works normally before the admin panel is set up, and before any content is added through it.
 
-**Known limitations to be aware of:** this is a single-admin setup (one shared login, no per-user accounts or audit log), there's no rate-limiting on the login endpoint, and photo uploads are capped at 3MB each (a Vercel serverless function body-size limit, not a Blob limit) — ask the school to send reasonably sized photos, or compress before uploading.
+Every save to the admin content creates a new numbered version (`content/versions/`), so nothing is ever overwritten: two people saving at once get a "changed by another save" message instead of losing work, and any earlier version can be restored from **Content History**. The original `content/db.json` is never modified.
+
+**Known limitations to be aware of:** this is a single-admin setup (one shared login, no per-user accounts or audit log); sign-in attempts are rate limited (shared across servers only when Upstash is configured); photo uploads accept JPG, PNG, WebP and AVIF up to 3MB each (a Vercel serverless function body-size limit, not a Blob limit).
+
+## Tests
+- `npm test` — backend unit tests (Node's built-in runner, no network: Blob and email are faked).
+- `npm run test:e2e` — browser smoke test of every page at 375/768/1024/1440 with the production headers (including the CSP) applied. Needs Playwright; `SMOKE_BLOCK_FONTS=1` also checks layout with fallback fonts.
 
 Start locally with `index.html`.
