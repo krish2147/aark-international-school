@@ -1,10 +1,14 @@
 // Gmail (App Password) mail transport for enquiry notifications.
 const nodemailer = require('nodemailer');
+const { envValue } = require('./storageEnv');
 
+// On Preview deployments only PREVIEW_GMAIL_* / PREVIEW_SCHOOL_RECEIVING_EMAIL are read,
+// so a test build can never send from, or to, the school's real mailbox.
 function createMailer({ env = process.env, transportFactory = nodemailer.createTransport } = {}) {
-  const user = env.GMAIL_USER;
-  const pass = env.GMAIL_APP_PASSWORD;
-  const schoolTo = env.SCHOOL_RECEIVING_EMAIL || user;
+  const read = name => envValue(name, env);
+  const user = read('GMAIL_USER');
+  const pass = read('GMAIL_APP_PASSWORD');
+  const schoolTo = read('SCHOOL_RECEIVING_EMAIL') || user;
   let transport;
   const getTransport = () => (transport = transport || transportFactory({ service: 'gmail', auth: { user, pass } }));
 

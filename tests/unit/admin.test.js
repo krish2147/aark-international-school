@@ -108,7 +108,7 @@ test('login: correct credentials set an HttpOnly SameSite=Strict session cookie'
 
 test('uploads: raster images only, and the bytes must match the declared type', async () => {
   const stored = [];
-  const h = createUploadHandler({ putImpl: async (p, b, o) => { stored.push([p, o.contentType]); return { url: `https://x.public.blob.vercel-storage.com/${p}` }; }, auth: fakeAuth, logger: silentLogger, uuid: () => 'u' });
+  const h = createUploadHandler({ putImpl: async (p, b, o) => { stored.push([p, o.contentType]); return { url: `https://x.public.blob.vercel-storage.com/${p}` }; }, auth: fakeAuth, logger: silentLogger, uuid: () => 'u', token: 'test-token' });
   const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0]).toString('base64');
   const cases = [
     ['data:image/svg+xml;base64,' + Buffer.from('<svg onload="alert(1)"/>').toString('base64'), 400],
@@ -126,7 +126,7 @@ test('uploads: raster images only, and the bytes must match the declared type', 
 
 test('content history lists versions and restores without deleting anything', async () => {
   const fake = createFakeBlob();
-  const store = createContentStore({ blob: fake.blob, fetchImpl: fake.fetchImpl });
+  const store = createContentStore({ blob: fake.blob, fetchImpl: fake.fetchImpl, token: 'test-token' });
   await store.write({ fees: [{ id: 'one' }] }, 0);
   await store.write({ fees: [{ id: 'two' }] }, 1);
   const h = createHistoryHandler({ store, auth: fakeAuth, logger: silentLogger });

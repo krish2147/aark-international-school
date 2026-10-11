@@ -6,7 +6,7 @@ const { createFakeBlob, createReq, createRes, sameOrigin, fakeAuth, silentLogger
 
 const setup = () => {
   const fake = createFakeBlob();
-  return { ...fake, store: createContentStore({ blob: fake.blob, fetchImpl: fake.fetchImpl }) };
+  return { ...fake, store: createContentStore({ blob: fake.blob, fetchImpl: fake.fetchImpl, token: 'test-token' }) };
 };
 const puts = blob => blob.calls.filter(c => c[0] === 'put');
 

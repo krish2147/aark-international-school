@@ -9,6 +9,7 @@
 // clobbered) and later updated only with ifMatch on the ETag we last saw.
 
 const crypto = require('crypto');
+const { blobToken } = require('./storageEnv');
 
 class DuplicateError extends Error {
   constructor() { super('duplicate'); this.name = 'DuplicateError'; }
@@ -21,7 +22,7 @@ const pathFor = (id, receivedAt) => `enquiries/${monthOf(receivedAt)}/${id}.json
 const streamToString = stream => new Response(stream).text();
 
 function createEnquiryStore({ blob = require('@vercel/blob'), env = process.env } = {}) {
-  const token = env.BLOB_ENQUIRY_READ_WRITE_TOKEN;
+  const token = blobToken('enquiry', env);
   const opts = extra => ({ access: 'private', token, addRandomSuffix: false, contentType: 'application/json', ...extra });
 
   return {

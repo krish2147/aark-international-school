@@ -10,9 +10,9 @@
 
 ## 1. Environment variables (Vercel → Project → Settings → Environment Variables)
 
-Set Production and Preview **separately**. Preview must never point at production storage or the school's real inbox.
+Production uses the names below. Preview uses the **same names with a `PREVIEW_` prefix** (for example `PREVIEW_BLOB_READ_WRITE_TOKEN`) and ignores the production names; see section 4.
 
-| Variable | Needed for | Who supplies it | Production | Preview |
+| Variable | Needed for | Who supplies it | Production | Preview (`PREVIEW_` + name) |
 | --- | --- | --- | --- | --- |
 | `GMAIL_USER` | Sending enquiry emails | School: the Gmail/Workspace address that sends | School's address | A test Gmail |
 | `GMAIL_APP_PASSWORD` | Same | School: 16-character App Password for that address (Google Account → Security → 2-Step Verification → App passwords) | Real | Test account's |
@@ -42,17 +42,20 @@ This release never modifies or deletes `content/db.json`. The first admin save a
 
 ## 4. Testing on a Preview deployment
 
-1. Take Preview off production storage: on `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY` and the three `BLOB_ENQUIRY_*` variables, untick **Preview** so they apply to Production only.
-2. Take Preview off the school inbox: on `GMAIL_USER` and `SCHOOL_RECEIVING_EMAIL`, untick **Preview** (and Development).
-3. Connect a **separate** test Blob store (public, prefix `BLOB`) and a separate **private** test store (prefix `BLOB_ENQUIRY`, read-write token ticked) to **Preview only**.
-4. Optional, to test a real email failure: add Preview-only `GMAIL_USER` = any made-up address and `GMAIL_APP_PASSWORD` = any made-up text. Gmail rejects the sign-in, so enquiries show "Email failed" with Retry. Never use real credentials here.
-5. Redeploy the branch's Preview (Deployments → the branch deployment → Redeploy) so it picks up the new variables.
-6. Open the Preview URL and check:
-    - one visit and one admission enquiry appear in Admin → Enquiries;
+Preview deployments (`VERCEL_ENV=preview`) read **only `PREVIEW_`-prefixed settings** for storage, email and admin sign-in (`api/_lib/storageEnv.js`). A production variable that is also attached to Preview is ignored there, so a Preview cannot touch production content, enquiries, the school mailbox or the real admin login. With no `PREVIEW_` setting, that feature is simply "not configured" on Preview.
+
+1. Create Blob store `aark-content-preview` (**Public**), connect it with prefix **`PREVIEW_BLOB`** and tick "Add a read-write token env var". This creates `PREVIEW_BLOB_READ_WRITE_TOKEN`.
+2. Create Blob store `aark-enquiries-preview` (**Private**), connect it with prefix **`PREVIEW_BLOB_ENQUIRY`** and tick "Add a read-write token env var". This creates `PREVIEW_BLOB_ENQUIRY_READ_WRITE_TOKEN`.
+3. Optional, to test an email failure: add Preview-only `PREVIEW_GMAIL_USER` = `preview-test@example.com` and `PREVIEW_GMAIL_APP_PASSWORD` = `not-a-real-password`. Gmail rejects that made-up account, so enquiries show "Email failed" with Retry.
+4. For admin tests: add Preview-only `PREVIEW_ADMIN_USERNAME`, `PREVIEW_ADMIN_PASSWORD` and `PREVIEW_ADMIN_SESSION_SECRET` (test values, never the real ones).
+5. Tidy-up (recommended, not required for safety): untick Preview on `BLOB_*`, `BLOB_ENQUIRY_*`, `GMAIL_USER`, `SCHOOL_RECEIVING_EMAIL` and `ADMIN_*`, and untick Production on the `PREVIEW_*` variables.
+6. Redeploy the branch's Preview (Deployments → the branch deployment → ⋯ → Redeploy) so it picks up the new variables.
+7. On the Preview, check:
+    - visit and admission enquiries appear in Admin → Enquiries;
     - submitting the same form twice stores it once;
-    - with the made-up Gmail values the admin shows "Email failed" and "Retry email" works as a retry;
+    - "Email failed" + "Retry email" works;
     - add, edit and delete a gallery entry, then restore an older version from Content History.
-7. Run `npm test` and `npm run test:e2e` locally before merging.
+8. Run `npm test` and `npm run test:e2e` locally before merging.
 
 ## 5. Rolling back
 

@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { put } = require('@vercel/blob');
 const { requireAdmin } = require('../_lib/auth');
 const { parseBody, isSameOrigin, methodNotAllowed, noStore } = require('../_lib/http');
+const { blobToken } = require('../_lib/storageEnv');
 
 const MAX_BYTES = 3 * 1024 * 1024; // 3MB raw (~4MB base64, under Vercel's 4.5MB function body limit)
 
@@ -14,7 +15,7 @@ const SIGNATURES = {
   'image/avif': { ext: 'avif', test: b => b.subarray(4, 8).toString('latin1') === 'ftyp' && /avi[fs]/.test(b.subarray(8, 12).toString('latin1')) },
 };
 
-function createUploadHandler({ putImpl = put, auth = requireAdmin, logger = console, uuid = crypto.randomUUID }) {
+function createUploadHandler({ putImpl = put, auth = requireAdmin, logger = console, uuid = crypto.randomUUID, token = blobToken('content') }) {
   return async (req, res) => {
     noStore(res);
     if (req.method !== 'POST') return methodNotAllowed(res, 'POST');
@@ -34,9 +35,10 @@ function createUploadHandler({ putImpl = put, auth = requireAdmin, logger = cons
     if (buffer.length > MAX_BYTES) return res.status(400).json({ ok: false, error: 'Image is too large — please keep uploads under 3MB.' });
     if (!kind.test(buffer)) return res.status(400).json({ ok: false, error: 'That file is not a valid image.' });
 
+    if (!token) return res.status(503).json({ ok: false, error: 'Photo storage is not set up for this environment.' });
     const base = (body.filename || 'photo').toString().split(/[\\/]/).pop().replace(/\.[^.]*$/, '').replace(/[^a-zA-Z0-9\-_]/g, '_').slice(-60) || 'photo';
     try {
-      const blob = await putImpl(`uploads/${uuid()}-${base}.${kind.ext}`, buffer, { access: 'public', contentType });
+      const blob = await putImpl(`uploads/${uuid()}-${base}.${kind.ext}`, buffer, { access: 'public', contentType, token });
       return res.status(200).json({ ok: true, url: blob.url });
     } catch (err) {
       logger.error('Admin upload failed:', err.name, err.message);

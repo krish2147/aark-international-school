@@ -14,6 +14,8 @@
 // The pre-versioning file content/db.json is read (never written or deleted)
 // as version 0 until the first save after this change.
 
+const { blobToken } = require('./storageEnv');
+
 const LEGACY_KEY = 'content/db.json';
 const VERSION_PREFIX = 'content/versions/';
 const SEQ_WIDTH = 6;
@@ -37,12 +39,17 @@ function isAlreadyExists(err) {
   return Boolean(err) && (err.name === 'BlobPreconditionFailedError' || /already exists/i.test(err.message || ''));
 }
 
-function createContentStore({ blob = require('@vercel/blob'), fetchImpl = globalThis.fetch } = {}) {
+function createContentStore({ blob = require('@vercel/blob'), fetchImpl = globalThis.fetch, token = blobToken('content') } = {}) {
+  function requireToken() {
+    if (!token) throw new StorageError('content storage is not configured for this environment');
+    return token;
+  }
+
   async function listAll(prefix) {
     const out = [];
     let cursor;
     do {
-      const page = await blob.list({ prefix, cursor, limit: 1000 });
+      const page = await blob.list({ prefix, cursor, limit: 1000, token: requireToken() });
       out.push(...page.blobs);
       cursor = page.hasMore ? page.cursor : undefined;
     } while (cursor);
@@ -92,6 +99,7 @@ function createContentStore({ blob = require('@vercel/blob'), fetchImpl = global
         contentType: 'application/json',
         addRandomSuffix: false,
         allowOverwrite: false,
+        token: requireToken(),
       });
       return seq;
     } catch (err) {
