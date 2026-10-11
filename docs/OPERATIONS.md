@@ -1,12 +1,12 @@
 # Operations: configuration, backups, restore and rollback
 
-## 0. Project state as checked on 10 Oct 2026 (Vercel project `aark-international-school`)
+## 0. Project state as checked on 11 Oct 2026 (Vercel project `aark-international-school`)
 
 - Node.js version: 24.x (meets the ≥ 20 requirement).
-- The existing public Blob store's `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` and `BLOB_WEBHOOK_PUBLIC_KEY` apply to **Production and Preview**, so a Preview can currently write production content. Section 4 fixes this.
-- `GMAIL_USER` and `SCHOOL_RECEIVING_EMAIL` (both `admissions@theaarkinternational.com`) and `ADMIN_*` apply to Production, Preview and Development. `GMAIL_APP_PASSWORD` is not set, which is why the live form returns 500.
+- Production has the public content store (`BLOB_*`), the private enquiry store (`BLOB_ENQUIRY_*`), `ADMIN_*`, `GMAIL_USER` and `SCHOOL_RECEIVING_EMAIL`. `GMAIL_APP_PASSWORD` is still to be added, so enquiries are saved but marked "Email not set up" until it is (then use Retry email in Admin → Enquiries).
+- There are no `PREVIEW_` settings: the Preview test stores and test logins were removed after testing. Preview deployments therefore cannot save, email or sign in (they fail closed) and never touch production data. Section 4 explains how to set Preview testing up again if it is ever needed.
 - theaarkinternational.com mail is Google Workspace (MX → aspmx.l.google.com), so a Gmail App Password works for that mailbox.
-- Production admin content is empty: every `/api/content/*` returns no items and there are no `content/versions/`.
+- A copy of `content/db.json` was downloaded before the release (section 2).
 
 ## 1. Environment variables (Vercel → Project → Settings → Environment Variables)
 
@@ -40,7 +40,7 @@ This release never modifies or deletes `content/db.json`. The first admin save a
 - **From the admin panel:** Content History → Restore on any version. This creates a new version identical to the chosen one; nothing is deleted. Version 0 is the original `content/db.json`.
 - **Manually, if the panel is unavailable:** upload the backed-up JSON to the Blob store as `content/versions/<next number, 6 digits>.json` (for example, `000012.json` if `000011.json` is the newest). The site reads the highest number.
 
-## 4. Testing on a Preview deployment
+## 4. Testing on a Preview deployment (optional; not set up at the moment)
 
 Preview deployments (`VERCEL_ENV=preview`) read **only `PREVIEW_`-prefixed settings** for storage, email and admin sign-in (`api/_lib/storageEnv.js`). A production variable that is also attached to Preview is ignored there, so a Preview cannot touch production content, enquiries, the school mailbox or the real admin login. With no `PREVIEW_` setting, that feature is simply "not configured" on Preview.
 
