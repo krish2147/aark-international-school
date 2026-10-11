@@ -112,7 +112,7 @@
     }).join('');
 
     const photoHtml = cfg.hasPhoto
-      ? `<label>Photo ${editing && editing.photoUrl ? '(leave empty to keep current photo)' : ''}<input type="file" name="photo" accept="image/*"></label>`
+      ? `<label>Photo ${editing && editing.photoUrl ? '(leave empty to keep current photo)' : ''}<input type="file" name="photo" accept="image/jpeg,image/png,image/webp,image/avif"></label>`
       : '';
 
     panel.innerHTML = `
@@ -121,8 +121,8 @@
       <form class="admin-form" data-resource="${key}">
         ${fieldsHtml}
         ${photoHtml}
-        <div style="display:flex;gap:10px;align-items:center">
-          <button class="admin-btn" type="submit">${editing ? 'Save Changes' : 'Add'}</button>
+        <div class="admin-form-actions">
+          <button class="admin-btn" type="submit">${editing ? 'Save changes' : 'Add entry'}</button>
           ${editing ? '<button class="admin-btn secondary" type="button" data-cancel-edit>Cancel</button>' : ''}
           <span class="admin-status" data-form-status></span>
         </div>
@@ -227,7 +227,7 @@
   }
 
   async function deleteItem(key, id) {
-    if (!confirm('Delete this entry? This cannot be undone.')) return;
+    if (!confirm('Delete this entry? You can bring it back later from Content History.')) return;
     try {
       await api(`/api/content/${key}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
       await loadResource(key);
@@ -237,17 +237,98 @@
   }
 
   async function loadResource(key) {
-    const res = await api(`/api/content/${key}`);
+    const res = await api(`/api/content/${key}?fresh=1`);
     state[key].items = res.items || [];
     renderPanel(key);
   }
 
   function switchTab(key) {
-    Object.keys(RESOURCES).forEach(k => {
-      document.getElementById(`panel-${k}`).hidden = k !== key;
-    });
+    document.querySelectorAll('.panel').forEach(p => { p.hidden = p.id !== `panel-${key}`; });
     nav.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.tab === key));
+    if (key === 'enquiries') return loadEnquiries();
+    if (key === 'history') return loadHistory();
     if (!state[key].items.length) loadResource(key);
+  }
+
+  // ---- Enquiries (stored by /api/enquiry; read-only except status + email retry) ----
+  const enquiryState = { month: new Date().toISOString().slice(0, 7), items: [] };
+  const NOTIFY_LABEL = { sent: 'Emailed', failed: 'Email failed', pending: 'Email pending', not_configured: 'Email not set up', skipped_duplicate: 'Duplicate' };
+
+  async function loadEnquiries() {
+    const panel = document.getElementById('panel-enquiries');
+    panel.innerHTML = '<h2>Enquiries</h2><p class="hint">Loading…</p>';
+    try {
+      const res = await api(`/api/admin/enquiries?month=${encodeURIComponent(enquiryState.month)}`);
+      enquiryState.items = res.items || [];
+      renderEnquiries();
+    } catch (err) {
+      panel.innerHTML = `<h2>Enquiries</h2><p class="admin-status err">${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  function renderEnquiries() {
+    const panel = document.getElementById('panel-enquiries');
+    const m = enquiryState.month;
+    const rows = enquiryState.items.map(i => {
+      const n = (i.notification && i.notification.status) || 'pending';
+      const when = new Date(i.receivedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+      return `<tr data-id="${escapeHtml(i.id)}">
+        <td>${escapeHtml(when)}<br><span class="hint">${escapeHtml(i.type === 'visit' ? 'Campus visit' : 'Admission')}</span></td>
+        <td><strong>${escapeHtml(i.name)}</strong>${i.child ? `<br>Child: ${escapeHtml(i.child)}` : ''}<br>${escapeHtml(i.grade)}</td>
+        <td><a href="tel:${escapeHtml(i.phone)}">${escapeHtml(i.phone)}</a>${i.email ? `<br><a href="mailto:${escapeHtml(i.email)}">${escapeHtml(i.email)}</a>` : ''}</td>
+        <td><span class="pill ${n === 'sent' ? 'on' : n === 'failed' ? 'warn' : 'off'}">${escapeHtml(NOTIFY_LABEL[n] || n)}</span>${n === 'failed' || n === 'not_configured' ? '<br><button type="button" class="small-btn" data-retry>Retry email</button>' : ''}</td>
+        <td><select data-status aria-label="Follow-up status">${['new', 'contacted', 'closed'].map(st => `<option value="${st}" ${i.status === st ? 'selected' : ''}>${st[0].toUpperCase() + st.slice(1)}</option>`).join('')}</select></td>
+      </tr>`;
+    }).join('');
+    panel.innerHTML = `
+      <h2>Enquiries</h2>
+      <p class="hint">Every campus-visit and admission enquiry from the website is saved here first, even if the notification email fails.</p>
+      <div class="enq-toolbar">
+        <label>Month <input type="month" value="${escapeHtml(m)}" data-month></label>
+        <a class="admin-btn secondary" href="/api/admin/enquiries?month=${encodeURIComponent(m)}&format=csv">Download CSV</a>
+        <span class="admin-status" data-enq-status></span>
+      </div>
+      ${enquiryState.items.length ? `<div class="table-wrap"><table class="enq-table"><thead><tr><th>Received</th><th>Family</th><th>Contact</th><th>Notification</th><th>Follow-up</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hint">No enquiries in this month.</p>'}`;
+
+    const statusEl = panel.querySelector('[data-enq-status]');
+    panel.querySelector('[data-month]').addEventListener('change', e => { if (e.target.value) { enquiryState.month = e.target.value; loadEnquiries(); } });
+    panel.querySelectorAll('[data-retry]').forEach(btn => btn.addEventListener('click', async () => {
+      btn.disabled = true; statusEl.textContent = 'Sending…'; statusEl.className = 'admin-status';
+      try {
+        await api('/api/admin/enquiries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'retry', id: btn.closest('tr').dataset.id, month: m }) });
+        await loadEnquiries();
+      } catch (err) { statusEl.textContent = err.message; statusEl.className = 'admin-status err'; btn.disabled = false; }
+    }));
+    panel.querySelectorAll('[data-status]').forEach(sel => sel.addEventListener('change', async () => {
+      statusEl.textContent = 'Saving…'; statusEl.className = 'admin-status';
+      try {
+        await api('/api/admin/enquiries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'status', id: sel.closest('tr').dataset.id, month: m, status: sel.value }) });
+        statusEl.textContent = 'Saved'; statusEl.className = 'admin-status ok';
+      } catch (err) { statusEl.textContent = err.message; statusEl.className = 'admin-status err'; }
+    }));
+  }
+
+  // ---- Content history (every save is kept; restoring adds a new save) ----
+  async function loadHistory() {
+    const panel = document.getElementById('panel-history');
+    panel.innerHTML = '<h2>Content History</h2><p class="hint">Loading…</p>';
+    try {
+      const res = await api('/api/admin/content-history');
+      const items = res.versions.map((v, idx) => `<div class="admin-item" data-version="${v.version}"><div class="noimg"></div><div><h3>Version ${v.version}${idx === 0 ? '<span class="pill on">Live</span>' : ''}</h3><p>Saved ${escapeHtml(new Date(v.savedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }))}</p></div><div class="actions">${idx === 0 ? '' : '<button type="button" data-restore>Restore</button>'}</div></div>`).join('');
+      panel.innerHTML = `<h2>Content History</h2><p class="hint">Every save to Gallery, Staff, Popup Events, Schemes and Fees is kept. Restoring an older version makes a new save; nothing is deleted.</p><p class="admin-status" data-hist-status></p><div class="admin-list">${items || '<p class="hint">No saves yet. The original content from before versioning is kept as version 0.</p>'}</div>`;
+      panel.querySelectorAll('[data-restore]').forEach(btn => btn.addEventListener('click', async () => {
+        const version = Number(btn.closest('[data-version]').dataset.version);
+        if (!confirm(`Restore version ${version}? The current content stays in the history.`)) return;
+        const st = panel.querySelector('[data-hist-status]');
+        try {
+          await api('/api/admin/content-history', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ version }) });
+          Object.keys(state).forEach(k => { state[k].items = []; });
+          await loadHistory();
+        } catch (err) { st.textContent = err.message; st.className = 'admin-status err'; }
+      }));
+    } catch (err) {
+      panel.innerHTML = `<h2>Content History</h2><p class="admin-status err">${escapeHtml(err.message)}</p>`;
+    }
   }
 
   nav.addEventListener('click', e => {
@@ -258,30 +339,46 @@
   async function showDashboard() {
     loginScreen.style.display = 'none';
     shell.classList.add('is-active');
-    switchTab('gallery');
-    await loadResource('gallery');
+    switchTab('enquiries');
   }
+
+  const passwordInput = loginForm.elements.password;
+  const eyeBtn = loginForm.querySelector('[data-toggle-password]');
+  eyeBtn.addEventListener('click', () => {
+    const show = passwordInput.type === 'password';
+    passwordInput.type = show ? 'text' : 'password';
+    eyeBtn.setAttribute('aria-pressed', String(show));
+    eyeBtn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    passwordInput.focus();
+  });
 
   loginForm.addEventListener('submit', async e => {
     e.preventDefault();
     loginStatus.textContent = '';
     const data = new FormData(loginForm);
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in…';
     try {
       await api('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: data.get('username'), password: data.get('password') }),
       });
+      passwordInput.type = 'password';
       showDashboard();
     } catch (err) {
       loginStatus.textContent = err.message;
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign in';
     }
   });
 
   logoutBtn.addEventListener('click', async () => {
     await api('/api/admin/logout', { method: 'POST' }).catch(() => {});
     shell.classList.remove('is-active');
-    loginScreen.style.display = 'flex';
+    loginScreen.style.display = '';
     loginForm.reset();
   });
 

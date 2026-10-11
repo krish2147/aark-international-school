@@ -7,7 +7,8 @@
       "about.html",
       "admissions.html",
       "campus-detail.html",
-      "transport.html"
+      "transport.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },
@@ -86,7 +87,8 @@
     "used_in_files": [
       "about.html",
       "campus-detail.html",
-      "curriculum.html"
+      "curriculum.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },
@@ -97,7 +99,8 @@
     "used_in_files": [
       "about.html",
       "campus-detail.html",
-      "policies.html"
+      "policies.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },
@@ -109,7 +112,8 @@
       "about.html",
       "campus-detail.html",
       "circulars.html",
-      "curriculum.html"
+      "curriculum.html",
+      "assets/js/campus-detail.js"
     ],
     "replacement_url_or_path": ""
   },
@@ -207,15 +211,6 @@
     "id": "homepage-campus-classrooms",
     "description": "HOMEPAGE CAMPUS & EXPERIENCES filmstrip — classroom interaction: science demonstration, student's hands visible on the material. 3:4 crop.",
     "current_stock_url": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80",
-    "used_in_files": [
-      "index.html"
-    ],
-    "replacement_url_or_path": ""
-  },
-  {
-    "id": "homepage-trust-parent-avatar",
-    "description": "HOMEPAGE ACADEMIC TRUST — parent portrait, 1:1 circular, warm/smiling/natural light. PLACEHOLDER ONLY — must be replaced with a real, permissioned parent photo (or removed in favour of a text-only quote) before launch; do not use a stock photo of an unrelated person as if they were a real AARK parent in production.",
-    "current_stock_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&crop=faces&w=100&h=100&q=80",
     "used_in_files": [
       "index.html"
     ],

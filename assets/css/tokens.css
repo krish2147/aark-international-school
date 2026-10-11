@@ -38,7 +38,7 @@
 
   /* ---- Typography ---- */
   --v2-font-display:"Fraunces",Georgia,serif;
-  --v2-font-body:"Work Sans",system-ui,-apple-system,sans-serif;
+  --v2-font-body:"Work Sans",Arial,"Liberation Sans",Helvetica,system-ui,-apple-system,sans-serif; /* Arial-metric fallbacks are within ~2% of Work Sans 600, so the nav does not overflow before the web font arrives */
 
   --v2-text-hero: clamp(38px,5.6vw,76px);
   --v2-text-display-xl: clamp(32px,4.4vw,52px);

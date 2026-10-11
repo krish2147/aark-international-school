@@ -60,8 +60,10 @@
 .v2-hero-media{position:absolute;inset:0;z-index:0}
 @media(min-width:901px){.v2-hero-media{position:relative;inset:auto;flex:0 0 46%;order:2}}
 .v2-hero-media img{width:100%;height:100%;object-fit:cover;display:block}
-.v2-hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(24,32,51,.92) 10%,rgba(24,32,51,.15) 62%,rgba(24,32,51,0) 80%)}
+.v2-hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(24,32,51,.94) 0%,rgba(24,32,51,.84) 55%,rgba(24,32,51,.6) 85%,rgba(24,32,51,.45) 100%)}
 @media(min-width:901px){.v2-hero::before{display:none}}
+/* Mobile hero text sits on the photo, so the outline CTA needs on-dark colours there. */
+@media(max-width:900px){.v2-hero .v2-btn-tertiary{border-color:rgba(255,255,255,.6);color:#fff}.v2-hero .v2-marker .num{color:rgba(255,255,255,.75)}}
 .v2-hero-text{position:relative;z-index:2;margin-top:auto;padding:var(--v2-space-xl) var(--v2-gutter-mobile) var(--v2-space-xl);display:flex;flex-direction:column;gap:var(--v2-space-md)}
 @media(min-width:901px){.v2-hero-text{order:1;margin-top:0;flex:0 0 54%;justify-content:center;padding:var(--v2-space-2xl) var(--v2-gutter-desktop);background:var(--v2-color-ground)}}
 h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-.02em;color:#fff}
@@ -81,9 +83,7 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 /* ================= WHY AARK ================= */
 .v2-why{background:var(--v2-color-ground-alt);display:grid;gap:var(--v2-space-2xl)}
 @media(min-width:901px){.v2-why{grid-template-columns:.9fr 1.1fr;align-items:start}}
-.v2-why-quote{font-size:var(--v2-text-display-l);line-height:1.35;color:var(--v2-color-text)}
 .v2-why-photo{margin-bottom:var(--v2-space-md)}
-.v2-why-caption{color:var(--v2-color-text-muted);font-size:14px;margin-top:var(--v2-space-sm)}
 .v2-why-list{display:flex;flex-direction:column}
 .v2-why-item{display:grid;grid-template-columns:44px 1fr;gap:var(--v2-space-md);padding:var(--v2-space-md) 0;border-bottom:1px solid var(--v2-color-border)}
 .v2-why-item:first-child{padding-top:0}
@@ -143,10 +143,7 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 .v2-trust-stats div{display:flex;flex-direction:column;gap:2px;align-items:center}
 .v2-trust-stats strong{font-family:var(--v2-font-display);font-size:var(--v2-text-display-m);color:var(--v2-color-primary)}
 .v2-trust-stats small{color:var(--v2-color-text-muted);font-size:13px}
-.v2-trust-quote{font-family:var(--v2-font-display);font-style:italic;font-size:var(--v2-text-display-l);line-height:1.35;max-width:32em;color:var(--v2-color-text)}
-.v2-trust-attr{display:flex;align-items:center;gap:12px}
-.v2-trust-attr img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.v2-trust-attr span{font-weight:600;font-size:14px;color:var(--v2-color-text-soft)}
+.v2-trust-note{color:var(--v2-color-text-soft);font-size:var(--v2-text-body-m,16px);max-width:40em}
 
 /* ================= ADMISSIONS ================= */
 .v2-admissions{background:var(--v2-color-ground);text-align:center}

@@ -1,17 +1,18 @@
 const crypto = require('crypto');
+const { envValue } = require('./storageEnv');
 
 const COOKIE_NAME = 'aark_admin_session';
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 function sign(payload) {
-  const secret = process.env.ADMIN_SESSION_SECRET;
+  const secret = envValue('ADMIN_SESSION_SECRET');
   const data = Buffer.from(JSON.stringify(payload)).toString('base64url');
   const sig = crypto.createHmac('sha256', secret).update(data).digest('base64url');
   return `${data}.${sig}`;
 }
 
 function verify(token) {
-  const secret = process.env.ADMIN_SESSION_SECRET;
+  const secret = envValue('ADMIN_SESSION_SECRET');
   if (!token || !secret) return null;
   const parts = token.split('.');
   if (parts.length !== 2) return null;

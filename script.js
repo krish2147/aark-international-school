@@ -3,7 +3,7 @@
    items, which only fit at 1440px because of !important font-shrinking that
    has been removed along with the old patch CSS. Every route below already
    existed in V1; only the grouping changed. */
-(function normaliseAarkNavigation(){const header=document.querySelector('.site-header');if(!header)return;header.id='top';header.innerHTML=`<div class="container nav-shell"><a class="brand" href="index.html" aria-label="AARK International School home"><img class="official-full-logo" src="assets/logo-full-on-dark.png" width="640" height="279" alt="AARK International School, Vadodara"></a><nav class="desktop-nav" aria-label="Primary navigation"><a href="about.html" data-nav-about>About</a><a href="curriculum.html" data-nav-curriculum>Curriculum</a><a href="index.html#journey" data-nav-journey>Learning Journey</a><div class="nav-dropdown"><button class="nav-drop-button" data-menu="campus" type="button" aria-expanded="false">Campus Life <span>⌄</span></button><div class="nav-drop-menu wide-menu"><a href="index.html#campus">Campus Overview</a><a href="campus-detail.html?area=classrooms">Classrooms</a><a href="campus-detail.html?area=robotics">AI & Robotics</a><a href="campus-detail.html?area=swimming">Swimming & Sports</a><a href="campus-detail.html?area=arts">Arts & Music</a><a href="student-life.html">Student Life</a><a href="staff.html">Our Staff</a><a href="gallery.html">Gallery</a><a href="transport.html">Transport</a></div></div><div class="nav-dropdown"><button class="nav-drop-button" data-menu="admissions" type="button" aria-expanded="false">Admissions <span>⌄</span></button><div class="nav-drop-menu wide-menu"><a href="admissions.html">Admissions Overview</a><a href="admissions.html#schedule">Admission Schedule</a><a href="admissions.html#criteria">Admission Criteria</a><a href="admissions.html#procedure">Admission Procedure</a><a href="admissions.html#instructions">Before You Apply</a><a href="https://aarkintschool-forms.zeroq.net" target="_blank" rel="noopener">Apply Online ↗</a><a href="admissions.html#fees">Fee Structure</a><a href="admissions.html#faq">Admission FAQs</a></div></div><div class="nav-dropdown"><button class="nav-drop-button" data-menu="resources" type="button" aria-expanded="false">Resources <span>⌄</span></button><div class="nav-drop-menu"><a href="disclosures.html">Mandatory Public Disclosure</a><a href="circulars.html">Circulars & Notices</a><a href="policies.html">Policies & Documents</a><a href="careers.html">Careers</a></div></div><a href="index.html#contact" data-nav-contact>Contact</a></nav><a class="button button-primary header-cta" href="index.html#visit">Book a Campus Visit</a><button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu" hidden><div class="mobile-menu-inner"><a href="index.html">Home</a><a href="about.html">About</a><a href="curriculum.html">Curriculum</a><a href="index.html#journey">Learning Journey</a><details><summary>Campus Life</summary><div class="mobile-subnav"><a href="index.html#campus">Campus Overview</a><a href="campus-detail.html?area=classrooms">Classrooms</a><a href="campus-detail.html?area=robotics">AI & Robotics</a><a href="campus-detail.html?area=swimming">Swimming & Sports</a><a href="campus-detail.html?area=arts">Arts & Music</a><a href="student-life.html">Student Life</a><a href="staff.html">Our Staff</a><a href="gallery.html">Gallery</a><a href="transport.html">Transport</a></div></details><details><summary>Admissions</summary><div class="mobile-subnav"><a href="admissions.html">Overview</a><a href="admissions.html#schedule">Schedule</a><a href="admissions.html#criteria">Criteria</a><a href="admissions.html#procedure">Procedure</a><a href="admissions.html#instructions">Before You Apply</a><a href="https://aarkintschool-forms.zeroq.net" target="_blank" rel="noopener">Apply Online ↗</a><a href="admissions.html#fees">Fee Structure</a><a href="admissions.html#faq">FAQs</a></div></details><details><summary>Resources</summary><div class="mobile-subnav"><a href="disclosures.html">Mandatory Public Disclosure</a><a href="circulars.html">Circulars & Notices</a><a href="policies.html">Policies & Documents</a><a href="careers.html">Careers</a></div></details><a href="index.html#contact">Contact</a><a class="button button-primary" href="index.html#visit">Book a Tour</a></div></div>`})();
+(function normaliseAarkNavigation(){const header=document.querySelector('.site-header');if(!header)return;header.id='top';header.innerHTML=`<div class="container nav-shell"><a class="brand" href="index.html" aria-label="AARK International School home"><img class="official-full-logo" src="assets/logo-full-on-dark.png" width="640" height="279" alt="AARK International School, Vadodara"></a><nav class="desktop-nav" aria-label="Primary navigation"><a href="about.html" data-nav-about>About</a><a href="curriculum.html" data-nav-curriculum>Curriculum</a><a href="index.html#journey" data-nav-journey>Learning Journey</a><div class="nav-dropdown"><button class="nav-drop-button" data-menu="campus" type="button" aria-expanded="false">Campus Life <span>⌄</span></button><div class="nav-drop-menu wide-menu"><a href="index.html#campus">Campus Overview</a><a href="campus-detail.html?area=classrooms">Classrooms</a><a href="campus-detail.html?area=robotics">AI & Robotics</a><a href="campus-detail.html?area=swimming">Swimming & Sports</a><a href="campus-detail.html?area=arts">Arts & Music</a><a href="student-life.html">Student Life</a></div></div><div class="nav-dropdown"><button class="nav-drop-button" data-menu="admissions" type="button" aria-expanded="false">Admissions <span>⌄</span></button><div class="nav-drop-menu wide-menu"><a href="admissions.html">Admissions Overview</a><a href="admissions.html#schedule">Admission Schedule</a><a href="admissions.html#criteria">Admission Criteria</a><a href="admissions.html#procedure">Admission Procedure</a><a href="admissions.html#instructions">Before You Apply</a><a href="https://aarkintschool-forms.zeroq.net" target="_blank" rel="noopener">Apply Online ↗</a><a href="admissions.html#fees">Fee Structure</a><a href="admissions.html#faq">Admission FAQs</a></div></div><div class="nav-dropdown"><button class="nav-drop-button" data-menu="resources" type="button" aria-expanded="false">Resources <span>⌄</span></button><div class="nav-drop-menu"><a href="disclosures.html">Mandatory Public Disclosure</a><a href="circulars.html">Circulars & Notices</a><a href="policies.html">Policies & Documents</a><a href="careers.html">Careers</a></div></div><a href="index.html#visit-form" data-nav-contact>Contact</a></nav><a class="button button-primary header-cta" href="index.html#visit">Book a Campus Visit</a><button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu" hidden><div class="mobile-menu-inner"><a href="index.html">Home</a><a href="about.html">About</a><a href="curriculum.html">Curriculum</a><a href="index.html#journey">Learning Journey</a><details><summary>Campus Life</summary><div class="mobile-subnav"><a href="index.html#campus">Campus Overview</a><a href="campus-detail.html?area=classrooms">Classrooms</a><a href="campus-detail.html?area=robotics">AI & Robotics</a><a href="campus-detail.html?area=swimming">Swimming & Sports</a><a href="campus-detail.html?area=arts">Arts & Music</a><a href="student-life.html">Student Life</a></div></details><details><summary>Admissions</summary><div class="mobile-subnav"><a href="admissions.html">Overview</a><a href="admissions.html#schedule">Schedule</a><a href="admissions.html#criteria">Criteria</a><a href="admissions.html#procedure">Procedure</a><a href="admissions.html#instructions">Before You Apply</a><a href="https://aarkintschool-forms.zeroq.net" target="_blank" rel="noopener">Apply Online ↗</a><a href="admissions.html#fees">Fee Structure</a><a href="admissions.html#faq">FAQs</a></div></details><details><summary>Resources</summary><div class="mobile-subnav"><a href="disclosures.html">Mandatory Public Disclosure</a><a href="circulars.html">Circulars & Notices</a><a href="policies.html">Policies & Documents</a><a href="careers.html">Careers</a></div></details><a href="index.html#visit-form">Contact</a><a class="button button-primary" href="index.html#visit">Book a Tour</a></div></div>`})();
 const menuButton=document.querySelector('.menu-toggle'),mobileMenu=document.querySelector('#mobile-menu');menuButton?.addEventListener('click',()=>{const open=menuButton.getAttribute('aria-expanded')==='true';menuButton.setAttribute('aria-expanded',String(!open));mobileMenu.hidden=open;menuButton.setAttribute('aria-label',open?'Open menu':'Close menu')});mobileMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mobileMenu.hidden=true;menuButton?.setAttribute('aria-expanded','false');menuButton?.setAttribute('aria-label','Open menu')}));
 if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el))}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible'));
 const resourceModal=document.querySelector('#resource-modal');document.querySelectorAll('.resource-popup-open').forEach(btn=>btn.addEventListener('click',()=>resourceModal?.showModal()));document.querySelector('.modal-close')?.addEventListener('click',()=>resourceModal?.close());resourceModal?.addEventListener('click',e=>{if(e.target===resourceModal)resourceModal.close()});
@@ -11,61 +11,84 @@ const dropButtons=document.querySelectorAll('.nav-drop-button');dropButtons.forE
 const siteHeader=document.querySelector('.site-header');function updateStickyHeader(){if(siteHeader)siteHeader.classList.toggle('is-scrolled',window.scrollY>12)}window.addEventListener('scroll',updateStickyHeader,{passive:true});updateStickyHeader();
 (function(){const file=(location.pathname.split('/').pop()||'index.html').toLowerCase(),nav=document.querySelector('.site-header');if(!nav)return;const mark=selector=>nav.querySelectorAll(selector).forEach(el=>{el.classList.add('active');if(el.tagName==='A')el.setAttribute('aria-current','page')});if(file==='about.html')mark('a[data-nav-about]');else if(file==='curriculum.html')mark('a[data-nav-curriculum]');else if(file==='admissions.html')mark('.nav-drop-button[data-menu="admissions"]');else if(['disclosures.html','circulars.html','policies.html','careers.html'].includes(file))mark('.nav-drop-button[data-menu="resources"]');else if(['campus-detail.html','student-life.html','staff.html','gallery.html','transport.html'].includes(file))mark('.nav-drop-button[data-menu="campus"]')})();
 
-/* v18: enquiry + visit forms */
-/* v19: enquiry + visit forms — submitted to /api/enquiry, no mailto fallback */
-document.querySelectorAll('[data-school-form]').forEach(form=>{
-  form.addEventListener('submit',async e=>{
+/* Image fallbacks (replaces inline onerror="" so the CSP can forbid inline script):
+   data-fallback="hide" hides the image, "hide-parent" hides its wrapper, "dim" fades it. */
+(function(){
+  const apply=img=>{const mode=img.dataset.fallback;if(mode==='hide')img.style.display='none';else if(mode==='hide-parent'&&img.parentElement)img.parentElement.style.display='none';else if(mode==='dim'){img.style.opacity='.18';img.style.filter='grayscale(1)'}};
+  document.addEventListener('error',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.dataset.fallback)apply(t)},true);
+  // Images that already failed before this script ran.
+  document.querySelectorAll('img[data-fallback]').forEach(img=>{if(img.complete&&img.naturalWidth===0&&img.getAttribute('src'))apply(img)});
+})();
+
+/* Enquiry + visit forms → POST /api/enquiry.
+   Each form carries a requestId so a double-click or retry is recognised by the
+   server and stored once. Turnstile is added only when /api/public-config
+   returns a site key. */
+(function(){
+  const forms=[...document.querySelectorAll('[data-school-form]')];
+  if(!forms.length)return;
+  const newId=()=>(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'';
+  const requestIds=new Map(forms.map(f=>[f,newId()]));
+  const widgets=new Map();
+  const SUCCESS="Thank you — we've received your request and the school team will call you shortly.";
+
+  function setStatus(status,kind,parts){
+    if(!status)return;
+    status.replaceChildren(...parts);
+    status.classList.toggle('is-success',kind==='success');
+    status.classList.toggle('is-error',kind==='error');
+  }
+  function contactFallback(lead){
+    // Verified school contact details (footer / JSON-LD) so a parent always has a working route.
+    const call=document.createElement('a');call.href='tel:+919909115550';call.textContent='+91 99091 15550';
+    const mail=document.createElement('a');mail.href='mailto:info@theaarkinternational.com';mail.textContent='info@theaarkinternational.com';
+    return [lead+' Please call the school on ',call,' or email ',mail,' and we will help you directly.'];
+  }
+
+  fetch('/api/public-config').then(r=>r.ok?r.json():null).then(cfg=>{
+    if(!cfg||!cfg.turnstileSiteKey)return;
+    window.aarkTurnstileReady=()=>forms.forEach(form=>{
+      const slot=document.createElement('div');slot.className='form-turnstile';
+      const btn=form.querySelector('button[type="submit"]');form.insertBefore(slot,btn);
+      widgets.set(form,window.turnstile.render(slot,{sitekey:cfg.turnstileSiteKey,size:'flexible'}));
+    });
+    const s=document.createElement('script');s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=aarkTurnstileReady';s.async=true;document.head.appendChild(s);
+  }).catch(()=>{});
+
+  forms.forEach(form=>form.addEventListener('submit',async e=>{
     e.preventDefault();
     const status=form.querySelector('.form-status');
     const submitBtn=form.querySelector('button[type="submit"]');
     const data=new FormData(form);
     if((data.get('company')||'').toString().trim()){
       // Honeypot field filled in: silently pretend success without contacting the API.
-      form.reset();
-      if(status){status.textContent="Thank you — we've received your request and the school team will contact you shortly.";status.classList.add('is-success');status.classList.remove('is-error')}
-      return;
+      form.reset();setStatus(status,'success',[SUCCESS]);return;
     }
-    const payload={
-      type:form.dataset.schoolForm==='visit'?'visit':'admission',
-      name:(data.get('name')||'').toString().trim(),
-      phone:(data.get('phone')||'').toString().trim(),
-      child:(data.get('child')||'').toString().trim(),
-      grade:(data.get('grade')||'').toString().trim(),
-      email:(data.get('email')||'').toString().trim(),
-      company:(data.get('company')||'').toString().trim()
-    };
-    if(!payload.name||!payload.phone||!payload.grade){
-      if(status){status.textContent='Please fill in the required fields.';status.classList.add('is-error');status.classList.remove('is-success')}
-      return;
-    }
+    const field=k=>(data.get(k)||'').toString().trim();
+    const payload={type:form.dataset.schoolForm==='visit'?'visit':'admission',name:field('name'),phone:field('phone'),child:field('child'),grade:field('grade'),email:field('email'),company:'',requestId:requestIds.get(form)};
+    if(!payload.name||!payload.phone||!payload.grade){setStatus(status,'error',['Please fill in the required fields.']);return}
+    if(widgets.has(form))payload.turnstileToken=window.turnstile.getResponse(widgets.get(form))||'';
     if(submitBtn)submitBtn.disabled=true;
-    if(status){status.textContent='Sending your request…';status.classList.remove('is-error','is-success')}
+    setStatus(status,null,['Sending your request…']);
     try{
-      const res=await fetch('/api/enquiry',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
-      });
+      const res=await fetch('/api/enquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       const result=await res.json().catch(()=>({}));
-      if(!res.ok||!result.ok) throw new Error(result.error||'Request failed');
-      form.reset();
-      if(status){
-        status.textContent="Thank you — we've received your request and the school team will contact you shortly."+(payload.email?' A confirmation has also been sent to your email.':'');
-        status.classList.add('is-success');
-        status.classList.remove('is-error');
+      if(res.ok&&result.ok){
+        form.reset();requestIds.set(form,newId());
+        setStatus(status,'success',[SUCCESS+(result.confirmationSent?' A confirmation has also been sent to your email.':'')]);
+      }else if(res.status===400&&result.error){
+        setStatus(status,'error',[result.error]); // validation message written for parents
+      }else{
+        setStatus(status,'error',contactFallback(res.status===429?'Too many requests were sent from this connection.':"We couldn't send your request online."));
       }
     }catch(err){
-      if(status){
-        status.textContent='Something went wrong sending your request. Please call the school directly at +91 99091 15550.';
-        status.classList.add('is-error');
-        status.classList.remove('is-success');
-      }
+      setStatus(status,'error',contactFallback("We couldn't send your request online."));
     }finally{
       if(submitBtn)submitBtn.disabled=false;
+      if(widgets.has(form))window.turnstile.reset(widgets.get(form));
     }
-  });
-});
-
+  }));
+})();
 
 /* Utility bar marquee: pause on hover (desktop) and press-and-hold
    (touch), resume from the exact same position on release - CSS

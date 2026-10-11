@@ -2,9 +2,16 @@
   "name": "aark-international-school",
   "private": true,
   "version": "1.0.0",
-  "description": "AARK International School website — static site + Vercel serverless enquiry API",
+  "description": "AARK International School website \u2014 static site + Vercel serverless enquiry API",
   "dependencies": {
-    "nodemailer": "^6.9.14",
-    "@vercel/blob": "^0.27.1"
+    "@vercel/blob": "^2.8.1",
+    "nodemailer": "^10.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/unit/*.test.js",
+    "test:e2e": "node tests/e2e/smoke.js"
   }
 }
