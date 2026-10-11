@@ -11,7 +11,7 @@ const valid = (extra = {}) => ({ type: 'visit', name: 'Test Parent', phone: '987
 
 function setup({ storeConfigured = true, mailerConfigured = true, turnstile = { enabled: false } } = {}) {
   const fake = createFakeBlob();
-  const store = createEnquiryStore({ blob: fake.blob, env: storeConfigured ? { ENQUIRY_BLOB_READ_WRITE_TOKEN: 'test' } : {} });
+  const store = createEnquiryStore({ blob: fake.blob, env: storeConfigured ? { BLOB_ENQUIRY_READ_WRITE_TOKEN: 'test' } : {} });
   const order = [];
   const sent = [];
   const mailer = {

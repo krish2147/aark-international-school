@@ -22,7 +22,7 @@ rebrand.
 
 ## Before production launch
 1. Replace temporary imagery with approved AARK photography — see `PHOTOS_NEEDED.md` and `assets/photo-manifest.json`.
-2. Set up enquiry storage and email — `ENQUIRY_BLOB_READ_WRITE_TOKEN` (private Blob store) and `GMAIL_USER` / `GMAIL_APP_PASSWORD` (optionally `SCHOOL_RECEIVING_EMAIL`). With neither, the form tells parents to call or email instead; see `docs/OPERATIONS.md`.
+2. Set up enquiry storage and email — `BLOB_ENQUIRY_READ_WRITE_TOKEN` (private Blob store) and `GMAIL_USER` / `GMAIL_APP_PASSWORD` (optionally `SCHOOL_RECEIVING_EMAIL`). With neither, the form tells parents to call or email instead; see `docs/OPERATIONS.md`.
 3. Set up the admin panel — see "Admin panel setup" below. Without this, `/admin.html` can't be used at all.
 4. Confirm that https://theaarkinternational.com/ is the final production domain before launch; canonical and sitemap URLs currently target it.
 5. Add the final downloadable 2026–27 fee PDF when supplied.

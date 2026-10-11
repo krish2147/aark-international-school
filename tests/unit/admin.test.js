@@ -22,7 +22,7 @@ test('CSV export neutralises spreadsheet formulas and quotes every cell', () => 
 
 test('enquiry admin endpoints require a session', async () => {
   const fake = createFakeBlob();
-  const store = createEnquiryStore({ blob: fake.blob, env: { ENQUIRY_BLOB_READ_WRITE_TOKEN: 't' } });
+  const store = createEnquiryStore({ blob: fake.blob, env: { BLOB_ENQUIRY_READ_WRITE_TOKEN: 't' } });
   const h = createAdminEnquiriesHandler({ store, service: {}, auth: fakeAuth, logger: silentLogger });
   for (const method of ['GET', 'POST']) {
     const res = createRes();
@@ -33,7 +33,7 @@ test('enquiry admin endpoints require a session', async () => {
 
 test('enquiry admin lists a month, exports CSV and updates status', async () => {
   const fake = createFakeBlob();
-  const store = createEnquiryStore({ blob: fake.blob, env: { ENQUIRY_BLOB_READ_WRITE_TOKEN: 't' } });
+  const store = createEnquiryStore({ blob: fake.blob, env: { BLOB_ENQUIRY_READ_WRITE_TOKEN: 't' } });
   const id = crypto.randomUUID();
   await store.create({ id, receivedAt: '2026-10-05T10:00:00.000Z', type: 'visit', name: 'P', phone: '+919876543210', grade: 'G1', status: 'new', notification: { status: 'sent' } });
   const h = createAdminEnquiriesHandler({ store, service: {}, auth: fakeAuth, logger: silentLogger });
@@ -64,7 +64,7 @@ test('enquiry admin lists a month, exports CSV and updates status', async () => 
 
 test('enquiry status updates are ETag-guarded against concurrent changes', async () => {
   const fake = createFakeBlob();
-  const store = createEnquiryStore({ blob: fake.blob, env: { ENQUIRY_BLOB_READ_WRITE_TOKEN: 't' } });
+  const store = createEnquiryStore({ blob: fake.blob, env: { BLOB_ENQUIRY_READ_WRITE_TOKEN: 't' } });
   const rec = { id: crypto.randomUUID(), receivedAt: '2026-10-05T10:00:00.000Z', status: 'new' };
   const { etag } = await store.create(rec);
   await store.update({ ...rec, status: 'contacted' }, etag);

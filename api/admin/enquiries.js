@@ -36,7 +36,7 @@ function createAdminEnquiriesHandler({ store, service, auth = requireAdmin, logg
   return async (req, res) => {
     noStore(res);
     if (!auth(req)) return res.status(401).json({ ok: false, error: 'Not authenticated.' });
-    if (!store.configured) return res.status(503).json({ ok: false, error: 'Enquiry storage is not set up yet (ENQUIRY_BLOB_READ_WRITE_TOKEN).' });
+    if (!store.configured) return res.status(503).json({ ok: false, error: 'Enquiry storage is not set up yet (BLOB_ENQUIRY_READ_WRITE_TOKEN).' });
 
     try {
       if (req.method === 'GET') {

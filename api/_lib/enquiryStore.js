@@ -1,5 +1,5 @@
 // Enquiry records on a PRIVATE Vercel Blob store (parents' contact details are
-// never publicly addressable). Uses its own token, ENQUIRY_BLOB_READ_WRITE_TOKEN,
+// never publicly addressable). Uses its own token, BLOB_ENQUIRY_READ_WRITE_TOKEN,
 // so it is a separate store from the public content/photo store.
 //
 // Layout:
@@ -21,7 +21,7 @@ const pathFor = (id, receivedAt) => `enquiries/${monthOf(receivedAt)}/${id}.json
 const streamToString = stream => new Response(stream).text();
 
 function createEnquiryStore({ blob = require('@vercel/blob'), env = process.env } = {}) {
-  const token = env.ENQUIRY_BLOB_READ_WRITE_TOKEN;
+  const token = env.BLOB_ENQUIRY_READ_WRITE_TOKEN;
   const opts = extra => ({ access: 'private', token, addRandomSuffix: false, contentType: 'application/json', ...extra });
 
   return {

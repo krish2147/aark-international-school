@@ -17,7 +17,7 @@ Set Production and Preview **separately**. Preview must never point at productio
 | `GMAIL_USER` | Sending enquiry emails | School: the Gmail/Workspace address that sends | School's address | A test Gmail |
 | `GMAIL_APP_PASSWORD` | Same | School: 16-character App Password for that address (Google Account → Security → 2-Step Verification → App passwords) | Real | Test account's |
 | `SCHOOL_RECEIVING_EMAIL` | Where enquiries arrive (defaults to `GMAIL_USER`) | School: admissions inbox | Real | Test inbox |
-| `ENQUIRY_BLOB_READ_WRITE_TOKEN` | Saving enquiries | Vercel: added when a **private** Blob store is connected with prefix `ENQUIRY` | Production store | A separate test store |
+| `BLOB_ENQUIRY_READ_WRITE_TOKEN` | Saving enquiries | Vercel: added when a **private** Blob store is connected with prefix `BLOB_ENQUIRY` and "Add a read-write token env var" ticked | Production store | A separate test store |
 | `BLOB_READ_WRITE_TOKEN` | Admin content + photos (public store) | Vercel: existing store | Existing store | A separate test store |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | Admin sign-in | Krish | Existing | Different values |
 | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Spam check + parent confirmation emails | Cloudflare dashboard (free) | Optional | Cloudflare test keys |
@@ -42,9 +42,9 @@ This release never modifies or deletes `content/db.json`. The first admin save a
 
 ## 4. Testing on a Preview deployment
 
-1. Take Preview off production storage: on `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` and `BLOB_WEBHOOK_PUBLIC_KEY`, untick **Preview** so they apply to Production only.
+1. Take Preview off production storage: on `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY` and the three `BLOB_ENQUIRY_*` variables, untick **Preview** so they apply to Production only.
 2. Take Preview off the school inbox: on `GMAIL_USER` and `SCHOOL_RECEIVING_EMAIL`, untick **Preview** (and Development).
-3. Connect a **separate** test Blob store (public, prefix `BLOB`) and a separate **private** test store (prefix `ENQUIRY`) to **Preview only**.
+3. Connect a **separate** test Blob store (public, prefix `BLOB`) and a separate **private** test store (prefix `BLOB_ENQUIRY`, read-write token ticked) to **Preview only**.
 4. Optional, to test a real email failure: add Preview-only `GMAIL_USER` = any made-up address and `GMAIL_APP_PASSWORD` = any made-up text. Gmail rejects the sign-in, so enquiries show "Email failed" with Retry. Never use real credentials here.
 5. Redeploy the branch's Preview (Deployments → the branch deployment → Redeploy) so it picks up the new variables.
 6. Open the Preview URL and check:
