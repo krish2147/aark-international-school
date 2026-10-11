@@ -41,3 +41,15 @@ before it's used publicly.
    come in.
 4. Spot-check the pages afterward; alt text was written for the stock photos
    and may need a small wording pass once the real photo is in place.
+
+## Admin sign-in photo
+`assets/photos/admin-login.jpg` is the photo in the arch on `/admin.html`.
+To change it, replace that file with any photo, keeping the same file name.
+Any size or shape works: the page crops it to fill the arch automatically
+(faces are kept a little above centre). Recommended: at least 1200px wide,
+under 400 KB, JPG.
+
+Current file is a temporary placeholder: "Group of boys wearing blue school
+uniforms" by Akshar Dave on Unsplash (free under the Unsplash License,
+https://unsplash.com/photos/b5UILRPGV_g). It is not an AARK photo; replace
+it with a school-approved photo of AARK students (with photo consent).
