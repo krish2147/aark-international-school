@@ -342,26 +342,43 @@
     switchTab('enquiries');
   }
 
+  const passwordInput = loginForm.elements.password;
+  const eyeBtn = loginForm.querySelector('[data-toggle-password]');
+  eyeBtn.addEventListener('click', () => {
+    const show = passwordInput.type === 'password';
+    passwordInput.type = show ? 'text' : 'password';
+    eyeBtn.setAttribute('aria-pressed', String(show));
+    eyeBtn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    passwordInput.focus();
+  });
+
   loginForm.addEventListener('submit', async e => {
     e.preventDefault();
     loginStatus.textContent = '';
     const data = new FormData(loginForm);
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in…';
     try {
       await api('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: data.get('username'), password: data.get('password') }),
       });
+      passwordInput.type = 'password';
       showDashboard();
     } catch (err) {
       loginStatus.textContent = err.message;
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign in';
     }
   });
 
   logoutBtn.addEventListener('click', async () => {
     await api('/api/admin/logout', { method: 'POST' }).catch(() => {});
     shell.classList.remove('is-active');
-    loginScreen.style.display = 'flex';
+    loginScreen.style.display = '';
     loginForm.reset();
   });
 
