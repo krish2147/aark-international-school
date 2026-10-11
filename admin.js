@@ -121,8 +121,8 @@
       <form class="admin-form" data-resource="${key}">
         ${fieldsHtml}
         ${photoHtml}
-        <div style="display:flex;gap:10px;align-items:center">
-          <button class="admin-btn" type="submit">${editing ? 'Save Changes' : 'Add'}</button>
+        <div class="admin-form-actions">
+          <button class="admin-btn" type="submit">${editing ? 'Save changes' : 'Add entry'}</button>
           ${editing ? '<button class="admin-btn secondary" type="button" data-cancel-edit>Cancel</button>' : ''}
           <span class="admin-status" data-form-status></span>
         </div>
@@ -288,7 +288,7 @@
         <a class="admin-btn secondary" href="/api/admin/enquiries?month=${encodeURIComponent(m)}&format=csv">Download CSV</a>
         <span class="admin-status" data-enq-status></span>
       </div>
-      ${enquiryState.items.length ? `<table class="enq-table"><thead><tr><th>Received</th><th>Family</th><th>Contact</th><th>Notification</th><th>Follow-up</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="hint">No enquiries in this month.</p>'}`;
+      ${enquiryState.items.length ? `<div class="table-wrap"><table class="enq-table"><thead><tr><th>Received</th><th>Family</th><th>Contact</th><th>Notification</th><th>Follow-up</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hint">No enquiries in this month.</p>'}`;
 
     const statusEl = panel.querySelector('[data-enq-status]');
     panel.querySelector('[data-month]').addEventListener('change', e => { if (e.target.value) { enquiryState.month = e.target.value; loadEnquiries(); } });
