@@ -70,8 +70,7 @@ Enquiries are kept until deleted from the private store. Agree a retention perio
 
 ## 7. Website assistant (Sahay)
 
-- Code: `api/chat.js`; the facts it may use: `api/_lib/schoolKnowledge.js`. **When fees, dates, contact details or admission rules change on the site, update that file too**, or the assistant will repeat the old facts.
-- Model: Claude Opus 5.5 at low effort, with the school facts prompt-cached. Answers are short; each visitor message costs roughly a rupee or less.
-- Guards: same-origin only; 800 characters per question; 12 questions per 10 minutes and 60 per day per visitor; 1,500 per day across the whole site (raise in `LIMITS` if genuinely needed). Set a monthly spend limit in the Anthropic console as the final cap.
-- Without `ANTHROPIC_API_KEY` the chat shows the school's phone number instead of answering. Conversations are not stored on the server; the visitor's browser keeps them only until the tab closes.
-
+- **Free by default.** Sahay answers from the built-in answer bank `assets/js/sahay-answers.js` (English, Hindi and Gujarati), matched in the visitor's browser. No AI, no running cost, no server call. **When fees, dates, contact details or admission rules change on the site, update that file too.** Each topic lists its trigger words and its answer in all three languages; questions it can't match get the school's phone number.
+- **Optional AI upgrade.** If `ANTHROPIC_API_KEY` is set in Vercel, `/api/public-config` reports `assistantAi: true` and questions the answer bank can't match go to `api/chat.js` (Claude Opus 5.5, low effort, facts from `api/_lib/schoolKnowledge.js`, prompt-cached). Remove the key and Sahay goes back to free mode on the next deploy.
+- AI guards: same-origin only; 800 characters per question; 12 questions per 10 minutes and 60 per day per visitor; 1,500 per day across the site. Set a monthly spend limit in the Anthropic console as the final cap.
+- Conversations are not stored on the server; the visitor's browser keeps them only until the tab closes.
