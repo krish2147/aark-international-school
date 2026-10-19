@@ -25,6 +25,32 @@
     '<g class="ac-bot-eyes"><ellipse cx="19.5" cy="23.5" rx="2.6" ry="3" fill="#fac803"/><ellipse cx="28.5" cy="23.5" rx="2.6" ry="3" fill="#fac803"/></g>' +
     '<path d="M20.5 28.2q3.5 2.4 7 0" fill="none" stroke="#fac803" stroke-width="1.8" stroke-linecap="round"/>' +
     '</svg>';
+  // The floating mascot on the launcher: same robot with a body, a waving arm,
+  // the AARK sun on its chest and a hover glow. All motion is CSS (see .ac-m-*).
+  var MASCOT = '<svg class="ac-mascot-svg" viewBox="0 -12 120 162" aria-hidden="true">' +
+    '<ellipse class="ac-m-shadow" cx="60" cy="142" rx="26" ry="5" fill="#182033" opacity=".22"/>' +
+    '<g class="ac-m-float">' +
+      '<ellipse class="ac-m-glow" cx="60" cy="128" rx="20" ry="6" fill="#fac803" opacity=".55"/>' +
+      '<g class="ac-m-arm-l"><path d="M36 96L25 118" stroke="#a37ebb" stroke-width="11" stroke-linecap="round"/><circle cx="24" cy="121" r="7" fill="#fbf7ef"/></g>' +
+      '<rect x="32" y="86" width="56" height="40" rx="18" fill="#4f256d"/>' +
+      '<rect x="36" y="88" width="48" height="10" rx="5" fill="#fff" opacity=".12"/>' +
+      '<g class="ac-m-badge"><circle cx="60" cy="107" r="8.5" fill="#fac803"/>' +
+        '<g stroke="#fac803" stroke-width="2" stroke-linecap="round"><path d="M60 94.5v-2.5M60 119.5v2.5M47.5 107h-2.5M72.5 107h2.5M51.2 98.2l-1.8-1.8M68.8 115.8l1.8 1.8M51.2 115.8l-1.8 1.8M68.8 98.2l1.8-1.8"/></g>' +
+        '<circle cx="60" cy="107" r="4" fill="#182033"/></g>' +
+      '<rect x="53" y="78" width="14" height="10" rx="4" fill="#d9cfe2"/>' +
+      '<g class="ac-m-head">' +
+        '<line x1="60" y1="8" x2="60" y2="22" stroke="#d9cfe2" stroke-width="3" stroke-linecap="round"/>' +
+        '<circle class="ac-m-light" cx="60" cy="8" r="5.5" fill="#fac803"/>' +
+        '<rect x="14" y="38" width="9" height="20" rx="4.5" fill="#a37ebb"/><rect x="97" y="38" width="9" height="20" rx="4.5" fill="#a37ebb"/>' +
+        '<rect x="20" y="20" width="80" height="60" rx="27" fill="#fbf7ef" stroke="#e7ded2" stroke-width="1.5"/>' +
+        '<rect x="30" y="33" width="60" height="34" rx="16" fill="#182033"/>' +
+        '<g class="ac-m-eyes"><ellipse cx="47" cy="48" rx="5.2" ry="6.2" fill="#fac803"/><ellipse cx="73" cy="48" rx="5.2" ry="6.2" fill="#fac803"/>' +
+          '<circle cx="49" cy="45.5" r="1.7" fill="#fff"/><circle cx="75" cy="45.5" r="1.7" fill="#fff"/></g>' +
+        '<path d="M52 58q8 6 16 0" fill="none" stroke="#fac803" stroke-width="3" stroke-linecap="round"/>' +
+        '<circle cx="34" cy="62" r="3.6" fill="#f08a8a" opacity=".55"/><circle cx="86" cy="62" r="3.6" fill="#f08a8a" opacity=".55"/>' +
+      '</g>' +
+      '<g class="ac-m-arm-r"><path d="M84 96L106 70" stroke="#a37ebb" stroke-width="11" stroke-linecap="round"/><circle cx="108" cy="66" r="8" fill="#fbf7ef"/></g>' +
+    '</g></svg>';
   function avatar(size) { return '<span class="ac-ava' + (size ? ' ac-ava-' + size : '') + '">' + ROBOT + '</span>'; }
   var ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var ICON_RESET = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3.5 4v4h4"/></svg>';
@@ -133,7 +159,7 @@
   var root = document.createElement('div');
   root.className = 'ac-root';
   root.innerHTML =
-    '<button class="ac-launch" type="button" aria-expanded="false" aria-controls="ac-panel" aria-label="Ask Sahay, the AARK helper">' + avatar() + '<span class="ac-label">Ask Sahay</span></button>' +
+    '<button class="ac-launch" type="button" aria-expanded="false" aria-controls="ac-panel" aria-label="Ask Sahay, the AARK helper">' + MASCOT + '<span class="ac-label">Ask Sahay</span></button>' +
     '<div class="ac-nudge" hidden><button class="ac-nudge-open" type="button">Hi, I\'m <strong>Sahay</strong>! Need help with admissions or fees?</button><button class="ac-nudge-x" type="button" aria-label="Dismiss">' + ICON_X + '</button></div>' +
     '<section class="ac-panel" id="ac-panel" role="dialog" aria-modal="false" aria-labelledby="ac-title">' +
       '<header class="ac-head">' + avatar('head') +
