@@ -16,6 +16,28 @@
 .ac-m-eyes{transform-box:fill-box;transform-origin:center;animation:ac-blink 4.8s infinite -1.3s}
 .ac-m-light{animation:ac-glow 2.4s ease-in-out infinite -.6s}
 .ac-m-badge{transform-box:fill-box;transform-origin:center;animation:ac-spin 14s linear infinite}
+/* reactions: look, fall (scrolling down), rocket (scrolling up) */
+.ac-m-look{transition:transform .22s var(--ac-ease)}
+.ac-m-move{transform-box:view-box;transform-origin:60px 100px;transition:transform .35s var(--ac-ease)}
+.ac-m-arm-l,.ac-m-arm-r{transition:transform .3s var(--ac-ease)}
+.ac-m-jet{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);opacity:0;transition:transform .2s var(--ac-ease),opacity .2s}
+.ac-m-oh{opacity:0}
+.ac-m-smile,.ac-m-oh,.ac-m-glow{transition:opacity .2s}
+.ac-launch.is-falling .ac-m-move{transform:translateY(9px) rotate(-7deg);transition-duration:.25s}
+.ac-launch.is-falling .ac-m-arm-l{animation:none;transform:rotate(118deg)}
+.ac-launch.is-falling .ac-m-arm-r{animation:ac-flail .35s ease-in-out infinite}
+.ac-launch.is-falling .ac-m-smile{opacity:0}
+.ac-launch.is-falling .ac-m-oh{opacity:1}
+.ac-launch.is-rocket .ac-m-move{transform:translateY(-12px);transition-duration:.3s}
+.ac-launch.is-rocket .ac-m-float{animation:ac-rumble .12s linear infinite}
+.ac-launch.is-rocket .ac-m-jet{opacity:1;transform:scaleY(1);animation:ac-flame .14s ease-in-out infinite alternate}
+.ac-launch.is-rocket .ac-m-glow{opacity:0}
+.ac-launch.is-rocket .ac-m-arm-l{animation:none;transform:rotate(-28deg)}
+.ac-launch.is-rocket .ac-m-arm-r{animation:none;transform:rotate(112deg)}
+.ac-launch.is-rocket .ac-m-shadow{animation:none;transform:scale(.6);opacity:.08}
+@keyframes ac-flail{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(10deg)}}
+@keyframes ac-rumble{0%,100%{transform:translate(0,0)}25%{transform:translate(-.6px,.4px)}75%{transform:translate(.6px,-.4px)}}
+@keyframes ac-flame{from{transform:scaleY(.82) scaleX(.94)}to{transform:scaleY(1.12) scaleX(1.04)}}
 @keyframes ac-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @keyframes ac-shadow{0%,100%{transform:scale(1);opacity:.22}50%{transform:scale(.8);opacity:.12}}
 @keyframes ac-wave{0%,55%,100%{transform:rotate(0)}62%{transform:rotate(-22deg)}69%{transform:rotate(12deg)}76%{transform:rotate(-22deg)}83%{transform:rotate(8deg)}90%{transform:rotate(0)}}

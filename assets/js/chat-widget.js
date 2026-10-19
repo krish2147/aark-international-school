@@ -29,8 +29,9 @@
   // the AARK sun on its chest and a hover glow. All motion is CSS (see .ac-m-*).
   var MASCOT = '<svg class="ac-mascot-svg" viewBox="0 -12 120 162" aria-hidden="true">' +
     '<ellipse class="ac-m-shadow" cx="60" cy="142" rx="26" ry="5" fill="#182033" opacity=".22"/>' +
-    '<g class="ac-m-float">' +
+    '<g class="ac-m-move"><g class="ac-m-float">' +
       '<ellipse class="ac-m-glow" cx="60" cy="128" rx="20" ry="6" fill="#fac803" opacity=".55"/>' +
+      '<g class="ac-m-jet"><path d="M44 120Q60 176 76 120Z" fill="#ff7a2f"/><path d="M49.5 120Q60 162 70.5 120Z" fill="#fac803"/><path d="M55 120Q60 146 65 120Z" fill="#fffbe6"/></g>' +
       '<g class="ac-m-arm-l"><path d="M36 96L25 118" stroke="#a37ebb" stroke-width="11" stroke-linecap="round"/><circle cx="24" cy="121" r="7" fill="#fbf7ef"/></g>' +
       '<rect x="32" y="86" width="56" height="40" rx="18" fill="#4f256d"/>' +
       '<rect x="36" y="88" width="48" height="10" rx="5" fill="#fff" opacity=".12"/>' +
@@ -44,13 +45,13 @@
         '<rect x="14" y="38" width="9" height="20" rx="4.5" fill="#a37ebb"/><rect x="97" y="38" width="9" height="20" rx="4.5" fill="#a37ebb"/>' +
         '<rect x="20" y="20" width="80" height="60" rx="27" fill="#fbf7ef" stroke="#e7ded2" stroke-width="1.5"/>' +
         '<rect x="30" y="33" width="60" height="34" rx="16" fill="#182033"/>' +
-        '<g class="ac-m-eyes"><ellipse cx="47" cy="48" rx="5.2" ry="6.2" fill="#fac803"/><ellipse cx="73" cy="48" rx="5.2" ry="6.2" fill="#fac803"/>' +
-          '<circle cx="49" cy="45.5" r="1.7" fill="#fff"/><circle cx="75" cy="45.5" r="1.7" fill="#fff"/></g>' +
-        '<path d="M52 58q8 6 16 0" fill="none" stroke="#fac803" stroke-width="3" stroke-linecap="round"/>' +
+        '<g class="ac-m-look"><g class="ac-m-eyes"><ellipse cx="47" cy="48" rx="5.2" ry="6.2" fill="#fac803"/><ellipse cx="73" cy="48" rx="5.2" ry="6.2" fill="#fac803"/>' +
+          '<circle cx="49" cy="45.5" r="1.7" fill="#fff"/><circle cx="75" cy="45.5" r="1.7" fill="#fff"/></g></g>' +
+        '<path class="ac-m-smile" d="M52 58q8 6 16 0" fill="none" stroke="#fac803" stroke-width="3" stroke-linecap="round"/><ellipse class="ac-m-oh" cx="60" cy="60" rx="3.6" ry="4.2" fill="none" stroke="#fac803" stroke-width="2.6"/>' +
         '<circle cx="34" cy="62" r="3.6" fill="#f08a8a" opacity=".55"/><circle cx="86" cy="62" r="3.6" fill="#f08a8a" opacity=".55"/>' +
       '</g>' +
       '<g class="ac-m-arm-r"><path d="M84 96L106 70" stroke="#a37ebb" stroke-width="11" stroke-linecap="round"/><circle cx="108" cy="66" r="8" fill="#fbf7ef"/></g>' +
-    '</g></svg>';
+    '</g></g></svg>';
   function avatar(size) { return '<span class="ac-ava' + (size ? ' ac-ava-' + size : '') + '">' + ROBOT + '</span>'; }
   var ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var ICON_RESET = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3.5 4v4h4"/></svg>';
@@ -282,6 +283,52 @@
   }
 
   function resize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; }
+
+  // The mascot reacts to the page: its eyes follow the pointer (mouse only);
+  // scrolling down it looks down and falls, scrolling up it looks up and fires
+  // its rocket. It settles back to floating a moment after scrolling stops.
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var finePointer = window.matchMedia('(pointer: fine)');
+  var lookEl = launch.querySelector('.ac-m-look');
+  var mState = '', lookX = 0, lookY = 0, lastY = window.scrollY, idle = null, scrollRaf = null, ptr = null, ptrRaf = null;
+  function setMood(cls) {
+    if (cls === mState) return;
+    if (mState) launch.classList.remove(mState);
+    if (cls) launch.classList.add(cls);
+    mState = cls;
+  }
+  function setLook(x, y) {
+    x = Math.round(x * 10) / 10; y = Math.round(y * 10) / 10;
+    if (x === lookX && y === lookY) return;
+    lookX = x; lookY = y;
+    lookEl.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+  }
+  function lookAtPointer() {
+    ptrRaf = null;
+    if (!ptr || mState) return;
+    var r = launch.getBoundingClientRect();
+    var dx = ptr.x - (r.left + r.width / 2), dy = ptr.y - (r.top + r.height * 0.35);
+    var clamp = function (v) { return Math.max(-1, Math.min(1, v)); };
+    setLook(clamp(dx / 320) * 3.4, clamp(dy / 260) * 2.8);
+  }
+  function settle() { setMood(''); setLook(0, 0); if (ptr) lookAtPointer(); }
+  function onMascotScroll() {
+    scrollRaf = null;
+    var y = window.scrollY, dy = y - lastY;
+    lastY = y;
+    if (reduceMotion.matches || root.classList.contains('is-open') || Math.abs(dy) < 2) return;
+    if (dy > 0) { setMood('is-falling'); setLook(0, 3.4); } else { setMood('is-rocket'); setLook(0, -3.6); }
+    clearTimeout(idle);
+    idle = setTimeout(settle, 280);
+  }
+  window.addEventListener('scroll', function () { if (scrollRaf === null) scrollRaf = requestAnimationFrame(onMascotScroll); }, { passive: true });
+  document.addEventListener('pointermove', function (e) {
+    if (!finePointer.matches || reduceMotion.matches || e.pointerType !== 'mouse') return;
+    ptr = { x: e.clientX, y: e.clientY };
+    if (ptrRaf === null) ptrRaf = requestAnimationFrame(lookAtPointer);
+  }, { passive: true });
+  document.addEventListener('pointerleave', function () { ptr = null; if (!mState) setLook(0, 0); });
+  reduceMotion.addEventListener('change', function () { if (reduceMotion.matches) { clearTimeout(idle); setMood(''); setLook(0, 0); } });
 
   // A one-time greeting beside the button, a few seconds after the page loads.
   var nudge = root.querySelector('.ac-nudge');
