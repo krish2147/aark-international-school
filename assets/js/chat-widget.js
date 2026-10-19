@@ -14,7 +14,18 @@
   var STORE = 'aark_chat_v2';
   var PHONE = '+91 99091 15550';
   var WELCOME = 'Namaste! I\'m Sahay, AARK\'s helper. Ask me about admissions, fees, age criteria, the curriculum, the campus or how to visit, in English, हिन्दी or ગુજરાતી.';
-  var ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>';
+  // Sahay's face: a friendly robot in AARK colours (paper-white head, navy visor,
+  // gold eyes and antenna light, purple ears). The eyes blink via CSS.
+  var ROBOT = '<svg class="ac-bot" viewBox="0 0 48 48" aria-hidden="true">' +
+    '<line x1="24" y1="5" x2="24" y2="11" stroke="#fbf7ef" stroke-width="2.4" stroke-linecap="round"/>' +
+    '<circle class="ac-bot-light" cx="24" cy="5" r="3.4" fill="#fac803"/>' +
+    '<rect x="4.5" y="20" width="4" height="10" rx="2" fill="#a37ebb"/><rect x="39.5" y="20" width="4" height="10" rx="2" fill="#a37ebb"/>' +
+    '<rect x="8" y="11" width="32" height="28" rx="11" fill="#fbf7ef"/>' +
+    '<rect x="12.5" y="17" width="23" height="15" rx="7" fill="#182033"/>' +
+    '<g class="ac-bot-eyes"><ellipse cx="19.5" cy="23.5" rx="2.6" ry="3" fill="#fac803"/><ellipse cx="28.5" cy="23.5" rx="2.6" ry="3" fill="#fac803"/></g>' +
+    '<path d="M20.5 28.2q3.5 2.4 7 0" fill="none" stroke="#fac803" stroke-width="1.8" stroke-linecap="round"/>' +
+    '</svg>';
+  function avatar(size) { return '<span class="ac-ava' + (size ? ' ac-ava-' + size : '') + '">' + ROBOT + '</span>'; }
   var ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var ICON_RESET = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3.5 4v4h4"/></svg>';
   var ICON_SEND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>';
@@ -122,10 +133,11 @@
   var root = document.createElement('div');
   root.className = 'ac-root';
   root.innerHTML =
-    '<button class="ac-launch" type="button" aria-expanded="false" aria-controls="ac-panel" aria-label="Ask Sahay, the AARK helper"><span class="ac-sun">' + ICON_SUN + '</span><span class="ac-label">Ask Sahay</span></button>' +
+    '<button class="ac-launch" type="button" aria-expanded="false" aria-controls="ac-panel" aria-label="Ask Sahay, the AARK helper">' + avatar() + '<span class="ac-label">Ask Sahay</span></button>' +
+    '<div class="ac-nudge" hidden><button class="ac-nudge-open" type="button">Hi, I\'m <strong>Sahay</strong>! Need help with admissions or fees?</button><button class="ac-nudge-x" type="button" aria-label="Dismiss">' + ICON_X + '</button></div>' +
     '<section class="ac-panel" id="ac-panel" role="dialog" aria-modal="false" aria-labelledby="ac-title">' +
-      '<header class="ac-head"><span class="ac-sun">' + ICON_SUN + '</span>' +
-        '<div class="ac-title"><strong id="ac-title">Sahay</strong><span>AARK\'s helper for parents</span></div>' +
+      '<header class="ac-head">' + avatar('head') +
+        '<div class="ac-title"><strong id="ac-title">Sahay</strong><span class="ac-status"><i aria-hidden="true"></i>Online · AARK\'s helper for parents</span></div>' +
         '<button class="ac-icon-btn" type="button" data-reset aria-label="Start a new chat">' + ICON_RESET + '</button>' +
         '<button class="ac-icon-btn" type="button" data-close aria-label="Close chat">' + ICON_X + '</button></header>' +
       '<div class="ac-log" role="log" aria-live="polite" aria-relevant="additions"></div>' +
@@ -148,7 +160,15 @@
     var el = document.createElement('div');
     el.className = 'ac-msg ' + role + (extra ? ' ' + extra : '');
     el.innerHTML = html;
-    log.appendChild(el);
+    if (role === 'bot') {
+      var row = document.createElement('div');
+      row.className = 'ac-row';
+      row.innerHTML = avatar('msg');
+      row.appendChild(el);
+      log.appendChild(row);
+    } else {
+      log.appendChild(el);
+    }
     log.scrollTop = log.scrollHeight;
     return el;
   }
@@ -211,7 +231,7 @@
     history.push({ role: 'user', content: text });
     bubble('user', format(text));
     input.value = ''; resize();
-    var reply = bubble('bot', '<span class="ac-typing" aria-label="Typing"><i></i><i></i><i></i></span>');
+    var reply = bubble('bot', '<span class="ac-typing-label">Sahay is typing</span><span class="ac-typing" aria-hidden="true"><i></i><i></i><i></i></span>');
     var bank = null, result;
     try {
       bank = await loadBank();
@@ -237,7 +257,18 @@
 
   function resize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; }
 
-  launch.addEventListener('click', open);
+  // A one-time greeting beside the button, a few seconds after the page loads.
+  var nudge = root.querySelector('.ac-nudge');
+  var NUDGE = 'aark_sahay_nudged';
+  function seen() { try { return sessionStorage.getItem(NUDGE) === '1'; } catch (e) { return true; } }
+  function hideNudge() { nudge.hidden = true; try { sessionStorage.setItem(NUDGE, '1'); } catch (e) { /* ignore */ } }
+  if (!seen() && !history.length) {
+    setTimeout(function () { if (!seen() && !root.classList.contains('is-open')) nudge.hidden = false; }, 4000);
+  }
+  root.querySelector('.ac-nudge-open').addEventListener('click', function () { hideNudge(); open(); });
+  root.querySelector('.ac-nudge-x').addEventListener('click', hideNudge);
+
+  launch.addEventListener('click', function () { hideNudge(); open(); });
   root.querySelector('[data-close]').addEventListener('click', close);
   root.querySelector('[data-reset]').addEventListener('click', function () { history = []; save(); render(); input.focus(); });
   form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value); });

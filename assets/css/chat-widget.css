@@ -2,16 +2,34 @@
    AARK navy / purple / gold, works without tokens.css. */
 .ac-root{--ac-navy:#182033;--ac-purple:#4f256d;--ac-purple-dark:#351649;--ac-gold:#fac803;--ac-paper:#fbf7ef;--ac-tint:#f1e9f5;--ac-line:#e7ded2;--ac-ink:#182033;--ac-muted:#5d6072;
   --ac-ease:cubic-bezier(.2,.8,.2,1);font-family:"Work Sans",Arial,"Liberation Sans",Helvetica,system-ui,sans-serif;color:var(--ac-ink)}
-.ac-launch{position:fixed;z-index:900;right:max(18px,env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 20px 0 8px;border:0;border-radius:999px;background:var(--ac-navy);color:#fff;font:inherit;font-weight:600;font-size:15px;cursor:pointer;box-shadow:0 14px 34px rgba(24,32,51,.32);transition:transform .25s var(--ac-ease),box-shadow .25s var(--ac-ease),opacity .2s}
+.ac-launch{position:fixed;z-index:900;right:max(18px,env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 20px 0 7px;border:0;border-radius:999px;background:var(--ac-navy);color:#fff;font:inherit;font-weight:600;font-size:15px;cursor:pointer;box-shadow:0 14px 34px rgba(24,32,51,.32);transition:transform .25s var(--ac-ease),box-shadow .25s var(--ac-ease),opacity .2s}
 .ac-launch:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(24,32,51,.38)}
-.ac-launch:focus-visible,.ac-panel button:focus-visible,.ac-panel a:focus-visible,.ac-input:focus-visible{outline:3px solid var(--ac-gold);outline-offset:2px}
-.ac-sun{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ac-gold);color:var(--ac-navy)}
-.ac-sun svg{width:24px;height:24px}
+.ac-launch:focus-visible,.ac-nudge button:focus-visible,.ac-panel button:focus-visible,.ac-panel a:focus-visible,.ac-input:focus-visible{outline:3px solid var(--ac-gold);outline-offset:2px}
+.ac-ava{position:relative;display:grid;place-items:center;flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--ac-purple);box-shadow:inset 0 0 0 2px rgba(250,200,3,.55)}
+.ac-ava .ac-bot{width:32px;height:32px;margin-top:-3px}
+.ac-ava-head{width:44px;height:44px}
+.ac-ava-head::after{content:"";position:absolute;right:0;bottom:1px;width:11px;height:11px;border-radius:50%;background:#2ec27e;box-shadow:0 0 0 2px var(--ac-navy)}
+.ac-ava-msg{width:30px;height:30px;align-self:flex-end;box-shadow:none}
+.ac-ava-msg .ac-bot{width:23px;height:23px;margin-top:-2px}
+.ac-bot-eyes{transform-box:fill-box;transform-origin:center;animation:ac-blink 4.8s infinite -1.3s}
+.ac-bot-light{animation:ac-glow 2.4s ease-in-out infinite -.6s}
+.ac-row{display:flex;align-items:flex-end;gap:8px;max-width:92%;align-self:flex-start;animation:ac-in .3s var(--ac-ease)}
+.ac-row .ac-msg{max-width:none;animation:none}
+.ac-status{display:flex;align-items:center;gap:6px}
+.ac-status i{display:none}
+.ac-typing-label{font-size:13px;color:var(--ac-muted);margin-right:6px}
+.ac-nudge{position:fixed;z-index:900;right:max(18px,env(safe-area-inset-right));bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:flex-start;gap:4px;max-width:min(270px,calc(100vw - 36px));padding:4px 4px 4px 0;background:#fff;border-radius:18px 18px 4px 18px;box-shadow:0 14px 34px rgba(24,32,51,.22),0 0 0 1px rgba(24,32,51,.06);animation:ac-pop .45s var(--ac-ease)}
+.ac-nudge[hidden]{display:none}
+.ac-nudge-open{flex:1;padding:10px 4px 10px 14px;border:0;background:none;text-align:left;font:inherit;font-size:14px;line-height:1.4;color:var(--ac-ink);cursor:pointer}
+.ac-nudge-open strong{color:var(--ac-purple)}
+.ac-nudge-x{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border:0;border-radius:10px;background:none;color:var(--ac-muted);cursor:pointer}
+.ac-nudge-x svg{width:16px;height:16px}
+.ac-nudge-x:hover{background:var(--ac-tint)}
+.ac-root.is-open .ac-nudge{display:none}
 .ac-root.is-open .ac-launch{opacity:0;pointer-events:none;transform:scale(.9)}
 .ac-panel{position:fixed;z-index:1000;right:max(18px,env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));width:min(390px,calc(100vw - 36px));height:min(620px,calc(100vh - 36px));height:min(620px,calc(100dvh - 36px));display:flex;flex-direction:column;background:var(--ac-paper);border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(24,32,51,.32),0 0 0 1px rgba(24,32,51,.06);opacity:0;transform:translateY(16px) scale(.98);transform-origin:bottom right;pointer-events:none;visibility:hidden;transition:opacity .25s var(--ac-ease),transform .25s var(--ac-ease),visibility 0s linear .25s}
 .ac-root.is-open .ac-panel{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .25s var(--ac-ease),transform .25s var(--ac-ease),visibility 0s}
 .ac-head{display:flex;align-items:center;gap:12px;padding:16px 14px 16px 18px;background:var(--ac-navy);color:#fff}
-.ac-head .ac-sun{width:38px;height:38px;flex:0 0 38px}
 .ac-title{flex:1;min-width:0}
 .ac-title strong{display:block;font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:18px;line-height:1.2}
 .ac-title span{display:block;font-size:12px;color:#c3bdd4}
@@ -42,10 +60,14 @@
 .ac-send svg{width:20px;height:20px}
 .ac-foot{margin:0;padding:0 14px 10px;background:#fff;font-size:11px;line-height:1.4;color:var(--ac-muted);text-align:center}
 .ac-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes ac-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}}
+@keyframes ac-glow{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes ac-pop{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes ac-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes ac-dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 @media (max-width:560px){
-  .ac-launch{padding:0 8px;min-height:56px}
+  .ac-launch{padding:0 7px;min-height:56px}
+  .ac-nudge{bottom:calc(84px + env(safe-area-inset-bottom))}
   .ac-launch .ac-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .ac-panel{right:0;bottom:0;width:100vw;height:100vh;height:100dvh;border-radius:0}
 }
