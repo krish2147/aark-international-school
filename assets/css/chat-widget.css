@@ -1,0 +1,53 @@
+/* Sahay, the AARK website assistant: launcher button + chat panel. Self-contained,
+   AARK navy / purple / gold, works without tokens.css. */
+.ac-root{--ac-navy:#182033;--ac-purple:#4f256d;--ac-purple-dark:#351649;--ac-gold:#fac803;--ac-paper:#fbf7ef;--ac-tint:#f1e9f5;--ac-line:#e7ded2;--ac-ink:#182033;--ac-muted:#5d6072;
+  --ac-ease:cubic-bezier(.2,.8,.2,1);font-family:"Work Sans",Arial,"Liberation Sans",Helvetica,system-ui,sans-serif;color:var(--ac-ink)}
+.ac-launch{position:fixed;z-index:900;right:max(18px,env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 20px 0 8px;border:0;border-radius:999px;background:var(--ac-navy);color:#fff;font:inherit;font-weight:600;font-size:15px;cursor:pointer;box-shadow:0 14px 34px rgba(24,32,51,.32);transition:transform .25s var(--ac-ease),box-shadow .25s var(--ac-ease),opacity .2s}
+.ac-launch:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(24,32,51,.38)}
+.ac-launch:focus-visible,.ac-panel button:focus-visible,.ac-panel a:focus-visible,.ac-input:focus-visible{outline:3px solid var(--ac-gold);outline-offset:2px}
+.ac-sun{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ac-gold);color:var(--ac-navy)}
+.ac-sun svg{width:24px;height:24px}
+.ac-root.is-open .ac-launch{opacity:0;pointer-events:none;transform:scale(.9)}
+.ac-panel{position:fixed;z-index:1000;right:max(18px,env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));width:min(390px,calc(100vw - 36px));height:min(620px,calc(100vh - 36px));height:min(620px,calc(100dvh - 36px));display:flex;flex-direction:column;background:var(--ac-paper);border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(24,32,51,.32),0 0 0 1px rgba(24,32,51,.06);opacity:0;transform:translateY(16px) scale(.98);transform-origin:bottom right;pointer-events:none;visibility:hidden;transition:opacity .25s var(--ac-ease),transform .25s var(--ac-ease),visibility 0s linear .25s}
+.ac-root.is-open .ac-panel{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .25s var(--ac-ease),transform .25s var(--ac-ease),visibility 0s}
+.ac-head{display:flex;align-items:center;gap:12px;padding:16px 14px 16px 18px;background:var(--ac-navy);color:#fff}
+.ac-head .ac-sun{width:38px;height:38px;flex:0 0 38px}
+.ac-title{flex:1;min-width:0}
+.ac-title strong{display:block;font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:18px;line-height:1.2}
+.ac-title span{display:block;font-size:12px;color:#c3bdd4}
+.ac-icon-btn{display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:12px;background:none;color:#fff;cursor:pointer}
+.ac-icon-btn:hover{background:rgba(255,255,255,.1)}
+.ac-icon-btn svg{width:20px;height:20px}
+.ac-log{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:18px 16px 8px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.ac-msg{max-width:88%;padding:11px 14px;border-radius:18px;font-size:15px;line-height:1.55;overflow-wrap:anywhere;animation:ac-in .3s var(--ac-ease)}
+.ac-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--ac-line);border-bottom-left-radius:6px}
+.ac-msg.user{align-self:flex-end;background:var(--ac-purple);color:#fff;border-bottom-right-radius:6px}
+.ac-msg p{margin:0 0 8px}.ac-msg p:last-child{margin:0}
+.ac-msg ul{margin:4px 0 8px;padding-left:20px}.ac-msg li{margin:2px 0}
+.ac-msg a{color:var(--ac-purple);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.ac-msg.user a{color:#fff}
+.ac-msg.is-error{background:#fff7f7;border-color:#f0cccc}
+.ac-typing{display:inline-flex;gap:5px;padding:4px 0}
+.ac-typing i{width:7px;height:7px;border-radius:50%;background:var(--ac-purple);opacity:.35;animation:ac-dot 1.2s infinite}
+.ac-typing i:nth-child(2){animation-delay:.15s}.ac-typing i:nth-child(3){animation-delay:.3s}
+.ac-chips{display:flex;flex-wrap:wrap;gap:8px;padding:2px 16px 10px}
+.ac-chip{min-height:36px;padding:6px 14px;border:1.5px solid #d9cfe2;border-radius:999px;background:#fff;color:var(--ac-purple-dark);font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s}
+.ac-chip:hover{border-color:var(--ac-purple);background:var(--ac-tint)}
+.ac-form{display:flex;align-items:flex-end;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--ac-line);background:#fff}
+.ac-input{flex:1;min-width:0;max-height:120px;min-height:44px;padding:11px 14px;border:1.5px solid #d9cfe2;border-radius:16px;background:#fff;font:inherit;font-size:15px;line-height:1.4;color:var(--ac-ink);resize:none}
+.ac-input:focus{border-color:var(--ac-purple);outline:0;box-shadow:0 0 0 4px rgba(79,37,109,.12)}
+.ac-send{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border:0;border-radius:50%;background:var(--ac-gold);color:var(--ac-navy);cursor:pointer;transition:transform .15s}
+.ac-send:hover{transform:translateY(-1px)}
+.ac-send:disabled{opacity:.5;cursor:default;transform:none}
+.ac-send svg{width:20px;height:20px}
+.ac-foot{margin:0;padding:0 14px 10px;background:#fff;font-size:11px;line-height:1.4;color:var(--ac-muted);text-align:center}
+.ac-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes ac-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes ac-dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media (max-width:560px){
+  .ac-launch{padding:0 8px;min-height:56px}
+  .ac-launch .ac-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .ac-panel{right:0;bottom:0;width:100vw;height:100vh;height:100dvh;border-radius:0}
+}
+@media (prefers-reduced-motion:reduce){.ac-root *,.ac-root *::before,.ac-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{.ac-root{display:none}}

@@ -20,6 +20,7 @@ Production uses the names below. Preview uses the **same names with a `PREVIEW_`
 | `BLOB_ENQUIRY_READ_WRITE_TOKEN` | Saving enquiries | Vercel: added when a **private** Blob store is connected with prefix `BLOB_ENQUIRY` and "Add a read-write token env var" ticked | Production store | A separate test store |
 | `BLOB_READ_WRITE_TOKEN` | Admin content + photos (public store) | Vercel: existing store | Existing store | A separate test store |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | Admin sign-in | Krish | Existing | Different values |
+| `ANTHROPIC_API_KEY` | Sahay, the website assistant (`api/chat.js`) | Krish: Claude API key from console.anthropic.com (set a monthly spend limit there) | Real | **Same name, same key** (the assistant only reads published facts, so there is nothing to isolate) |
 | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Spam check + parent confirmation emails | Cloudflare dashboard (free) | Optional | Cloudflare test keys |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Shared rate limits | Vercel Marketplace → Upstash (free tier) | Optional | Optional |
 
@@ -66,3 +67,10 @@ Preview deployments (`VERCEL_ENV=preview`) read **only `PREVIEW_`-prefixed setti
 ## 6. Retention
 
 Enquiries are kept until deleted from the private store. Agree a retention period with the school (for example, 24 months after the admission decision) and record it in the privacy notice.
+
+## 7. Website assistant (Sahay)
+
+- **Free by default.** Sahay answers from the built-in answer bank `assets/js/sahay-answers.js` (English, Hindi and Gujarati), matched in the visitor's browser. No AI, no running cost, no server call. **When fees, dates, contact details or admission rules change on the site, update that file too.** Each topic lists its trigger words and its answer in all three languages; questions it can't match get the school's phone number.
+- **Optional AI upgrade.** If `ANTHROPIC_API_KEY` is set in Vercel, `/api/public-config` reports `assistantAi: true` and questions the answer bank can't match go to `api/chat.js` (Claude Opus 5.5, low effort, facts from `api/_lib/schoolKnowledge.js`, prompt-cached). Remove the key and Sahay goes back to free mode on the next deploy.
+- AI guards: same-origin only; 800 characters per question; 12 questions per 10 minutes and 60 per day per visitor; 1,500 per day across the site. Set a monthly spend limit in the Anthropic console as the final cap.
+- Conversations are not stored on the server; the visitor's browser keeps them only until the tab closes.
