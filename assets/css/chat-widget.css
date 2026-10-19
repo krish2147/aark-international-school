@@ -1,4 +1,4 @@
-/* "Ask AARK" website assistant: launcher button + chat panel. Self-contained,
+/* Sahay, the AARK website assistant: launcher button + chat panel. Self-contained,
    AARK navy / purple / gold, works without tokens.css. */
 .ac-root{--ac-navy:#182033;--ac-purple:#4f256d;--ac-purple-dark:#351649;--ac-gold:#fac803;--ac-paper:#fbf7ef;--ac-tint:#f1e9f5;--ac-line:#e7ded2;--ac-ink:#182033;--ac-muted:#5d6072;
   --ac-ease:cubic-bezier(.2,.8,.2,1);font-family:"Work Sans",Arial,"Liberation Sans",Helvetica,system-ui,sans-serif;color:var(--ac-ink)}

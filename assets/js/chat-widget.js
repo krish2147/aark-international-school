@@ -1,4 +1,4 @@
-/* "Ask AARK" website assistant. Talks to /api/chat (streamed plain text).
+/* Sahay, the AARK website assistant. Talks to /api/chat (streamed plain text).
    The conversation lives in sessionStorage only, so it clears when the tab closes. */
 (function () {
   'use strict';
@@ -7,7 +7,7 @@
 
   var STORE = 'aark_chat_v1';
   var PHONE = '+91 99091 15550';
-  var WELCOME = 'Hello! I can answer questions about AARK International School: admissions, fees, age criteria, the curriculum, the campus and how to visit. Ask in English, हिन्दी or ગુજરાતી.';
+  var WELCOME = 'Namaste! I\'m Sahay, AARK\'s helper. I can answer questions about AARK International School: admissions, fees, age criteria, the curriculum, the campus and how to visit. Ask in English, हिन्दी or ગુજરાતી.';
   var CHIPS = [
     ['Fees for 2026–27', 'What are the fees for 2026–27?'],
     ['Age criteria', 'What is the age criteria for Nursery and KG?'],
@@ -50,10 +50,10 @@
   var root = document.createElement('div');
   root.className = 'ac-root';
   root.innerHTML =
-    '<button class="ac-launch" type="button" aria-expanded="false" aria-controls="ac-panel"><span class="ac-sun">' + ICON_SUN + '</span><span class="ac-label">Ask AARK</span></button>' +
+    '<button class="ac-launch" type="button" aria-expanded="false" aria-controls="ac-panel" aria-label="Ask Sahay, the AARK helper"><span class="ac-sun">' + ICON_SUN + '</span><span class="ac-label">Ask Sahay</span></button>' +
     '<section class="ac-panel" id="ac-panel" role="dialog" aria-modal="false" aria-labelledby="ac-title">' +
       '<header class="ac-head"><span class="ac-sun">' + ICON_SUN + '</span>' +
-        '<div class="ac-title"><strong id="ac-title">Ask AARK</strong><span>Admissions &amp; school questions</span></div>' +
+        '<div class="ac-title"><strong id="ac-title">Sahay</strong><span>AARK\'s helper for parents</span></div>' +
         '<button class="ac-icon-btn" type="button" data-reset aria-label="Start a new chat">' + ICON_RESET + '</button>' +
         '<button class="ac-icon-btn" type="button" data-close aria-label="Close chat">' + ICON_X + '</button></header>' +
       '<div class="ac-log" role="log" aria-live="polite" aria-relevant="additions"></div>' +
