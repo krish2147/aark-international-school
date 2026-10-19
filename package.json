@@ -2,8 +2,9 @@
   "name": "aark-international-school",
   "private": true,
   "version": "1.0.0",
-  "description": "AARK International School website \u2014 static site + Vercel serverless enquiry API",
+  "description": "AARK International School website — static site + Vercel serverless enquiry API",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
     "@vercel/blob": "^2.8.1",
     "nodemailer": "^10.1.0"
   },

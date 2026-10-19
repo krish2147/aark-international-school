@@ -20,6 +20,7 @@ Production uses the names below. Preview uses the **same names with a `PREVIEW_`
 | `BLOB_ENQUIRY_READ_WRITE_TOKEN` | Saving enquiries | Vercel: added when a **private** Blob store is connected with prefix `BLOB_ENQUIRY` and "Add a read-write token env var" ticked | Production store | A separate test store |
 | `BLOB_READ_WRITE_TOKEN` | Admin content + photos (public store) | Vercel: existing store | Existing store | A separate test store |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | Admin sign-in | Krish | Existing | Different values |
+| `ANTHROPIC_API_KEY` | The "Ask AARK" website assistant (`api/chat.js`) | Krish: Claude API key from console.anthropic.com (set a monthly spend limit there) | Real | **Same name, same key** (the assistant only reads published facts, so there is nothing to isolate) |
 | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Spam check + parent confirmation emails | Cloudflare dashboard (free) | Optional | Cloudflare test keys |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Shared rate limits | Vercel Marketplace → Upstash (free tier) | Optional | Optional |
 
@@ -66,3 +67,11 @@ Preview deployments (`VERCEL_ENV=preview`) read **only `PREVIEW_`-prefixed setti
 ## 6. Retention
 
 Enquiries are kept until deleted from the private store. Agree a retention period with the school (for example, 24 months after the admission decision) and record it in the privacy notice.
+
+## 7. Website assistant ("Ask AARK")
+
+- Code: `api/chat.js`; the facts it may use: `api/_lib/schoolKnowledge.js`. **When fees, dates, contact details or admission rules change on the site, update that file too**, or the assistant will repeat the old facts.
+- Model: Claude Opus 5.5 at low effort, with the school facts prompt-cached. Answers are short; each visitor message costs roughly a rupee or less.
+- Guards: same-origin only; 800 characters per question; 12 questions per 10 minutes and 60 per day per visitor; 1,500 per day across the whole site (raise in `LIMITS` if genuinely needed). Set a monthly spend limit in the Anthropic console as the final cap.
+- Without `ANTHROPIC_API_KEY` the chat shows the school's phone number instead of answering. Conversations are not stored on the server; the visitor's browser keeps them only until the tab closes.
+

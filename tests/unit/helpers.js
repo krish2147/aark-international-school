@@ -75,6 +75,9 @@ function createRes() {
     status(code) { this.statusCode = code; return this; },
     json(obj) { this.body = obj; return this; },
     send(data) { this.body = data; return this; },
+    written: '', ended: false,
+    write(chunk) { this.written += chunk; return true; },
+    end() { this.ended = true; return this; },
   };
   return res;
 }
