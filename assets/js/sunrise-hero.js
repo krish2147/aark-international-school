@@ -5,6 +5,7 @@
 //   touch screens, so a small portrait cut of the shot simply plays once on
 //   load (hardware video decoding, smooth everywhere), the closing lines fade
 //   in as the sun appears, and the page scrolls natively.
+// Either way the scene ends with the AARK sun logo forming on the real sun.
 // - Reduced motion (and phones where autoplay is blocked, e.g. iOS Low Power
 //   Mode): the static hero over the final frame. No video is downloaded for
 //   reduced motion.
@@ -20,9 +21,17 @@
 
   const VIDEO_URL = 'assets/hero/sunrise.mp4';
   const POSTER_URL = 'assets/hero/sunrise-start.jpg';
-  const PHONE_VIDEO_URL = 'assets/hero/sunrise-m.mp4';
-  const PHONE_POSTER_URL = 'assets/hero/sunrise-m-start.jpg';
+  // Touch screens get a light clip shaped like the screen: portrait or landscape.
+  const PLAY_CLIPS = {
+    portrait: { url: 'assets/hero/sunrise-m.mp4', start: 'assets/hero/sunrise-m-start.jpg', end: 'assets/hero/sunrise-m-end.jpg', w: 720, h: 1020 },
+    landscape: { url: 'assets/hero/sunrise-l.mp4', start: 'assets/hero/sunrise-l-start.jpg', end: 'assets/hero/sunrise-l-end.jpg', w: 960, h: 536 }
+  };
+  let clip = null;
   const PHONE_SETTLE_AT = 3.4;   // seconds into the clip when the clouds have cleared
+  const PHONE_MARK_AT = 4.3;     // ...and when the AARK sun starts forming on the real sun
+  // Where the sun sits in both clips' final frame, as a fraction of the frame.
+  const SUN_X = 0.501, SUN_Y = 0.861;
+  const mark = hero.querySelector('.sr-mark');
 
   // Must match the media queries in sunrise-hero.css exactly.
   const STATIC_QUERY = '(prefers-reduced-motion: reduce)';
@@ -41,29 +50,56 @@
     ).join(' ');
   });
 
+  // ---- the AARK sun forms on the real sun: keep it pinned to the sun's spot ----
+  // The footage is drawn object-fit:cover, so map the sun through the same crop.
+  function placeMark(){
+    if (!mark) return;
+    const vw = video.videoWidth || (clip ? clip.w : 1920);
+    const vh = video.videoHeight || (clip ? clip.h : 1072);
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const s = Math.max(w / vw, h / vh);
+    // honour the video's object-position (short landscape screens anchor it to the bottom)
+    const pos = getComputedStyle(video).objectPosition.split(' ');
+    const pct = v => (v && v.endsWith('%')) ? parseFloat(v) / 100 : 0.5;
+    const x = (w - vw * s) * pct(pos[0]) + SUN_X * vw * s;
+    const y = (h - vh * s) * pct(pos[1]) + SUN_Y * vh * s;
+    mark.style.setProperty('--sx', x.toFixed(1) + 'px');
+    mark.style.setProperty('--sy', y.toFixed(1) + 'px');
+  }
+  let lastW = 0;
+  addEventListener('resize', () => { if (innerWidth !== lastW || !playStarted) { lastW = innerWidth; placeMark(); } }, { passive: true });
+  video.addEventListener('loadedmetadata', placeMark);
+
   // =================== phones and tablets: play once ===================
   let playStarted = false;
   function startPlay(){
     if (playStarted) return;
     playStarted = true;
     hero.classList.add('is-play');
+    clip = stage.clientWidth > stage.clientHeight ? PLAY_CLIPS.landscape : PLAY_CLIPS.portrait;
     video.muted = true;
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.preload = 'auto';
-    video.poster = PHONE_POSTER_URL;
-    poster.style.backgroundImage = `url('${PHONE_POSTER_URL}')`;
+    video.poster = clip.start;
+    poster.style.backgroundImage = `url('${clip.start}')`;
     const settle = () => hero.classList.add('is-settled');
+    const markUp = () => { settle(); hero.classList.add('is-marked'); };
     const giveUp = () => {
       stage.classList.add('video-failed');
-      poster.style.backgroundImage = "url('assets/hero/sunrise-m-end.jpg')";
-      settle();
+      poster.style.backgroundImage = `url('${clip.end}')`;
+      markUp();
     };
-    video.addEventListener('timeupdate', () => { if (video.currentTime >= PHONE_SETTLE_AT) settle(); });
-    video.addEventListener('ended', settle, { once: true });
+    video.addEventListener('timeupdate', () => {
+      if (video.currentTime >= PHONE_SETTLE_AT) settle();
+      if (video.currentTime >= PHONE_MARK_AT) markUp();
+    });
+    video.addEventListener('ended', markUp, { once: true });
     video.addEventListener('error', giveUp, { once: true });
     video.addEventListener('playing', () => stage.classList.add('video-ready'), { once: true });
-    video.src = PHONE_VIDEO_URL;
+    video.src = clip.url;
+    lastW = innerWidth;
+    placeMark();
     const p = video.play();
     if (p && p.catch) p.catch(giveUp);          // autoplay blocked: show the finished scene
     setTimeout(() => { if (!stage.classList.contains('video-ready')) giveUp(); }, 7000);
@@ -94,8 +130,13 @@
   });
 
   // captions: delta-gated writes only
-  let loadK = 0;
+  let loadK = 0, lastM = -1;
+  const markA = mark ? +mark.dataset.a : 0, markB = mark ? +mark.dataset.b : 1;
   function updateCaptions(p){
+    if (mark) {
+      const m = Math.round(clamp((p - markA) / (markB - markA), 0, 1) * 200) / 200;
+      if (m !== lastM) { lastM = m; mark.style.setProperty('--m', m); }
+    }
     bands.forEach((band, i) => {
       const { a, b } = band;
       const f = Math.min(0.02, (b - a) / 3);
@@ -165,6 +206,8 @@
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll, { passive: true });
     bands.forEach(b => { b.op = -1; b.k = -1; });
+    lastM = -1;
+    placeMark();
     shown = target = heroProgress();
     updateCaptions(shown);
     onScroll();
@@ -177,6 +220,7 @@
     removeEventListener('resize', onScroll);
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     bands.forEach(b => { b.el.style.opacity = ''; b.el.style.visibility = ''; b.el.style.removeProperty('--k'); b.op = -1; b.k = -1; });
+    if (mark) mark.style.removeProperty('--m');
   }
 
   // Phone or computer is decided once per page view; only the motion setting is live.
@@ -185,7 +229,7 @@
   function applyHeroMode(){
     if (staticMQ.matches) {
       disableScrub();
-      if (playStarted) { video.pause(); hero.classList.add('is-settled'); }
+      if (playStarted) { video.pause(); hero.classList.add('is-settled', 'is-marked'); }
       return;
     }
     if (isTouch) startPlay(); else enableScrub();

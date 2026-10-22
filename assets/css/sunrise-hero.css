@@ -64,7 +64,7 @@
 .is-scrub .sr-band{position:absolute;left:50%;width:min(1100px,calc(100% - 96px));transform:translateX(-50%);opacity:0;visibility:hidden;will-change:opacity}
 .is-scrub .sr-band-open{top:38%;transform:translate(-50%,-50%)}
 .is-scrub .sr-band-mid{display:block;top:30%;transform:translate(-50%,-50%)}
-.is-scrub .sr-band-settle{top:66%;transform:translate(-50%,-50%)}
+.is-scrub .sr-band-settle{top:40%;transform:translate(-50%,-50%)}
 .sr-band-settle{text-shadow:0 1px 18px rgba(255,246,230,.9)}
 /* the closing lines sit in the bright sky under the cloud ceiling, so they turn dark */
 .v2 .sr-hero h2.sr-settle-title{color:var(--sr-dusk-deep)}
@@ -94,17 +94,65 @@
 @media(max-height:640px){.is-scrub .sr-facts,.is-scrub .sr-cue{display:none}}
 
 
+/* ---- the AARK sun forming on the real sun ----
+   Positioned on the sun's spot (--sx/--sy, set by sunrise-hero.js), then it
+   rises a little as it completes, like the sun clearing the horizon. */
+.sr-mark{display:none;position:absolute;left:var(--sx,50%);top:var(--sy,86%);width:var(--ms);height:var(--ms);margin:calc(var(--ms) / -2) 0 0 calc(var(--ms) / -2);pointer-events:none;--ms:clamp(130px,27vh,270px)}
+.is-scrub .sr-mark,.is-play .sr-mark{display:block}
+.sr-mark img,.sr-mark-glow{position:absolute;inset:0;width:100%;height:100%}
+.sr-mark-glow{inset:-55%;width:auto;height:auto;border-radius:50%;background:radial-gradient(circle,rgba(255,244,214,.95) 0%,rgba(255,214,120,.6) 22%,rgba(250,190,90,.25) 45%,rgba(250,190,90,0) 70%)}
+.sr-mark-core{filter:drop-shadow(0 6px 18px rgba(120,60,10,.35))}
+
+/* computers: scroll drives --m (0 to 1) */
+.is-scrub .sr-mark{--u:clamp(0,(var(--m,0) - .3)*1.6,1);transform:translateY(calc(var(--u) * var(--ms) * -.42))}
+.is-scrub .sr-mark-glow{opacity:clamp(0,var(--m,0)*3,1);transform:scale(calc(.2 + .8 * clamp(0,var(--m,0)*2.5,1)))}
+.is-scrub .sr-mark-rays{--r:clamp(0,(var(--m,0) - .12)*2.2,1);opacity:var(--r);transform:rotate(calc((1 - var(--r)) * -80deg)) scale(calc(.12 + .88 * var(--r)))}
+.is-scrub .sr-mark-core{--c:clamp(0,(var(--m,0) - .5)*2.5,1);opacity:var(--c);transform:scale(calc(.6 + .4 * var(--c)))}
+
+/* touch screens: the same sequence as compositor-only animations */
+.is-play .sr-mark{--ms:min(44vw,26vh);transition:transform 1.8s var(--v2-ease-out) .5s}
+.is-play.is-marked .sr-mark{transform:translateY(calc(var(--ms) * -.42))}
+.is-play .sr-mark-glow,.is-play .sr-mark-rays,.is-play .sr-mark-core{opacity:0}
+.is-play.is-marked .sr-mark-glow{animation:sr-glow 1.2s var(--v2-ease-out) forwards,sr-glow-pulse 4s ease-in-out 2.4s infinite alternate}
+.is-play.is-marked .sr-mark-rays{animation:sr-rays 1.6s var(--v2-ease-out) .15s forwards}
+.is-play.is-marked .sr-mark-core{animation:sr-core .9s var(--v2-ease-out) 1s forwards}
+@keyframes sr-glow{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:none}}
+@keyframes sr-glow-pulse{from{opacity:1}to{opacity:.72}}
+@keyframes sr-rays{from{opacity:0;transform:rotate(-80deg) scale(.12)}to{opacity:1;transform:none}}
+@keyframes sr-core{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+
 /* ---- play mode (phones and tablets) ----
    Only opacity and transform animate, so it all runs on the compositor. */
 .is-play .sr-stage.video-ready .sr-video{opacity:1}
 .is-play .sr-stage.video-failed .sr-video{display:none}
 .is-play .sr-title .w{opacity:0;transform:translateY(-22px);animation:sr-word-in .9s var(--v2-ease-out) forwards;animation-delay:calc(.25s + var(--i,0) * .09s)}
 .is-play .sr-kicker{opacity:0;animation:sr-fade-in .8s var(--v2-ease-out) .1s forwards}
-.is-play .sr-band-settle{opacity:0;transform:translateY(18px);transition:opacity 1.1s var(--v2-ease-out),transform 1.1s var(--v2-ease-out);pointer-events:none}
-.is-play.is-settled .sr-band-settle{opacity:1;transform:none;pointer-events:auto}
+.is-play .sr-band-settle{opacity:0;transition:opacity 1.1s var(--v2-ease-out),transform 1.1s var(--v2-ease-out);pointer-events:none}
+.is-play.is-settled .sr-band-settle{opacity:1;pointer-events:auto}
 @keyframes sr-word-in{to{opacity:1;transform:none}}
 @keyframes sr-fade-in{to{opacity:1}}
-@media(max-width:720px){.is-play .sr-band-settle .sr-lead{display:none}}
+/* one screen; the opening line hands over to the closing lines once the clouds clear */
+.is-play .sr-stage{display:block;height:calc(100svh - 96px);min-height:520px;padding:0}
+.is-play .sr-poster{background-position:center}
+.is-play .sr-band{position:absolute;left:50%;width:min(1100px,calc(100% - 40px));transform:translateX(-50%)}
+.is-play .sr-band-open{top:13%;transition:opacity .8s var(--v2-ease-out),transform .8s var(--v2-ease-out)}
+.is-play.is-settled .sr-band-open{opacity:0;transform:translate(-50%,-14px)}
+.is-play .sr-band-settle{top:42%;transform:translate(-50%,calc(-50% + 18px))}
+.is-play.is-settled .sr-band-settle{transform:translate(-50%,-50%)}
+@media(orientation:landscape){.is-play .sr-band-settle{top:38%}.is-play .sr-mark{--ms:min(30vw,30vh)}}
+@media(max-width:720px){.is-play .sr-band-settle .sr-lead,.is-play .sr-facts{display:none}.is-play .sr-actions{margin-top:18px;gap:10px}}
+/* phones held sideways: a short screen, so anchor the footage to the horizon,
+   keep one line of text, and set it light against the cloud ceiling */
+@media(orientation:landscape) and (max-height:560px){
+  .is-play .sr-stage{height:calc(100svh - 70px);min-height:280px}
+  .is-play .sr-video{object-position:50% 100%}
+  .is-play .sr-poster{background-position:50% 100%}
+  .is-play .sr-band-settle{top:30%}
+  .is-play .sr-band-settle .sr-lead,.is-play .sr-facts{display:none}
+  .is-play .sr-actions{margin-top:14px}
+  .v2 .is-play h2.sr-settle-title{color:#fff;text-shadow:var(--sr-tshadow);font-size:clamp(26px,4vw,40px)}
+  .is-play .sr-mark{--ms:26vh}
+}
 
 /* ---- handoff: the real assembly photo takes over from the sunrise ---- */
 .sr-handoff{position:relative;background:linear-gradient(180deg,var(--sr-peach) 0%,var(--v2-color-ground) 46%);padding:0 var(--v2-gutter-mobile) var(--v2-space-2xl)}
