@@ -1,11 +1,13 @@
-// Homepage "Sunrise over AARK" hero: scrolling down scrubs a short video in
-// which the camera sinks through dawn clouds to the sun beneath them.
-// Desktop scrubs the video itself. Phones and portrait tablets decode video
-// seeks too slowly to keep up with a finger, so they get the same shot as a
-// sequence of portrait frames (12 per second of footage, faded into each
-// other) drawn to a canvas instead.
-// Reduced-motion visitors and landscape phones (no room) get the static hero
-// (same text over the final frame) and never download the video.
+// Homepage "Sunrise over AARK" hero: the camera sinks through dawn clouds to
+// the sun beneath them.
+// - Computers (fine pointer, wide window): scrolling scrubs the video.
+// - Phones and tablets: scroll-linked animation is never reliably smooth on
+//   touch screens, so a small portrait cut of the shot simply plays once on
+//   load (hardware video decoding, smooth everywhere), the closing lines fade
+//   in as the sun appears, and the page scrolls natively.
+// - Reduced motion (and phones where autoplay is blocked, e.g. iOS Low Power
+//   Mode): the static hero over the final frame. No video is downloaded for
+//   reduced motion.
 (function(){
   const hero = document.querySelector('.sr-hero');
   if (!hero) return;
@@ -18,37 +20,63 @@
 
   const VIDEO_URL = 'assets/hero/sunrise.mp4';
   const POSTER_URL = 'assets/hero/sunrise-start.jpg';
-  const FRAME_COUNT = 73;
-  const frameUrl = i => `assets/hero/m/f${String(i + 1).padStart(3, '0')}.webp`;
-  // Decided once: portrait touch screens and narrow windows use the frames.
-  const useFrames = innerHeight > innerWidth && matchMedia('(pointer: coarse), (max-width: 820px)').matches;
+  const PHONE_VIDEO_URL = 'assets/hero/sunrise-m.mp4';
+  const PHONE_POSTER_URL = 'assets/hero/sunrise-m-start.jpg';
+  const PHONE_SETTLE_AT = 3.4;   // seconds into the clip when the clouds have cleared
 
-  // Must match the static-hero media queries in homepage.css character for character.
-  const GATES = [
-    '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
-    '(prefers-reduced-motion: reduce)'
-  ];
+  // Must match the media queries in sunrise-hero.css exactly.
+  const STATIC_QUERY = '(prefers-reduced-motion: reduce)';
+  const TOUCH_QUERY = '(pointer: coarse), (max-width: 820px)';
 
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   const smoothstep = (p, e0, e1) => { const t = clamp((p - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
 
-  // Split headlines into word spans once, for the scroll-driven entrances.
+  // Split headlines into word spans once, for the entrances.
   hero.querySelectorAll('[data-split]').forEach(el => {
     const text = el.textContent.trim();
     const words = text.split(/\s+/);
     el.setAttribute('aria-label', text);
     el.innerHTML = words.map((w, i) =>
-      `<span class="w" aria-hidden="true" style="--th:${(i / words.length * 0.5).toFixed(3)}">${w}</span>`
+      `<span class="w" aria-hidden="true" style="--th:${(i / words.length * 0.5).toFixed(3)};--i:${i}">${w}</span>`
     ).join(' ');
   });
 
+  // =================== phones and tablets: play once ===================
+  let playStarted = false;
+  function startPlay(){
+    if (playStarted) return;
+    playStarted = true;
+    hero.classList.add('is-play');
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.preload = 'auto';
+    video.poster = PHONE_POSTER_URL;
+    poster.style.backgroundImage = `url('${PHONE_POSTER_URL}')`;
+    const settle = () => hero.classList.add('is-settled');
+    const giveUp = () => {
+      stage.classList.add('video-failed');
+      poster.style.backgroundImage = "url('assets/hero/sunrise-m-end.jpg')";
+      settle();
+    };
+    video.addEventListener('timeupdate', () => { if (video.currentTime >= PHONE_SETTLE_AT) settle(); });
+    video.addEventListener('ended', settle, { once: true });
+    video.addEventListener('error', giveUp, { once: true });
+    video.addEventListener('playing', () => stage.classList.add('video-ready'), { once: true });
+    video.src = PHONE_VIDEO_URL;
+    const p = video.play();
+    if (p && p.catch) p.catch(giveUp);          // autoplay blocked: show the finished scene
+    setTimeout(() => { if (!stage.classList.contains('video-ready')) giveUp(); }, 7000);
+  }
+
+  // =================== computers: scroll scrub ===================
   function heroProgress(){
     const r = hero.getBoundingClientRect();
     const range = r.height - innerHeight;
     return range > 0 ? clamp(-r.top / range, 0, 1) : 0;
   }
 
-  // ---- seeks: one in flight at a time, coalesced to the newest target ----
+  // seeks: one in flight at a time, coalesced to the newest target
   let seekBusy = false, pendingTime = null;
   function requestSeek(t){
     if (!video.duration) return;
@@ -65,79 +93,7 @@
     stage.classList.add('video-failed');
   });
 
-  // ---- frames: canvas drawing for phones ----
-  const frames = new Array(FRAME_COUNT);
-  let canvas = null, ctx = null, lastDrawn = -1;
-  function sizeCanvas(){
-    if (!canvas) return;
-    // No sharper than the frames themselves (850px tall): extra canvas pixels add cost, not detail.
-    const dpr = Math.max(1, Math.min(devicePixelRatio || 1, 850 / Math.max(1, stage.clientHeight)));
-    const w = Math.round(stage.clientWidth * dpr), h = Math.round(stage.clientHeight * dpr);
-    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; lastDrawn = -1; }
-  }
-  function nearestFrame(want){
-    for (let d = 0; d < FRAME_COUNT; d++) {             // nearest frame that has arrived
-      if (frames[want - d]) return want - d;
-      if (frames[want + d]) return want + d;
-    }
-    return -1;
-  }
-  function paint(img, alpha){
-    const cw = canvas.width, ch = canvas.height;
-    const s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);   // cover
-    const w = img.naturalWidth * s, h = img.naturalHeight * s;
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
-  }
-  // Between two stored frames, the next one is faded over the previous, so the
-  // motion stays continuous with only 12 frames per second of footage.
-  function drawFrame(p){
-    if (!ctx) return;
-    const pos = clamp(p, 0, 1) * (FRAME_COUNT - 1);
-    const lo = Math.floor(pos), mix = Math.round((pos - lo) * 8) / 8;   // 8 blend steps
-    const key = lo * 8 + mix * 8;
-    if (key === lastDrawn) return;
-    const a = nearestFrame(lo);
-    if (a < 0) return;
-    lastDrawn = key;
-    paint(frames[a], 1);
-    const b = lo + 1;
-    if (mix > 0 && b < FRAME_COUNT && frames[b] && a === lo) paint(frames[b], mix);
-    ctx.globalAlpha = 1;
-  }
-  function loadFrames(){
-    canvas = document.createElement('canvas');
-    canvas.className = 'sr-canvas';
-    canvas.setAttribute('aria-hidden', 'true');
-    video.replaceWith(canvas);
-    ctx = canvas.getContext('2d', { alpha: false });
-    sizeCanvas();
-    // Coarse to fine (every 16th frame, then every 8th, ...) so scrubbing works
-    // roughly right away and sharpens as the rest arrive.
-    const order = [], seen = new Set();
-    for (let step = 8; step >= 1; step = step >> 1)
-      for (let i = 0; i < FRAME_COUNT; i += step) if (!seen.has(i)) { seen.add(i); order.push(i); }
-    if (!seen.has(FRAME_COUNT - 1)) order.splice(1, 0, FRAME_COUNT - 1);
-    let next = 0, failed = 0;
-    const pump = () => {
-      if (next >= order.length) return;
-      const i = order[next++];
-      const img = new Image();
-      img.decoding = 'async';
-      img.src = frameUrl(i);
-      (img.decode ? img.decode() : new Promise((ok, bad) => { img.onload = ok; img.onerror = bad; }))
-        .then(() => {
-          frames[i] = img;
-          if (!stage.classList.contains('video-ready')) { drawFrame(heroProgress()); stage.classList.add('video-ready'); }
-          else if (Math.abs(i - Math.round(shown * (FRAME_COUNT - 1))) < 8) { lastDrawn = -1; drawFrame(shown); }
-        })
-        .catch(() => { if (++failed > 8 && !frames.some(Boolean)) stage.classList.add('video-failed'); })
-        .then(pump);
-    };
-    for (let k = 0; k < 6; k++) pump();
-  }
-
-  // ---- captions: delta-gated writes only ----
+  // captions: delta-gated writes only
   let loadK = 0;
   function updateCaptions(p){
     bands.forEach((band, i) => {
@@ -153,16 +109,16 @@
     });
   }
 
-  // ---- eased drive loop that rests when converged or off-screen ----
+  // eased drive loop that rests when converged or off-screen
   let target = 0, shown = 0, rafId = null, lastTick = 0, heroOnScreen = true;
   function tick(now){
     if (!scrubOn) { rafId = null; return; }
     const dt = Math.min(100, now - (lastTick || now));
     lastTick = now;
-    shown += (target - shown) * (1 - Math.pow(1 - (useFrames ? 0.24 : 0.14), dt / 16.667));
+    shown += (target - shown) * (1 - Math.pow(1 - 0.14, dt / 16.667));
     if (Math.abs(target - shown) < 0.0005) { shown = target; rafId = null; lastTick = 0; }
     else rafId = requestAnimationFrame(tick);
-    if (useFrames) drawFrame(shown); else requestSeek(shown * (video.duration || 0));
+    requestSeek(shown * (video.duration || 0));
     updateCaptions(shown);
   }
   function onScroll(){
@@ -174,18 +130,13 @@
     new IntersectionObserver(([e]) => { heroOnScreen = e.isIntersecting; if (heroOnScreen) onScroll(); }).observe(hero);
   }
 
-  // ---- loading: poster first, then the whole video as a Blob ----
+  // loading: poster first, then the whole video as a Blob
   let initDone = false;
-  function initHeroOnce(){
+  function initScrubOnce(){
     if (initDone) return;
     initDone = true;
     let started = false;
-    const start = () => {
-      if (started) return;
-      started = true;
-      if (useFrames) loadFrames();
-      else loadVideo().catch(() => stage.classList.add('video-failed'));
-    };
+    const start = () => { if (started) return; started = true; loadVideo().catch(() => stage.classList.add('video-failed')); };
     const img = new Image();
     img.onload = img.onerror = start;
     img.src = POSTER_URL;
@@ -198,30 +149,21 @@
     video.muted = true;
     video.src = URL.createObjectURL(await res.blob());
     video.load();
-    let ready = false;
-    const onReady = () => {
-      if (ready) return;
-      ready = true;
+    video.addEventListener('canplay', () => {
       requestSeek(heroProgress() * video.duration);
       stage.classList.add('video-ready');
-    };
-    video.addEventListener('loadeddata', onReady, { once: true });
-    video.addEventListener('canplay', onReady, { once: true });
-    // iOS Safari only paints seeked frames once the video has played: a muted
-    // inline play-then-pause unlocks it (allowed without a tap).
-    const played = video.play();
-    if (played && played.then) played.then(() => { video.pause(); onReady(); requestSeek(heroProgress() * video.duration); }).catch(() => {});
+    }, { once: true });
   }
 
-  // ---- arm / disarm live as gates change (rotation, resize, motion setting) ----
+  // arm / disarm live as the motion setting changes
   let scrubOn = false;
   function enableScrub(){
     if (scrubOn) return;
     scrubOn = true;
     hero.classList.add('is-scrub');
-    initHeroOnce();
+    initScrubOnce();
     addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', onResize, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
     bands.forEach(b => { b.op = -1; b.k = -1; });
     shown = target = heroProgress();
     updateCaptions(shown);
@@ -232,18 +174,25 @@
     scrubOn = false;
     hero.classList.remove('is-scrub');
     removeEventListener('scroll', onScroll);
-    removeEventListener('resize', onResize);
+    removeEventListener('resize', onScroll);
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     bands.forEach(b => { b.el.style.opacity = ''; b.el.style.visibility = ''; b.el.style.removeProperty('--k'); b.op = -1; b.k = -1; });
   }
-  function onResize(){ sizeCanvas(); drawFrame(shown); onScroll(); }
-  function applyHeroMode(){
-    if (MQLS.some(m => m.matches)) disableScrub(); else enableScrub();
-  }
-  const MQLS = GATES.map(q => matchMedia(q));
-  MQLS.forEach(m => m.addEventListener ? m.addEventListener('change', applyHeroMode) : m.addListener(applyHeroMode));
 
-  // The first line assembles on its own once, then scroll takes over.
+  // Phone or computer is decided once per page view; only the motion setting is live.
+  const isTouch = matchMedia(TOUCH_QUERY).matches;
+  const staticMQ = matchMedia(STATIC_QUERY);
+  function applyHeroMode(){
+    if (staticMQ.matches) {
+      disableScrub();
+      if (playStarted) { video.pause(); hero.classList.add('is-settled'); }
+      return;
+    }
+    if (isTouch) startPlay(); else enableScrub();
+  }
+  staticMQ.addEventListener ? staticMQ.addEventListener('change', applyHeroMode) : staticMQ.addListener(applyHeroMode);
+
+  // On computers the first line assembles on its own once, then scroll takes over.
   const t0 = performance.now();
   (function loadRamp(now){
     loadK = clamp((now - t0) / 1100, 0, 1);
