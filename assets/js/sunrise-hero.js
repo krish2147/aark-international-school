@@ -2,7 +2,9 @@
 // through dawn clouds, the clouds lift into a golden ceiling, then the sun
 // rises off the horizon and comes close, ending as a big sun in mid-sky. The
 // sun then becomes the AARK sun (rays burst out of it, the AARK centre forms on
-// it) and the closing lines arrive underneath.
+// it), glides into place as the school's full logo (INTERNATIONAL SCHOOL and
+// Vadodara. write in beside it, exactly as in the official lockup) and the
+// closing lines arrive underneath.
 // - Computers (fine pointer, wide window): scrolling scrubs the shot.
 // - Phones and tablets: scroll-linked animation is never reliably smooth on
 //   touch screens, so a light clip shaped like the screen plays once on load
@@ -16,25 +18,32 @@
   const video = hero.querySelector('.sr-video');
   const poster = hero.querySelector('.sr-poster');
   const settleBand = hero.querySelector('.sr-band-settle');
+  const sunless = hero.querySelector('.sr-sunless');
   const bands = [...hero.querySelectorAll('.sr-band')].map(el => ({
     el, a: +el.dataset.a, b: +el.dataset.b, ramp: +(el.dataset.ramp || 0), op: -1, k: -1
   }));
 
   // Each clip, with where the sun sits in its last frame: centre (x, y) and
   // diameter (d), as fractions of the clip's width / height / width.
-  const DESKTOP = { url: 'assets/hero/sunrise.mp4', start: 'assets/hero/sunrise-start.jpg', w: 1920, h: 1072, sun: { x: 0.4994, y: 0.5224, d: 0.1151 } };
+  const DESKTOP = { url: 'assets/hero/sunrise.mp4', start: 'assets/hero/sunrise-start.jpg', sunless: 'assets/hero/sunrise-sunless.jpg', w: 1920, h: 1072, sun: { x: 0.4994, y: 0.5224, d: 0.1151 } };
   const PLAY_CLIPS = {
-    portrait: { url: 'assets/hero/sunrise-m.mp4', start: 'assets/hero/sunrise-m-start.jpg', end: 'assets/hero/sunrise-m-end.jpg', w: 720, h: 1020, sun: { x: 0.4984, y: 0.5223, d: 0.2921 } },
-    landscape: { url: 'assets/hero/sunrise-l.mp4', start: 'assets/hero/sunrise-l-start.jpg', end: 'assets/hero/sunrise-l-end.jpg', w: 960, h: 536, sun: { x: 0.4994, y: 0.5224, d: 0.1151 } }
+    portrait: { url: 'assets/hero/sunrise-m.mp4', start: 'assets/hero/sunrise-m-start.jpg', end: 'assets/hero/sunrise-m-end.jpg', sunless: 'assets/hero/sunrise-m-sunless.jpg', w: 720, h: 1020, sun: { x: 0.4984, y: 0.5223, d: 0.2921 } },
+    landscape: { url: 'assets/hero/sunrise-l.mp4', start: 'assets/hero/sunrise-l-start.jpg', end: 'assets/hero/sunrise-l-end.jpg', sunless: 'assets/hero/sunrise-l-sunless.jpg', w: 960, h: 536, sun: { x: 0.4994, y: 0.5224, d: 0.1151 } }
   };
   let clip = DESKTOP;
 
-  const VIDEO_END = 0.83;        // scrub progress at which the shot reaches its last frame
-  const FORM = [0.83, 0.93];     // ...then the sun becomes the AARK sun
+  const VIDEO_END = 0.80;        // scrub progress at which the shot reaches its last frame
+  const FORM = [0.80, 0.87];     // ...then the sun becomes the AARK sun
+  const MOVE = [0.87, 0.93];     // ...glides into place as the full logo
+  const WORD = [0.915, 0.955];   // ...while INTERNATIONAL SCHOOL / Vadodara. write in
   const PHONE_SETTLE_AT = 3.4;   // clip seconds: the clouds have cleared, the opening line leaves
   const PHONE_RATE = 1.35;       // phones play the shot a little faster
-  const MARK_PER_SUN = 1.7;      // logo width (ray tip to ray tip) per sun diameter
-  const MARK_PER_SUN_PLAY = 1.5; // a little smaller on phones, to leave room for the name and text
+  const MARK_PER_SUN = 1.7;      // sun-mark size (ray tip to ray tip) per sun diameter
+  const MARK_PER_SUN_PLAY = 1.5;
+  // The full logo in sun-mark units (the mark is 1 wide): its left ray tip, the
+  // end of SCHOOL, and how far its lowest ray reaches below the mark's centre.
+  const LOCKUP_LEFT = 0.058, LOCKUP_RIGHT = 2.419, LOCKUP_DOWN = 0.461;
+  const LOCK_DELAY = 1500;       // phones: ms between the sun becoming the mark and the glide
 
   // Must match the media queries in sunrise-hero.css exactly.
   const STATIC_QUERY = '(prefers-reduced-motion: reduce)';
@@ -62,14 +71,22 @@
     const x = (w - vw * s) / 2 + clip.sun.x * vw * s;
     const y = (h - vh * s) / 2 + clip.sun.y * vh * s;
     const size = clip.sun.d * vw * s * (playStarted ? MARK_PER_SUN_PLAY : MARK_PER_SUN);
+    // where the full logo settles: centred, as wide as the screen allows
+    // (and short enough that the closing lines still fit under it)
+    const bandH = settleBand ? settleBand.offsetHeight : 0;
+    const fk = Math.min(Math.min(w - (w < 700 ? 28 : 120), 860) / (LOCKUP_RIGHT - LOCKUP_LEFT),
+                        Math.max(60, (h - bandH - 48) / 0.95));   // final sun-mark size
+    const lw = fk * (LOCKUP_RIGHT - LOCKUP_LEFT);
+    const fx = (w - lw) / 2 + (0.5 - LOCKUP_LEFT) * fk;
+    const fy = Math.max(fk * 0.47 + 8, Math.min(h * 0.4, h - bandH - 30 - fk * LOCKUP_DOWN));
     stage.style.setProperty('--sx', x.toFixed(1) + 'px');
     stage.style.setProperty('--sy', y.toFixed(1) + 'px');
     stage.style.setProperty('--mk', size.toFixed(1) + 'px');
-    if (settleBand) {
-      const below = y + size * 0.5 + 12;
-      const room = h - settleBand.offsetHeight - 14;
-      stage.style.setProperty('--below', Math.max(0, Math.min(below, room)).toFixed(1) + 'px');
-    }
+    stage.style.setProperty('--fx', fx.toFixed(1) + 'px');
+    stage.style.setProperty('--fy', fy.toFixed(1) + 'px');
+    stage.style.setProperty('--kf', (fk / size).toFixed(4));
+    stage.style.setProperty('--below', (fy + fk * LOCKUP_DOWN + 18).toFixed(1) + 'px');
+    if (sunless && sunless.dataset.src !== clip.sunless) { sunless.dataset.src = clip.sunless; sunless.style.backgroundImage = `url('${clip.sunless}')`; }
   }
   let lastW = 0;
   addEventListener('resize', () => { if (innerWidth !== lastW || !playStarted) { lastW = innerWidth; placeMark(); } }, { passive: true });
@@ -92,17 +109,23 @@
     video.poster = clip.start;
     poster.style.backgroundImage = `url('${clip.start}')`;
     const settle = () => hero.classList.add('is-settled');
-    const markUp = () => { settle(); hero.classList.add('is-marked'); };
+    const lock = () => hero.classList.add('is-locked');
+    const markUp = (now) => {
+      if (hero.classList.contains('is-marked')) return;
+      settle();
+      hero.classList.add('is-marked');
+      if (now === true) lock(); else setTimeout(lock, LOCK_DELAY);
+    };
     const giveUp = () => {
       stage.classList.add('video-failed');
       poster.style.backgroundImage = `url('${clip.end}')`;
-      markUp();
+      markUp(true);
     };
     video.addEventListener('timeupdate', () => {
       if (video.currentTime >= PHONE_SETTLE_AT) settle();
       if (video.duration && video.currentTime >= video.duration - 0.3) markUp();
     });
-    video.addEventListener('ended', markUp, { once: true });
+    video.addEventListener('ended', () => markUp(), { once: true });
     video.addEventListener('error', giveUp, { once: true });
     video.addEventListener('playing', () => stage.classList.add('video-ready'), { once: true });
     video.src = clip.url;
@@ -141,10 +164,17 @@
   });
 
   // captions and the logo: delta-gated writes only
-  let loadK = 0, lastF = -1;
+  let loadK = 0, lastF = '';
+  const phase = (p, [a, b]) => Math.round(clamp((p - a) / (b - a), 0, 1) * 200) / 200;
   function updateCaptions(p){
-    const f = Math.round(clamp((p - FORM[0]) / (FORM[1] - FORM[0]), 0, 1) * 200) / 200;
-    if (f !== lastF) { lastF = f; stage.style.setProperty('--f', f); }
+    const f = phase(p, FORM), g = phase(p, MOVE), wd = phase(p, WORD);
+    const key = f + '|' + g + '|' + wd;
+    if (key !== lastF) {
+      lastF = key;
+      stage.style.setProperty('--f', f);
+      stage.style.setProperty('--g', g);
+      stage.style.setProperty('--wd', wd);
+    }
     bands.forEach((band, i) => {
       const { a, b } = band;
       const fr = Math.min(0.02, (b - a) / 3);
@@ -214,7 +244,7 @@
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll, { passive: true });
     bands.forEach(b => { b.op = -1; b.k = -1; });
-    lastF = -1;
+    lastF = '';
     placeMark();
     shown = target = heroProgress();
     updateCaptions(shown);
@@ -228,7 +258,7 @@
     removeEventListener('resize', onScroll);
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     bands.forEach(b => { b.el.style.opacity = ''; b.el.style.visibility = ''; b.el.style.removeProperty('--k'); b.op = -1; b.k = -1; });
-    stage.style.removeProperty('--f');
+    ['--f', '--g', '--wd'].forEach(v => stage.style.removeProperty(v));
   }
 
   // Phone or computer is decided once per page view; only the motion setting is live.
@@ -237,7 +267,7 @@
   function applyHeroMode(){
     if (staticMQ.matches) {
       disableScrub();
-      if (playStarted) { video.pause(); hero.classList.add('is-settled', 'is-marked'); }
+      if (playStarted) { video.pause(); hero.classList.add('is-settled', 'is-marked', 'is-locked'); }
       return;
     }
     if (isTouch) startPlay(); else enableScrub();

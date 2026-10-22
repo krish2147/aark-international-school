@@ -94,40 +94,46 @@
 @media(max-height:640px){.is-scrub .sr-facts,.is-scrub .sr-cue{display:none}}
 
 
-/* ---- the sun becomes the AARK sun ----
-   sunrise-hero.js sets, on the stage, --sx/--sy (the real sun's centre in the
-   shot's last frame, through the cover crop), --mk (logo size, in sun widths)
-   and --below (where the closing lines go, under the logo). The rays burst out
-   of the sun's edge and the AARK centre forms on the sun's face. */
-.sr-mark{display:none;position:absolute;left:var(--sx,50%);top:var(--sy,52%);width:var(--mk,300px);height:var(--mk,300px);margin:calc(var(--mk,300px) / -2) 0 0 calc(var(--mk,300px) / -2);pointer-events:none}
+/* ---- the sun becomes the AARK sun, then the full AARK logo ----
+   sunrise-hero.js sets, on the stage: --sx/--sy (the real sun's centre in the
+   shot's last frame, through the cover crop), --mk (sun-mark size), --fx/--fy
+   and --kf (where the full logo settles, and its scale against --mk) and --below
+   (where the closing lines go). .sr-sunless is the last frame with the sun
+   painted out; it fades in as the mark carries the sun away.
+   The wordmark sits beside the sun mark exactly as in the official lockup. */
+.sr-sunless{position:absolute;inset:0;z-index:-2;pointer-events:none;opacity:0;background:center/cover no-repeat}
+.sr-mark{display:none;position:absolute;left:var(--sx,50%);top:var(--sy,52%);width:var(--mk,300px);height:var(--mk,300px);margin:calc(var(--mk,300px) / -2) 0 0 calc(var(--mk,300px) / -2);pointer-events:none;transform-origin:50% 50%}
 .is-scrub .sr-mark,.is-play .sr-mark{display:block}
-.sr-mark img,.sr-mark-glow{position:absolute;inset:0;width:100%;height:100%}
+.sr-mark-rays,.sr-mark-core,.sr-mark-glow{position:absolute;inset:0;width:100%;height:100%}
 .sr-mark-glow{inset:-25%;width:auto;height:auto;border-radius:50%;background:radial-gradient(circle,rgba(255,250,232,.95) 0%,rgba(255,232,170,.55) 26%,rgba(255,214,140,.2) 46%,rgba(255,210,140,0) 66%)}
-.sr-mark-core{filter:drop-shadow(0 4px 14px rgba(140,80,20,.28))}
+.sr-mark-word{position:absolute;left:85.2%;top:46.09%;width:156.68%;height:auto;max-width:none}
 
-/* computers: scroll drives --f (0 to 1) once the shot has ended */
-.is-scrub .sr-mark{opacity:clamp(0,var(--f,0) * 8,1)}
-.is-scrub .sr-mark-glow{opacity:var(--f,0);transform:scale(calc(.6 + .4 * var(--f,0)))}
+/* computers: scroll drives --f (form), --g (glide) and --wd (wordmark) */
+.is-scrub .sr-mark{opacity:clamp(0,var(--f,0) * 8,1);transform:translate(calc((var(--fx,0px) - var(--sx,0px)) * var(--g,0)),calc((var(--fy,0px) - var(--sy,0px)) * var(--g,0))) scale(calc(1 + (var(--kf,1) - 1) * var(--g,0)))}
+.is-scrub .sr-mark-glow{opacity:calc(var(--f,0) * (1 - var(--g,0)));transform:scale(calc(.6 + .4 * var(--f,0)))}
 .is-scrub .sr-mark-rays{--r:clamp(0,var(--f,0) * 1.6,1);opacity:var(--r);transform:rotate(calc((1 - var(--r)) * -70deg)) scale(calc(.5 + .5 * var(--r)))}
 .is-scrub .sr-mark-core{--c:clamp(0,(var(--f,0) - .4) * 2,1);opacity:var(--c);transform:scale(calc(.6 + .4 * var(--c)))}
+.is-scrub .sr-sunless{opacity:clamp(0,var(--g,0) * 2.2,1)}
+.is-scrub .sr-mark-word{opacity:clamp(0,var(--wd,0) * 3,1);clip-path:inset(-10% calc((1 - var(--wd,0)) * 100%) -10% 0)}
 
-/* touch screens: the same steps as compositor-only animations */
-.is-play .sr-mark-glow,.is-play .sr-mark-rays,.is-play .sr-mark-core{opacity:0}
-.is-play.is-marked .sr-mark-glow{animation:sr-glow 1.2s ease-out forwards,sr-glow-pulse 4s ease-in-out 2.4s infinite alternate}
+/* touch screens: the same steps as timed animations */
+.is-play .sr-mark-glow,.is-play .sr-mark-rays,.is-play .sr-mark-core,.is-play .sr-mark-word{opacity:0}
+.is-play .sr-mark{transition:transform 1.3s cubic-bezier(.45,0,.2,1)}
+.is-play.is-marked .sr-mark-glow{animation:sr-glow 1.2s ease-out forwards}
 .is-play.is-marked .sr-mark-rays{animation:sr-rays 1.3s var(--v2-ease-out) .1s forwards}
 .is-play.is-marked .sr-mark-core{animation:sr-core .9s var(--v2-ease-out) .7s forwards}
+.is-play.is-locked .sr-mark{transform:translate(calc(var(--fx,0px) - var(--sx,0px)),calc(var(--fy,0px) - var(--sy,0px))) scale(var(--kf,1))}
+.is-play.is-locked .sr-mark-glow{opacity:0;animation:none;transition:opacity .8s}
+.is-play.is-locked .sr-sunless{opacity:1;transition:opacity .9s ease-out}
+.is-play.is-locked .sr-mark-word{animation:sr-word 1.1s var(--v2-ease-out) .9s forwards}
 @keyframes sr-glow{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
-@keyframes sr-glow-pulse{from{opacity:1}to{opacity:.7}}
 @keyframes sr-rays{from{opacity:0;transform:rotate(-70deg) scale(.5)}to{opacity:1;transform:none}}
 @keyframes sr-core{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes sr-word{from{opacity:0;clip-path:inset(-10% 100% -10% 0)}to{opacity:1;clip-path:inset(-10% 0 -10% 0)}}
 
-/* the school's full name, from the official lockup, under the logo */
-.sr-name{display:block;width:min(560px,88%);height:auto;margin:0 auto 18px;filter:drop-shadow(0 1px 10px rgba(255,246,230,.9))}
-.is-scrub .sr-name{--kn:clamp(0,var(--k,0) * 2.6,1);opacity:var(--kn);transform:translateY(calc((1 - var(--kn)) * 14px))}
-.is-scrub .sr-settle-title .w{--kc:clamp(0,(var(--k,0) - .25 - var(--th,0) * .6) * 2.6,1)}
+/* the closing lines sit under the logo */
 .is-scrub .sr-band-settle .sr-lead,.is-play .sr-band-settle .sr-lead{display:none}
 .v2 .is-scrub h2.sr-settle-title,.v2 .is-play h2.sr-settle-title{font-size:clamp(26px,3.4vw,46px)}
-@media(max-width:720px){.sr-name{width:min(340px,92%);margin-bottom:12px}}
 
 /* ---- play mode (phones and tablets) ----
    Only opacity and transform animate, so it all runs on the compositor. */
@@ -146,7 +152,7 @@
 .is-play .sr-band-open{top:13%;transition:opacity .8s var(--v2-ease-out),transform .8s var(--v2-ease-out)}
 .is-play.is-settled .sr-band-open{opacity:0;transform:translate(-50%,-14px)}
 .is-play .sr-band-settle{top:var(--below,70%);opacity:0;transform:translate(-50%,18px);transition:opacity 1s var(--v2-ease-out),transform 1s var(--v2-ease-out);pointer-events:none}
-.is-play.is-marked .sr-band-settle{opacity:1;transform:translateX(-50%);pointer-events:auto;transition-delay:1.5s}
+.is-play.is-locked .sr-band-settle{opacity:1;transform:translateX(-50%);pointer-events:auto;transition-delay:1.7s}
 @media(max-width:720px){.is-play .sr-band-settle .sr-lead,.is-play .sr-facts,.is-play .sr-band-settle .sr-btn-ghost{display:none}.is-play .sr-actions{margin-top:14px}}
 /* phones held sideways: a short screen, so keep one line and one button */
 @media(orientation:landscape) and (max-height:560px){
