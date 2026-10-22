@@ -1,37 +1,40 @@
-// Homepage "Sunrise over AARK" hero: the camera sinks through dawn clouds to
-// the sun beneath them.
-// - Computers (fine pointer, wide window): scrolling scrubs the video.
+// Homepage "Sunrise over AARK" hero. One continuous shot: the camera sinks
+// through dawn clouds, the clouds lift into a golden ceiling, then the sun
+// rises off the horizon and comes close, ending as a big sun in mid-sky. The
+// sun then becomes the AARK sun (rays burst out of it, the AARK centre forms on
+// it) and the closing lines arrive underneath.
+// - Computers (fine pointer, wide window): scrolling scrubs the shot.
 // - Phones and tablets: scroll-linked animation is never reliably smooth on
-//   touch screens, so a small portrait cut of the shot simply plays once on
-//   load (hardware video decoding, smooth everywhere), the closing lines fade
-//   in as the sun appears, and the page scrolls natively.
-// Either way the scene ends with the AARK sun logo forming on the real sun.
+//   touch screens, so a light clip shaped like the screen plays once on load
+//   (hardware video decoding), and the page scrolls natively.
 // - Reduced motion (and phones where autoplay is blocked, e.g. iOS Low Power
-//   Mode): the static hero over the final frame. No video is downloaded for
-//   reduced motion.
+//   Mode): the finished scene, still. No video for reduced motion.
 (function(){
   const hero = document.querySelector('.sr-hero');
   if (!hero) return;
   const stage = hero.querySelector('.sr-stage');
   const video = hero.querySelector('.sr-video');
   const poster = hero.querySelector('.sr-poster');
+  const settleBand = hero.querySelector('.sr-band-settle');
   const bands = [...hero.querySelectorAll('.sr-band')].map(el => ({
     el, a: +el.dataset.a, b: +el.dataset.b, ramp: +(el.dataset.ramp || 0), op: -1, k: -1
   }));
 
-  const VIDEO_URL = 'assets/hero/sunrise.mp4';
-  const POSTER_URL = 'assets/hero/sunrise-start.jpg';
-  // Touch screens get a light clip shaped like the screen: portrait or landscape.
+  // Each clip, with where the sun sits in its last frame: centre (x, y) and
+  // diameter (d), as fractions of the clip's width / height / width.
+  const DESKTOP = { url: 'assets/hero/sunrise.mp4', start: 'assets/hero/sunrise-start.jpg', w: 1920, h: 1072, sun: { x: 0.4994, y: 0.5224, d: 0.1151 } };
   const PLAY_CLIPS = {
-    portrait: { url: 'assets/hero/sunrise-m.mp4', start: 'assets/hero/sunrise-m-start.jpg', end: 'assets/hero/sunrise-m-end.jpg', w: 720, h: 1020 },
-    landscape: { url: 'assets/hero/sunrise-l.mp4', start: 'assets/hero/sunrise-l-start.jpg', end: 'assets/hero/sunrise-l-end.jpg', w: 960, h: 536 }
+    portrait: { url: 'assets/hero/sunrise-m.mp4', start: 'assets/hero/sunrise-m-start.jpg', end: 'assets/hero/sunrise-m-end.jpg', w: 720, h: 1020, sun: { x: 0.4984, y: 0.5223, d: 0.2921 } },
+    landscape: { url: 'assets/hero/sunrise-l.mp4', start: 'assets/hero/sunrise-l-start.jpg', end: 'assets/hero/sunrise-l-end.jpg', w: 960, h: 536, sun: { x: 0.4994, y: 0.5224, d: 0.1151 } }
   };
-  let clip = null;
-  const PHONE_SETTLE_AT = 3.4;   // seconds into the clip when the clouds have cleared
-  const PHONE_MARK_AT = 4.3;     // ...and when the AARK sun starts forming on the real sun
-  // Where the sun sits in both clips' final frame, as a fraction of the frame.
-  const SUN_X = 0.501, SUN_Y = 0.861;
-  const mark = hero.querySelector('.sr-mark');
+  let clip = DESKTOP;
+
+  const VIDEO_END = 0.83;        // scrub progress at which the shot reaches its last frame
+  const FORM = [0.83, 0.93];     // ...then the sun becomes the AARK sun
+  const PHONE_SETTLE_AT = 3.4;   // clip seconds: the clouds have cleared, the opening line leaves
+  const PHONE_RATE = 1.35;       // phones play the shot a little faster
+  const MARK_PER_SUN = 1.9;      // logo width (ray tip to ray tip) per sun diameter
+  const MARK_PER_SUN_PLAY = 1.6; // a little smaller on phones, to leave room for the text
 
   // Must match the media queries in sunrise-hero.css exactly.
   const STATIC_QUERY = '(prefers-reduced-motion: reduce)';
@@ -50,25 +53,28 @@
     ).join(' ');
   });
 
-  // ---- the AARK sun forms on the real sun: keep it pinned to the sun's spot ----
+  // ---- the AARK sun sits on the real sun; the closing lines sit under it ----
   // The footage is drawn object-fit:cover, so map the sun through the same crop.
   function placeMark(){
-    if (!mark) return;
-    const vw = video.videoWidth || (clip ? clip.w : 1920);
-    const vh = video.videoHeight || (clip ? clip.h : 1072);
+    const vw = video.videoWidth || clip.w, vh = video.videoHeight || clip.h;
     const w = stage.clientWidth, h = stage.clientHeight;
     const s = Math.max(w / vw, h / vh);
-    // honour the video's object-position (short landscape screens anchor it to the bottom)
-    const pos = getComputedStyle(video).objectPosition.split(' ');
-    const pct = v => (v && v.endsWith('%')) ? parseFloat(v) / 100 : 0.5;
-    const x = (w - vw * s) * pct(pos[0]) + SUN_X * vw * s;
-    const y = (h - vh * s) * pct(pos[1]) + SUN_Y * vh * s;
-    mark.style.setProperty('--sx', x.toFixed(1) + 'px');
-    mark.style.setProperty('--sy', y.toFixed(1) + 'px');
+    const x = (w - vw * s) / 2 + clip.sun.x * vw * s;
+    const y = (h - vh * s) / 2 + clip.sun.y * vh * s;
+    const size = clip.sun.d * vw * s * (playStarted ? MARK_PER_SUN_PLAY : MARK_PER_SUN);
+    stage.style.setProperty('--sx', x.toFixed(1) + 'px');
+    stage.style.setProperty('--sy', y.toFixed(1) + 'px');
+    stage.style.setProperty('--mk', size.toFixed(1) + 'px');
+    if (settleBand) {
+      const below = y + size * 0.5 + 12;
+      const room = h - settleBand.offsetHeight - 14;
+      stage.style.setProperty('--below', Math.max(0, Math.min(below, room)).toFixed(1) + 'px');
+    }
   }
   let lastW = 0;
   addEventListener('resize', () => { if (innerWidth !== lastW || !playStarted) { lastW = innerWidth; placeMark(); } }, { passive: true });
   video.addEventListener('loadedmetadata', placeMark);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeMark);
 
   // =================== phones and tablets: play once ===================
   let playStarted = false;
@@ -76,6 +82,8 @@
     if (playStarted) return;
     playStarted = true;
     hero.classList.add('is-play');
+    // the hero fills exactly the screen left under the header and info bar
+    stage.style.setProperty('--hdr', Math.round(stage.getBoundingClientRect().top + scrollY) + 'px');
     clip = stage.clientWidth > stage.clientHeight ? PLAY_CLIPS.landscape : PLAY_CLIPS.portrait;
     video.muted = true;
     video.playsInline = true;
@@ -92,12 +100,14 @@
     };
     video.addEventListener('timeupdate', () => {
       if (video.currentTime >= PHONE_SETTLE_AT) settle();
-      if (video.currentTime >= PHONE_MARK_AT) markUp();
+      if (video.duration && video.currentTime >= video.duration - 0.3) markUp();
     });
     video.addEventListener('ended', markUp, { once: true });
     video.addEventListener('error', giveUp, { once: true });
     video.addEventListener('playing', () => stage.classList.add('video-ready'), { once: true });
     video.src = clip.url;
+    video.playbackRate = PHONE_RATE;
+    video.addEventListener('loadedmetadata', () => { video.playbackRate = PHONE_RATE; }, { once: true });
     lastW = innerWidth;
     placeMark();
     const p = video.play();
@@ -116,6 +126,7 @@
   let seekBusy = false, pendingTime = null;
   function requestSeek(t){
     if (!video.duration) return;
+    t = Math.min(t, video.duration - 0.01);
     if (seekBusy) { pendingTime = t; return; }
     seekBusy = true;
     video.currentTime = t;
@@ -129,19 +140,16 @@
     stage.classList.add('video-failed');
   });
 
-  // captions: delta-gated writes only
-  let loadK = 0, lastM = -1;
-  const markA = mark ? +mark.dataset.a : 0, markB = mark ? +mark.dataset.b : 1;
+  // captions and the logo: delta-gated writes only
+  let loadK = 0, lastF = -1;
   function updateCaptions(p){
-    if (mark) {
-      const m = Math.round(clamp((p - markA) / (markB - markA), 0, 1) * 200) / 200;
-      if (m !== lastM) { lastM = m; mark.style.setProperty('--m', m); }
-    }
+    const f = Math.round(clamp((p - FORM[0]) / (FORM[1] - FORM[0]), 0, 1) * 200) / 200;
+    if (f !== lastF) { lastF = f; stage.style.setProperty('--f', f); }
     bands.forEach((band, i) => {
       const { a, b } = band;
-      const f = Math.min(0.02, (b - a) / 3);
-      const fadeIn = i === 0 ? 1 : smoothstep(p, a, a + f);
-      const fadeOut = i === bands.length - 1 ? 1 : 1 - smoothstep(p, b - f, b);
+      const fr = Math.min(0.02, (b - a) / 3);
+      const fadeIn = i === 0 ? 1 : smoothstep(p, a, a + fr);
+      const fadeOut = i === bands.length - 1 ? 1 : 1 - smoothstep(p, b - fr, b);
       const op = Math.round(fadeIn * fadeOut * 1000) / 1000;
       let k = clamp((p - a) / (band.ramp || Math.min(0.06, (b - a) * 0.35)), 0, 1);
       if (i === 0) k = Math.max(k, loadK);
@@ -159,7 +167,7 @@
     shown += (target - shown) * (1 - Math.pow(1 - 0.14, dt / 16.667));
     if (Math.abs(target - shown) < 0.0005) { shown = target; rafId = null; lastTick = 0; }
     else rafId = requestAnimationFrame(tick);
-    requestSeek(shown * (video.duration || 0));
+    requestSeek(Math.min(1, shown / VIDEO_END) * (video.duration || 0));
     updateCaptions(shown);
   }
   function onScroll(){
@@ -180,18 +188,18 @@
     const start = () => { if (started) return; started = true; loadVideo().catch(() => stage.classList.add('video-failed')); };
     const img = new Image();
     img.onload = img.onerror = start;
-    img.src = POSTER_URL;
-    poster.style.backgroundImage = `url('${POSTER_URL}')`;
+    img.src = DESKTOP.start;
+    poster.style.backgroundImage = `url('${DESKTOP.start}')`;
     setTimeout(start, 4000);
   }
   async function loadVideo(){
-    const res = await fetch(VIDEO_URL, { priority: 'low' });
+    const res = await fetch(DESKTOP.url, { priority: 'low' });
     if (!res.ok) throw new Error('video ' + res.status);
     video.muted = true;
     video.src = URL.createObjectURL(await res.blob());
     video.load();
     video.addEventListener('canplay', () => {
-      requestSeek(heroProgress() * video.duration);
+      requestSeek(Math.min(1, heroProgress() / VIDEO_END) * video.duration);
       stage.classList.add('video-ready');
     }, { once: true });
   }
@@ -206,7 +214,7 @@
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll, { passive: true });
     bands.forEach(b => { b.op = -1; b.k = -1; });
-    lastM = -1;
+    lastF = -1;
     placeMark();
     shown = target = heroProgress();
     updateCaptions(shown);
@@ -220,7 +228,7 @@
     removeEventListener('resize', onScroll);
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     bands.forEach(b => { b.el.style.opacity = ''; b.el.style.visibility = ''; b.el.style.removeProperty('--k'); b.op = -1; b.k = -1; });
-    if (mark) mark.style.removeProperty('--m');
+    stage.style.removeProperty('--f');
   }
 
   // Phone or computer is decided once per page view; only the motion setting is live.
