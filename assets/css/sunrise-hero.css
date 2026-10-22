@@ -1,11 +1,11 @@
 /*
   Homepage "Sunrise over AARK" hero + handoff to the real assembly photo.
   Two modes:
-  - static (default, and whenever a gate below matches): one composed screen
+  - static (no JS, reduced motion, or a landscape phone): one composed screen
     over the sunrise end frame. No video is ever requested.
-  - .is-scrub (set by sunrise-hero.js on wide, fine-pointer, motion-OK screens):
-    a 400vh pinned stage; scroll scrubs the video and drives the caption bands.
-  The five gate queries must match GATES in sunrise-hero.js exactly.
+  - .is-scrub (set by sunrise-hero.js everywhere else, phones included):
+    a pinned stage; scroll scrubs the video and drives the caption bands.
+  The gate queries must match GATES in sunrise-hero.js exactly.
 */
 :root{
   --sr-dusk:#2a2140;
@@ -28,7 +28,7 @@
   linear-gradient(180deg,rgba(27,22,48,.5) 0%,rgba(27,22,48,0) 34%,rgba(27,22,48,0) 70%,rgba(27,22,48,.22) 100%)}
 
 /* static hero: composed over the final sunrise frame */
-@media (max-width: 720px),(orientation: portrait) and (max-width: 1024px),(orientation: portrait) and (pointer: coarse),(orientation: landscape) and (pointer: coarse) and (max-height: 560px),(prefers-reduced-motion: reduce){
+@media (orientation: landscape) and (pointer: coarse) and (max-height: 560px),(prefers-reduced-motion: reduce){
   .sr-poster{background-image:url('../hero/sunrise-end.jpg')}
   .sr-hero .sr-video{display:none}
 }
@@ -56,7 +56,7 @@
 
 /* ---- scrub mode ---- */
 .sr-hero.is-scrub{height:400vh;background:var(--sr-dusk)}
-.is-scrub .sr-stage{position:sticky;top:0;height:100vh;min-height:0;padding:0;display:block}
+.is-scrub .sr-stage{position:sticky;top:0;height:100vh;height:100svh;min-height:0;padding:0;display:block}
 .is-scrub .sr-stage.video-ready .sr-video{opacity:1}
 .is-scrub .sr-stage.video-failed .sr-video{display:none}
 .is-scrub .sr-band{position:absolute;left:50%;width:min(1100px,calc(100% - 96px));transform:translateX(-50%);opacity:0;visibility:hidden;will-change:opacity}
@@ -90,6 +90,19 @@
 .is-scrub .sr-lead{--ks:clamp(0,(var(--k,0) - .5)*4,1);opacity:var(--ks);transform:translateY(calc((1 - var(--ks))*14px))}
 .is-scrub .sr-actions,.is-scrub .sr-facts{--kb:clamp(0,(var(--k,0) - .7)*4,1);opacity:var(--kb);transform:translateY(calc((1 - var(--kb))*14px))}
 @media(max-height:640px){.is-scrub .sr-facts,.is-scrub .sr-cue{display:none}}
+/* phones and portrait tablets: the footage is cover-cropped to the centre, so the
+   closing lines drop lower to stay in the bright sky under the cloud ceiling */
+@media(max-width:720px){
+  .sr-hero.is-scrub{height:320vh}
+  .is-scrub .sr-band{width:calc(100% - 40px)}
+  .is-scrub .sr-band-open{top:36%}
+  .is-scrub .sr-band-mid{top:30%}
+  .is-scrub .sr-band-settle{top:71%}
+  .is-scrub .sr-band-settle .sr-lead{display:none}
+  .is-scrub .sr-band-mid::before{inset:-60% -20%;background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(27,22,48,.5) 0%,rgba(27,22,48,.26) 55%,rgba(27,22,48,0) 85%)}
+  .is-scrub .sr-actions{margin-top:18px;gap:10px}
+}
+@media(orientation:portrait) and (min-width:721px){.is-scrub .sr-band-settle{top:68%}}
 
 /* ---- handoff: the real assembly photo takes over from the sunrise ---- */
 .sr-handoff{position:relative;background:linear-gradient(180deg,var(--sr-peach) 0%,var(--v2-color-ground) 46%);padding:0 var(--v2-gutter-mobile) var(--v2-space-2xl)}

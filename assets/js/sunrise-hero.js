@@ -1,6 +1,6 @@
 // Homepage "Sunrise over AARK" hero: scrolling down scrubs a short video in
 // which the camera sinks through dawn clouds to the sun beneath them.
-// Phones, portrait tablets and reduced-motion visitors get the static hero
+// Reduced-motion visitors and landscape phones (no room) get the static hero
 // (same text over the final frame) and never download the video.
 (function(){
   const hero = document.querySelector('.sr-hero');
@@ -17,9 +17,6 @@
 
   // Must match the static-hero media queries in homepage.css character for character.
   const GATES = [
-    '(max-width: 720px)',
-    '(orientation: portrait) and (max-width: 1024px)',
-    '(orientation: portrait) and (pointer: coarse)',
     '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
     '(prefers-reduced-motion: reduce)'
   ];
@@ -113,12 +110,22 @@
   async function loadVideo(){
     const res = await fetch(VIDEO_URL, { priority: 'low' });
     if (!res.ok) throw new Error('video ' + res.status);
+    video.muted = true;
     video.src = URL.createObjectURL(await res.blob());
     video.load();
-    video.addEventListener('canplay', () => {
+    let ready = false;
+    const onReady = () => {
+      if (ready) return;
+      ready = true;
       requestSeek(heroProgress() * video.duration);
       stage.classList.add('video-ready');
-    }, { once: true });
+    };
+    video.addEventListener('loadeddata', onReady, { once: true });
+    video.addEventListener('canplay', onReady, { once: true });
+    // iOS Safari only paints seeked frames once the video has played: a muted
+    // inline play-then-pause unlocks it (allowed without a tap).
+    const played = video.play();
+    if (played && played.then) played.then(() => { video.pause(); onReady(); requestSeek(heroProgress() * video.duration); }).catch(() => {});
   }
 
   // ---- arm / disarm live as gates change (rotation, resize, motion setting) ----
