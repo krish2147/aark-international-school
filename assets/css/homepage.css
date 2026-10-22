@@ -96,7 +96,9 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 @media(min-width:901px){.v2-philosophy{flex-direction:row;align-items:stretch}}
 .v2-philosophy-media{min-height:280px}
 @media(min-width:901px){.v2-philosophy-media{flex:0 0 46%;min-height:auto}}
-.v2-philosophy-media img{width:100%;height:100%;object-fit:cover;display:block}
+.v2-philosophy-media{position:relative;overflow:hidden}
+.v2-philosophy-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:900px){.v2-philosophy-media{min-height:0;aspect-ratio:4/3}}
 .v2-philosophy-text{padding:var(--v2-space-2xl) var(--v2-gutter-mobile);display:flex;flex-direction:column;gap:var(--v2-space-lg);justify-content:center}
 @media(min-width:901px){.v2-philosophy-text{flex:0 0 54%;padding:var(--v2-space-2xl) var(--v2-gutter-desktop)}}
 .v2-principles{display:flex;flex-direction:column;gap:var(--v2-space-sm)}
@@ -119,6 +121,31 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 .v2-life-pair div:last-child{margin-top:var(--v2-space-lg)}
 @media(max-width:700px){.v2-life-pair div:last-child{margin-top:0}}
 
+/* Life at AARK: two rows of school-event photos drifting in opposite
+   directions (life-marquee.js duplicates each row so the loop is seamless).
+   Hover or touch pauses a row; with reduced motion the rows stay still and
+   can be swiped. */
+.v2-life-marquee{display:flex;flex-direction:column;gap:14px;margin-inline:calc(var(--v2-gutter-mobile) * -1);text-align:left;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}
+@media(min-width:701px){.v2-life-marquee{margin-inline:calc(var(--v2-gutter-tablet) * -1);gap:var(--v2-space-sm)}}
+@media(min-width:1160px){.v2-life-marquee{margin-inline:calc(max(var(--v2-gutter-desktop),(100vw - var(--v2-container)) / 2) * -1)}}
+.lm-row{--lm-h:170px;height:var(--lm-h);overflow:hidden}
+@media(min-width:701px){.lm-row{--lm-h:230px}}
+@media(min-width:1100px){.lm-row{--lm-h:270px}}
+.lm-track{display:flex;gap:14px;height:100%;width:max-content;will-change:transform}
+.lm-item{position:relative;flex:0 0 auto;height:100%;margin:0;border-radius:var(--v2-radius-md);overflow:hidden;background:var(--v2-color-ground-tint)}
+.lm-item img{display:block;height:100%;width:auto;max-width:none;object-fit:cover}
+.lm-item figcaption{position:absolute;left:10px;bottom:10px;padding:5px 12px;border-radius:999px;background:rgba(27,22,48,.72);color:#fff;font-size:13px;font-weight:600}
+.v2-life-marquee.is-running .lm-track{animation:lm-slide var(--lm-dur,60s) linear infinite}
+.v2-life-marquee.is-running .lm-reverse .lm-track{animation-direction:reverse}
+.lm-row:hover .lm-track,.lm-row.is-held .lm-track{animation-play-state:paused}
+@keyframes lm-slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){
+  .v2-life-marquee{-webkit-mask-image:none;mask-image:none}
+  .lm-row{overflow-x:auto;scroll-snap-type:x proximity}
+  .v2-life-marquee .lm-track{animation:none!important}
+  .lm-item{scroll-snap-align:start}
+}
+
 /* ================= CAMPUS & EXPERIENCES ================= */
 .v2-campus{background:var(--v2-color-ground-tint);text-align:center}
 .v2-campus-head{max-width:600px;margin:0 auto var(--v2-space-2xl)}
@@ -127,7 +154,7 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 .v2-filmstrip::-webkit-scrollbar{height:6px}
 .v2-filmstrip::-webkit-scrollbar-thumb{background:var(--v2-color-border);border-radius:99px}
 .v2-filmstrip-item{flex:0 0 200px;scroll-snap-align:start}
-.v2-filmstrip-item img{width:100%;aspect-ratio:var(--v2-ratio-facility);object-fit:cover;background:var(--v2-color-ground);border-radius:var(--v2-radius-md);display:block;margin-bottom:10px;transition:transform var(--v2-duration-base) var(--v2-ease-standard)}
+.v2-filmstrip-item img{width:100%;height:auto;aspect-ratio:var(--v2-ratio-facility);object-fit:cover;background:var(--v2-color-ground);border-radius:var(--v2-radius-md);display:block;margin-bottom:10px;transition:transform var(--v2-duration-base) var(--v2-ease-standard)}
 .v2-filmstrip-item:hover img{transform:scale(1.02)}
 .v2-filmstrip-item.is-tall{margin-top:0}
 .v2-filmstrip-item.is-short{margin-top:40px}
