@@ -96,7 +96,7 @@
 
 /* ---- the sun becomes the AARK sun ----
    sunrise-hero.js sets, on the stage, --sx/--sy (the real sun's centre in the
-   shot's last frame, through the cover crop), --mk (logo size: 1.9 sun widths)
+   shot's last frame, through the cover crop), --mk (logo size, in sun widths)
    and --below (where the closing lines go, under the logo). The rays burst out
    of the sun's edge and the AARK centre forms on the sun's face. */
 .sr-mark{display:none;position:absolute;left:var(--sx,50%);top:var(--sy,52%);width:var(--mk,300px);height:var(--mk,300px);margin:calc(var(--mk,300px) / -2) 0 0 calc(var(--mk,300px) / -2);pointer-events:none}
@@ -120,6 +120,14 @@
 @keyframes sr-glow-pulse{from{opacity:1}to{opacity:.7}}
 @keyframes sr-rays{from{opacity:0;transform:rotate(-70deg) scale(.5)}to{opacity:1;transform:none}}
 @keyframes sr-core{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+
+/* the school's full name, from the official lockup, under the logo */
+.sr-name{display:block;width:min(560px,88%);height:auto;margin:0 auto 18px;filter:drop-shadow(0 1px 10px rgba(255,246,230,.9))}
+.is-scrub .sr-name{--kn:clamp(0,var(--k,0) * 2.6,1);opacity:var(--kn);transform:translateY(calc((1 - var(--kn)) * 14px))}
+.is-scrub .sr-settle-title .w{--kc:clamp(0,(var(--k,0) - .25 - var(--th,0) * .6) * 2.6,1)}
+.is-scrub .sr-band-settle .sr-lead,.is-play .sr-band-settle .sr-lead{display:none}
+.v2 .is-scrub h2.sr-settle-title,.v2 .is-play h2.sr-settle-title{font-size:clamp(26px,3.4vw,46px)}
+@media(max-width:720px){.sr-name{width:min(340px,92%);margin-bottom:12px}}
 
 /* ---- play mode (phones and tablets) ----
    Only opacity and transform animate, so it all runs on the compositor. */

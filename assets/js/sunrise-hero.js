@@ -33,8 +33,8 @@
   const FORM = [0.83, 0.93];     // ...then the sun becomes the AARK sun
   const PHONE_SETTLE_AT = 3.4;   // clip seconds: the clouds have cleared, the opening line leaves
   const PHONE_RATE = 1.35;       // phones play the shot a little faster
-  const MARK_PER_SUN = 1.9;      // logo width (ray tip to ray tip) per sun diameter
-  const MARK_PER_SUN_PLAY = 1.6; // a little smaller on phones, to leave room for the text
+  const MARK_PER_SUN = 1.7;      // logo width (ray tip to ray tip) per sun diameter
+  const MARK_PER_SUN_PLAY = 1.5; // a little smaller on phones, to leave room for the name and text
 
   // Must match the media queries in sunrise-hero.css exactly.
   const STATIC_QUERY = '(prefers-reduced-motion: reduce)';
