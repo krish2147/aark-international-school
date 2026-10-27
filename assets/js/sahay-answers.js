@@ -118,18 +118,18 @@ window.SAHAY_ANSWERS = {
       chip: 'School timings',
       strong: ['timing*', 'school time', 'school hours', 'समय', 'टाइम', 'સમય', 'ટાઇમ'],
       words: ['time', 'start', 'holiday*', 'vacation', 'calendar', 'छुट्टी', 'રજા'],
-      en: 'School timings and the holiday calendar aren\'t published on the website yet. Please call +91 99091 15550 (office 9:00 AM – 12:00 PM) and the team will help. The 2026–27 session began on 6 April 2026.',
-      hi: 'स्कूल का समय और छुट्टियों का कैलेंडर अभी वेबसाइट पर नहीं है। कृपया कॉल करें: +91 99091 15550 (ऑफिस: सुबह 9 से दोपहर 12 बजे), टीम आपकी मदद करेगी। 2026–27 सत्र 6 अप्रैल 2026 से शुरू हुआ।',
-      gu: 'શાળાનો સમય અને રજાઓનું કેલેન્ડર હજુ વેબસાઇટ પર નથી. કૃપા કરીને ફોન કરો: +91 99091 15550 (ઓફિસ: સવારે 9 થી બપોરે 12), ટીમ તમને મદદ કરશે. 2026–27 સત્ર 6 એપ્રિલ 2026થી શરૂ થયું છે.',
+      en: 'The full 2026–27 holiday calendar is on the Circulars page (Download the full calendar). For school timings, please call +91 99091 15550 (office 9:00 AM – 12:00 PM) and the team will help. The 2026–27 session began on 6 April 2026.',
+      hi: '2026–27 का पूरा छुट्टियों का कैलेंडर Circulars पेज पर है। स्कूल के समय के लिए कृपया कॉल करें: +91 99091 15550 (ऑफिस: सुबह 9 से दोपहर 12 बजे), टीम आपकी मदद करेगी। 2026–27 सत्र 6 अप्रैल 2026 से शुरू हुआ।',
+      gu: '2026–27નું સંપૂર્ણ રજાઓનું કેલેન્ડર Circulars પેજ પર છે. શાળાના સમય માટે કૃપા કરીને ફોન કરો: +91 99091 15550 (ઓફિસ: સવારે 9 થી બપોરે 12), ટીમ તમને મદદ કરશે. 2026–27 સત્ર 6 એપ્રિલ 2026થી શરૂ થયું છે.',
       next: ['contact', 'visit']
     },
     principal: {
       chip: 'Principal',
-      strong: ['principal', 'counsel*', 'प्रिंसिपल', 'प्रधानाचार्य', 'પ્રિન્સિપાલ', 'આચાર્ય'],
-      words: ['head', 'director', 'management', 'trust', 'owner', 'ट्रस्ट', 'ટ્રસ્ટ'],
-      en: 'The Principal is Dr. Mukesh Udasi (PhD Maths, M.Sc, B.Ed). The school counsellor is Dimpal Prajapati. AARK is managed by the Daffodils Education Trust.',
-      hi: 'स्कूल के प्रिंसिपल डॉ. मुकेश उदासी (PhD गणित, M.Sc, B.Ed) हैं। स्कूल काउंसलर डिंपल प्रजापति हैं। AARK का संचालन डैफ़ोडिल्स एजुकेशन ट्रस्ट करता है।',
-      gu: 'શાળાના પ્રિન્સિપાલ ડૉ. મુકેશ ઉદાસી (PhD ગણિત, M.Sc, B.Ed) છે. શાળાના કાઉન્સેલર ડિમ્પલ પ્રજાપતિ છે. AARKનું સંચાલન ડેફોડિલ્સ એજ્યુકેશન ટ્રસ્ટ કરે છે.',
+      strong: ['principal', 'coordinator*', 'प्रिंसिपल', 'प्रधानाचार्य', 'પ્રિન્સિપાલ', 'આચાર્ય'],
+      words: ['head', 'director', 'management', 'trust', 'owner', 'staff', 'teachers', 'faculty', 'ट्रस्ट', 'ટ્રસ્ટ'],
+      en: 'The Principal is Dr. Mukesh Udasi (PhD Maths, M.Sc, B.Ed). The full 2026–27 staff list is on the Staff page. AARK is managed by the Daffodils Education Trust.',
+      hi: 'स्कूल के प्रिंसिपल डॉ. मुकेश उदासी (PhD गणित, M.Sc, B.Ed) हैं। पूरी 2026–27 स्टाफ सूची Staff पेज पर है। AARK का संचालन डैफ़ोडिल्स एजुकेशन ट्रस्ट करता है।',
+      gu: 'શાળાના પ્રિન્સિપાલ ડૉ. મુકેશ ઉદાસી (PhD ગણિત, M.Sc, B.Ed) છે. 2026–27ની સંપૂર્ણ સ્ટાફ યાદી Staff પેજ પર છે. AARKનું સંચાલન ડેફોડિલ્સ એજ્યુકેશન ટ્રસ્ટ કરે છે.',
       next: ['curriculum', 'contact']
     },
     affiliation: {
