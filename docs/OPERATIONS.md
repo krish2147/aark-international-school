@@ -92,7 +92,10 @@ Forms show the check automatically; confirmation emails to parents start once it
 
 **Photos.** Site photos are WebP in two sizes (`name.webp` up to 1280 px, `name-640.webp` for phones). To replace a photo, keep both files and the same names.
 
+**Official documents.** The PDFs linked from the Mandatory Public Disclosure page live in `assets/docs/`. To update one (e.g. a renewed fire certificate), replace the file with the same name and redeploy. The SMC list is published with members' personal mobile numbers removed; if the school sends a new SMC list, remove personal numbers the same way before publishing.
+
+**Staff directory.** `staff.html` lists the 2026–27 employees list supplied by the school (names and designations only). Staff added in the admin under Staff replace this list.
+
 **Still needed from the school.**
-- PDFs for the Mandatory Public Disclosure page (affiliation letter, NOC, recognition certificate, building and fire safety certificates, water and sanitation certificate, self-certification, SMC and PTA lists, fee structure). CBSE requires these to be viewable on the website.
-- Staff details (optional): add them in the admin under Staff; they replace the Principal and Counsellor cards automatically.
+- Building Safety Certificate and Health, Water & Sanitation Certificate PDFs (the disclosure page says copies are at the school office until then).
 - Transport routes (optional): currently the page asks parents to call the office.
