@@ -13,7 +13,7 @@ const SCHOOL_FACTS = `
 - Classes: Nursery (Pre-Nursery) to Grade 12.
 - Managed by: Daffodils Education Trust (registration DE-3544 / Vadodara).
 - Principal: Dr. Mukesh Udasi (PhD Maths, M.Sc, B.Ed).
-- Counsellor: Dimpal Prajapati.
+- Coordinators: Neeta Nilesh Rathore, Prabhjot Kaur Baveja, Bhavna Mukesh Udasi. The full 2026–27 staff list is on the Staff page (staff.html).
 - CBSE affiliation no. 430650, CBSE school no. 11842. Affiliation level: Senior Secondary (Classes 1–12), valid 1 April 2026 – 31 March 2031.
 - Government of Gujarat NOC dated 17 February 2025. Recognition for Classes I–VIII valid 1 April 2025 – 31 March 2030.
 - Curriculum frameworks: CBSE, following NEP and NCF standards.
@@ -57,10 +57,10 @@ const SCHOOL_FACTS = `
 - Low-rise campus with natural light, open-air spaces and wide corridors; about 4,066 sq. metres.
 - 22 classrooms, 8 laboratories, technology-enabled classrooms, library, science and computer labs, AI & robotics facilities, arts and music spaces, sports facilities, swimming, cafeteria, outdoor green spaces, an outdoor musical wall and an adventure zone for younger children.
 - Fire safety certificate valid 29 May 2025 – 28 May 2028; building safety certificate from 30 April 2025; health, water and sanitation certificate valid to 28 March 2027.
-- Teaching staff: 26 (PGT 9, TGT 9, PRT 4, Balvatika 4).
+- Staff 2026–27: Principal, 3 coordinators, 25 teachers (including the librarian) and 4 administration staff.
 
 ## Other
-- The 2026–27 school calendar (holidays, PTMs, exams, events) exists but its dates are not published on the website; parents should ask the school.
+- The full 2026–27 school calendar (holidays, PTMs, exams, events) is published as a PDF on the Circulars page (circulars.html). The session began on 6 April 2026; Diwali vacation 6–19 Nov 2026; Annual Function 24 Dec 2026; Annual Result Day 20 Mar 2027.
 - Careers: vacancies and the application form are on AARK's official careers page; HR reviews applications.
 - Policies and circulars: on the Policies and Circulars pages; for a specific current policy, contact the school office.
 

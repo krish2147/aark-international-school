@@ -1,4 +1,4 @@
-// Staff page: replaces the published Principal / Counsellor cards with the admin-managed directory when it has entries.
+// Staff page: replaces the published staff list with the admin-managed directory when it has entries.
 (function(){
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
   fetch('/api/content/staff').then(r=>r.json()).then(data=>{
