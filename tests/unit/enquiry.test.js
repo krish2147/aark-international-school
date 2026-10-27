@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createEnquiryService, PARENT_CONFIRMATION, LIMITS } = require('../../api/_lib/enquiryService');
+const { createEnquiryService, PARENT_CONFIRMATION, APPLICANT_CONFIRMATION, LIMITS } = require('../../api/_lib/enquiryService');
 const { createEnquiryStore } = require('../../api/_lib/enquiryStore');
 const { normalisePhone, validateEnquiry } = require('../../api/_lib/enquiryValidation');
 const { createEnquiryHandler } = require('../../api/enquiry');
@@ -206,4 +206,40 @@ test('the HTTP handler only accepts POST and never caches', async () => {
   await h(createReq({ method: 'POST', body: JSON.stringify(valid()) }), post);
   assert.equal(post.statusCode, 200);
   assert.match(post.headers['cache-control'], /no-store/);
+});
+
+const job = (extra = {}) => ({ type: 'career', name: 'Asha Teacher', phone: '98765 12345', email: 'asha@example.com', grade: 'Primary Teacher (PRT)', message: 'B.Ed, 5 years teaching Grades 3-5.\nCBSE schools.', requestId: RID, ...extra });
+
+test('job applications need a role and an email, and keep the experience note', () => {
+  assert.match(validateEnquiry(job({ grade: '' })).error, /role/);
+  assert.match(validateEnquiry(job({ email: '' })).error, /email/);
+  const { value } = validateEnquiry(job({ child: 'should be dropped', message: 'a\u0000b' + 'x'.repeat(2000) }));
+  assert.equal(value.type, 'career');
+  assert.equal(value.typeLabel, 'Job Application');
+  assert.equal(value.child, '');
+  assert.equal(value.message.length, 1500);
+  assert.doesNotMatch(value.message, /\u0000/);
+  assert.equal(validateEnquiry(valid({ message: 'ignored for parents' })).value.message, '');
+});
+
+test('a job application is stored with its note and emailed to the school as an application', async () => {
+  const s = setup();
+  const r = await submit(s, job());
+  assert.equal(r.status, 200);
+  const [rec] = s.records();
+  assert.equal(rec.type, 'career');
+  assert.match(rec.message, /5 years/);
+  const mail = s.sent.find(m => m.to === 'school');
+  assert.match(mail.subject, /^Job Application — Primary Teacher \(PRT\) — Asha Teacher$/);
+  assert.match(mail.text, /Role applied for: Primary Teacher \(PRT\)/);
+  assert.match(mail.text, /5 years teaching/);
+  assert.equal(mail.replyTo, 'asha@example.com');
+});
+
+test('with Turnstile, applicants get the applicant confirmation, not the parent one', async () => {
+  const s = setup({ turnstile: { enabled: true, verify: async t => t === 'good' } });
+  await submit(s, job({ turnstileToken: 'good' }));
+  const msg = s.sent.find(m => m.to === 'asha@example.com');
+  assert.equal(msg.text, APPLICANT_CONFIRMATION.text);
+  assert.doesNotMatch(msg.text, /admissions team/);
 });

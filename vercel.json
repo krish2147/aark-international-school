@@ -34,5 +34,287 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/about-us",
+      "destination": "/about.html",
+      "permanent": true
+    },
+    {
+      "source": "/about-us/",
+      "destination": "/about.html",
+      "permanent": true
+    },
+    {
+      "source": "/admission",
+      "destination": "/admissions.html",
+      "permanent": true
+    },
+    {
+      "source": "/admission/",
+      "destination": "/admissions.html",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-schedule-2025-26-aark-international-school-vadodara",
+      "destination": "/admissions.html#schedule",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-schedule-2025-26-aark-international-school-vadodara/",
+      "destination": "/admissions.html#schedule",
+      "permanent": true
+    },
+    {
+      "source": "/admission/required-documents-for-admission-aark-international-school-vadodara",
+      "destination": "/admissions.html#instructions",
+      "permanent": true
+    },
+    {
+      "source": "/admission/required-documents-for-admission-aark-international-school-vadodara/",
+      "destination": "/admissions.html#instructions",
+      "permanent": true
+    },
+    {
+      "source": "/book-a-campus-visit-aark-international-school-vadodara",
+      "destination": "/index.html#visit",
+      "permanent": true
+    },
+    {
+      "source": "/book-a-campus-visit-aark-international-school-vadodara/",
+      "destination": "/index.html#visit",
+      "permanent": true
+    },
+    {
+      "source": "/career-opportunities-aark-international-school-vadodara",
+      "destination": "/careers.html",
+      "permanent": true
+    },
+    {
+      "source": "/career-opportunities-aark-international-school-vadodara/",
+      "destination": "/careers.html",
+      "permanent": true
+    },
+    {
+      "source": "/contact-aark-international-school-vadodara-location-enquiry",
+      "destination": "/index.html#visit-form",
+      "permanent": true
+    },
+    {
+      "source": "/contact-aark-international-school-vadodara-location-enquiry/",
+      "destination": "/index.html#visit-form",
+      "permanent": true
+    },
+    {
+      "source": "/faqs",
+      "destination": "/admissions.html#faq",
+      "permanent": true
+    },
+    {
+      "source": "/faqs/",
+      "destination": "/admissions.html#faq",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/privacy.html",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy/",
+      "destination": "/privacy.html",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-faqs",
+      "destination": "/admissions.html#faq",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-faqs/",
+      "destination": "/admissions.html#faq",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-procedure-aark-international-school-vadodara",
+      "destination": "/admissions.html#procedure",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-procedure-aark-international-school-vadodara/",
+      "destination": "/admissions.html#procedure",
+      "permanent": true
+    },
+    {
+      "source": "/curriculum",
+      "destination": "/curriculum.html",
+      "permanent": true
+    },
+    {
+      "source": "/curriculum/",
+      "destination": "/curriculum.html",
+      "permanent": true
+    },
+    {
+      "source": "/campus-facilities-aark-international-school-vadodara",
+      "destination": "/campus-detail.html",
+      "permanent": true
+    },
+    {
+      "source": "/campus-facilities-aark-international-school-vadodara/",
+      "destination": "/campus-detail.html",
+      "permanent": true
+    },
+    {
+      "source": "/student-life",
+      "destination": "/student-life.html",
+      "permanent": true
+    },
+    {
+      "source": "/student-life/",
+      "destination": "/student-life.html",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-instructions-aark-international-school-vadodara",
+      "destination": "/admissions.html#instructions",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-instructions-aark-international-school-vadodara/",
+      "destination": "/admissions.html#instructions",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-form",
+      "destination": "https://aarkintschool-forms.zeroq.net",
+      "permanent": true
+    },
+    {
+      "source": "/admission/admission-form/",
+      "destination": "https://aarkintschool-forms.zeroq.net",
+      "permanent": true
+    },
+    {
+      "source": "/admission-process-explained-aark-international-school-vadodara",
+      "destination": "/admissions.html#procedure",
+      "permanent": true
+    },
+    {
+      "source": "/admission-process-explained-aark-international-school-vadodara/",
+      "destination": "/admissions.html#procedure",
+      "permanent": true
+    },
+    {
+      "source": "/admission/aark-international-school-vadodara-cbse-fee-structure-2026-27",
+      "destination": "/admissions.html#fees",
+      "permanent": true
+    },
+    {
+      "source": "/admission/aark-international-school-vadodara-cbse-fee-structure-2026-27/",
+      "destination": "/admissions.html#fees",
+      "permanent": true
+    },
+    {
+      "source": "/mandatory-disclosure",
+      "destination": "/disclosures.html",
+      "permanent": true
+    },
+    {
+      "source": "/mandatory-disclosure/",
+      "destination": "/disclosures.html",
+      "permanent": true
+    },
+    {
+      "source": "/yoga-day",
+      "destination": "/gallery.html",
+      "permanent": true
+    },
+    {
+      "source": "/yoga-day/",
+      "destination": "/gallery.html",
+      "permanent": true
+    },
+    {
+      "source": "/independence-day",
+      "destination": "/gallery.html",
+      "permanent": true
+    },
+    {
+      "source": "/independence-day/",
+      "destination": "/gallery.html",
+      "permanent": true
+    },
+    {
+      "source": "/category/:slug*",
+      "destination": "/gallery.html",
+      "permanent": true
+    },
+    {
+      "source": "/events",
+      "destination": "/circulars.html",
+      "permanent": true
+    },
+    {
+      "source": "/events/",
+      "destination": "/circulars.html",
+      "permanent": true
+    },
+    {
+      "source": "/event/:slug*",
+      "destination": "/circulars.html",
+      "permanent": true
+    },
+    {
+      "source": "/services/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/etn-:slug*",
+      "destination": "/",
+      "permanent": true
+    }
   ]
 }

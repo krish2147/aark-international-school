@@ -14,7 +14,7 @@ const { createTurnstile } = require('../_lib/turnstile');
 const MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
 const ID_RE = /^[0-9a-f-]{36}$/i;
 const STATUSES = ['new', 'contacted', 'closed'];
-const CSV_COLUMNS = ['receivedAt', 'type', 'name', 'phone', 'email', 'child', 'grade', 'status', 'notification', 'duplicate', 'id'];
+const CSV_COLUMNS = ['receivedAt', 'type', 'name', 'phone', 'email', 'child', 'grade', 'message', 'status', 'notification', 'duplicate', 'id'];
 
 // Spreadsheet apps execute cells starting with = + - @ (CSV/formula injection).
 function csvCell(value) {

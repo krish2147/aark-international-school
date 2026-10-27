@@ -9,6 +9,28 @@ const FALLBACK = `Please call the school on ${SCHOOL_PHONE} or email info@theaar
 const LIMITS = { perIp: [5, 600], perIpDay: [20, 86400], replyPerAddress: [1, 86400] };
 
 function schoolNotification(record) {
+  if (record.type === 'career') {
+    return {
+      subject: `${record.typeLabel} — ${record.grade} — ${record.name}`,
+      text: [
+        record.typeLabel,
+        '',
+        `Applicant: ${record.name}`,
+        `Phone: ${record.phone}`,
+        `Email: ${record.email}`,
+        `Role applied for: ${record.grade}`,
+        '',
+        'Experience and qualifications:',
+        record.message || '—',
+        '',
+        'The applicant has been asked to email their CV to info@theaarkinternational.com; reply to this email to contact them.',
+        '',
+        `Reference: ${record.id}`,
+        `Received: ${record.receivedAt}`,
+        'Submitted from the school website.',
+      ].join('\n'),
+    };
+  }
   return {
     subject: `${record.typeLabel} — ${record.name}`,
     text: [
@@ -42,6 +64,22 @@ const PARENT_CONFIRMATION = {
     'Nr. Shyam Icon, Bhayli-Sevasi Ring Road, Sevasi, Vadodara – 391101',
     '',
     'If you did not make this request, you can ignore this email.',
+  ].join('\n'),
+};
+
+const APPLICANT_CONFIRMATION = {
+  subject: 'We received your application — AARK International School',
+  text: [
+    'Thank you for applying to AARK International School.',
+    '',
+    'We have received your application. If you have not already done so, please email your CV to info@theaarkinternational.com with the role you are applying for in the subject line.',
+    '',
+    'Our HR team reviews every application and will contact shortlisted candidates.',
+    '',
+    'AARK International School',
+    'Nr. Shyam Icon, Bhayli-Sevasi Ring Road, Sevasi, Vadodara – 391101',
+    '',
+    'If you did not make this application, you can ignore this email.',
   ].join('\n'),
 };
 
@@ -104,6 +142,7 @@ function createEnquiryService({ store, mailer, limiter, turnstile, logger = cons
       child: value.child,
       grade: value.grade,
       email: value.email,
+      ...(value.message ? { message: value.message } : {}),
       status: 'new',
       duplicate: false,
       notification: { status: 'pending' },
@@ -148,7 +187,7 @@ function createEnquiryService({ store, mailer, limiter, turnstile, logger = cons
       const perAddress = await limiter.hit(`enq:reply:${record.email}`, ...LIMITS.replyPerAddress);
       if (perAddress.allowed) {
         try {
-          await mailer.sendToParent(record.email, PARENT_CONFIRMATION);
+          await mailer.sendToParent(record.email, record.type === 'career' ? APPLICANT_CONFIRMATION : PARENT_CONFIRMATION);
           confirmationSent = true;
         } catch (err) {
           logger.error(`enquiry ${record.id}: confirmation email failed:`, err.code || err.name);
@@ -172,4 +211,4 @@ function createEnquiryService({ store, mailer, limiter, turnstile, logger = cons
   return { submit, retryNotification };
 }
 
-module.exports = { createEnquiryService, PARENT_CONFIRMATION, LIMITS, schoolNotification };
+module.exports = { createEnquiryService, PARENT_CONFIRMATION, APPLICANT_CONFIRMATION, LIMITS, schoolNotification };

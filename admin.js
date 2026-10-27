@@ -273,8 +273,8 @@
       const n = (i.notification && i.notification.status) || 'pending';
       const when = new Date(i.receivedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
       return `<tr data-id="${escapeHtml(i.id)}">
-        <td>${escapeHtml(when)}<br><span class="hint">${escapeHtml(i.type === 'visit' ? 'Campus visit' : 'Admission')}</span></td>
-        <td><strong>${escapeHtml(i.name)}</strong>${i.child ? `<br>Child: ${escapeHtml(i.child)}` : ''}<br>${escapeHtml(i.grade)}</td>
+        <td>${escapeHtml(when)}<br><span class="hint">${escapeHtml(i.type === 'visit' ? 'Campus visit' : i.type === 'career' ? 'Job application' : 'Admission')}</span></td>
+        <td><strong>${escapeHtml(i.name)}</strong>${i.child ? `<br>Child: ${escapeHtml(i.child)}` : ''}<br>${i.type === 'career' ? 'Role: ' : ''}${escapeHtml(i.grade)}${i.message ? `<details class="enq-msg"><summary>Experience</summary><p>${escapeHtml(i.message)}</p></details>` : ''}</td>
         <td><a href="tel:${escapeHtml(i.phone)}">${escapeHtml(i.phone)}</a>${i.email ? `<br><a href="mailto:${escapeHtml(i.email)}">${escapeHtml(i.email)}</a>` : ''}</td>
         <td><span class="pill ${n === 'sent' ? 'on' : n === 'failed' ? 'warn' : 'off'}">${escapeHtml(NOTIFY_LABEL[n] || n)}</span>${n === 'failed' || n === 'not_configured' ? '<br><button type="button" class="small-btn" data-retry>Retry email</button>' : ''}</td>
         <td><select data-status aria-label="Follow-up status">${['new', 'contacted', 'closed'].map(st => `<option value="${st}" ${i.status === st ? 'selected' : ''}>${st[0].toUpperCase() + st.slice(1)}</option>`).join('')}</select></td>
@@ -282,13 +282,13 @@
     }).join('');
     panel.innerHTML = `
       <h2>Enquiries</h2>
-      <p class="hint">Every campus-visit and admission enquiry from the website is saved here first, even if the notification email fails.</p>
+      <p class="hint">Every campus-visit request, admission enquiry and job application from the website is saved here first, even if the notification email fails.</p>
       <div class="enq-toolbar">
         <label>Month <input type="month" value="${escapeHtml(m)}" data-month></label>
         <a class="admin-btn secondary" href="/api/admin/enquiries?month=${encodeURIComponent(m)}&format=csv">Download CSV</a>
         <span class="admin-status" data-enq-status></span>
       </div>
-      ${enquiryState.items.length ? `<div class="table-wrap"><table class="enq-table"><thead><tr><th>Received</th><th>Family</th><th>Contact</th><th>Notification</th><th>Follow-up</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hint">No enquiries in this month.</p>'}`;
+      ${enquiryState.items.length ? `<div class="table-wrap"><table class="enq-table"><thead><tr><th>Received</th><th>Name</th><th>Contact</th><th>Notification</th><th>Follow-up</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hint">No enquiries in this month.</p>'}`;
 
     const statusEl = panel.querySelector('[data-enq-status]');
     panel.querySelector('[data-month]').addEventListener('change', e => { if (e.target.value) { enquiryState.month = e.target.value; loadEnquiries(); } });

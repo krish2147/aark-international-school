@@ -1,10 +1,10 @@
-// Staff page: replaces the sample entries with the admin-managed directory when it has entries.
+// Staff page: replaces the published Principal / Counsellor cards with the admin-managed directory when it has entries.
 (function(){
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
   fetch('/api/content/staff').then(r=>r.json()).then(data=>{
     if(!data.ok||!data.items||!data.items.length) return;
     const grid=document.querySelector('.staff-grid');
-    const note=document.querySelector('.placeholder-note');
+    const note=document.querySelector('.staff-more');
     if(!grid) return;
     if(note) note.remove();
     grid.innerHTML=data.items.map(item=>{
