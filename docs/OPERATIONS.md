@@ -81,8 +81,6 @@ Enquiries are kept until deleted from the private store. Agree a retention perio
 
 **Privacy notice.** `privacy.html` explains what the forms collect and how long it is kept (enquiries up to two academic years, applications up to one year). Every form links to it. If the school changes how it handles data, update this page.
 
-**WhatsApp button.** Bottom-left on every public page; opens a chat with +91 99091 15550. The number must have WhatsApp (or WhatsApp Business) installed. To change it, edit the `wa.me/` number in `script.js`.
-
 **Visitor statistics.** The pages already load Vercel Web Analytics. To start collecting: Vercel → project → Analytics → Enable. It is cookie-free, so no cookie banner is needed.
 
 **Spam protection on forms (Turnstile).** Optional but recommended once the site gets traffic:
