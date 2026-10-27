@@ -74,3 +74,27 @@ Enquiries are kept until deleted from the private store. Agree a retention perio
 - **Optional AI upgrade.** If `ANTHROPIC_API_KEY` is set in Vercel, `/api/public-config` reports `assistantAi: true` and questions the answer bank can't match go to `api/chat.js` (Claude Opus 5.5, low effort, facts from `api/_lib/schoolKnowledge.js`, prompt-cached). Remove the key and Sahay goes back to free mode on the next deploy.
 - AI guards: same-origin only; 800 characters per question; 12 questions per 10 minutes and 60 per day per visitor; 1,500 per day across the site. Set a monthly spend limit in the Anthropic console as the final cap.
 - Conversations are not stored on the server; the visitor's browser keeps them only until the tab closes.
+
+## 8. Handover additions (October 2026)
+
+**Job applications.** The Careers page has its own form. Applications arrive in the school inbox with the subject "Job Application — <role> — <name>", appear in the admin under Enquiries (marked "Job application", with the experience note), and are included in the CSV. Applicants are asked to email their CV to info@theaarkinternational.com.
+
+**Privacy notice.** `privacy.html` explains what the forms collect and how long it is kept (enquiries up to two academic years, applications up to one year). Every form links to it. If the school changes how it handles data, update this page.
+
+**WhatsApp button.** Bottom-left on every public page; opens a chat with +91 99091 15550. The number must have WhatsApp (or WhatsApp Business) installed. To change it, edit the `wa.me/` number in `script.js`.
+
+**Visitor statistics.** The pages already load Vercel Web Analytics. To start collecting: Vercel → project → Analytics → Enable. It is cookie-free, so no cookie banner is needed.
+
+**Spam protection on forms (Turnstile).** Optional but recommended once the site gets traffic:
+1. Cloudflare dashboard → Turnstile → Add site (domain: the live domain) → copy the Site Key and Secret Key.
+2. Vercel → project → Settings → Environment Variables → add `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` (Production) → Redeploy.
+Forms show the check automatically; confirmation emails to parents start once it is on.
+
+**Old WordPress addresses.** `vercel.json` forwards every page of the old site (e.g. `/about-us/`, `/admission/…`, `/career-opportunities-…/`, `/mandatory-disclosure/`) to its new page, and the old theme's demo pages to the homepage. These take effect only once the domain points at Vercel.
+
+**Photos.** Site photos are WebP in two sizes (`name.webp` up to 1280 px, `name-640.webp` for phones). To replace a photo, keep both files and the same names.
+
+**Still needed from the school.**
+- PDFs for the Mandatory Public Disclosure page (affiliation letter, NOC, recognition certificate, building and fire safety certificates, water and sanitation certificate, self-certification, SMC and PTA lists, fee structure). CBSE requires these to be viewable on the website.
+- Staff details (optional): add them in the admin under Staff; they replace the Principal and Counsellor cards automatically.
+- Transport routes (optional): currently the page asks parents to call the office.

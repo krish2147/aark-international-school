@@ -17,7 +17,7 @@
     return [...root.querySelectorAll(group.item)].map(fig => {
       const img = fig.querySelector('img');
       const cap = fig.querySelector('figcaption');
-      return img && img.getAttribute('src') ? { src: img.currentSrc || img.src, alt: img.alt || '', cap: cap ? cap.textContent.trim() : '', fig } : null;
+      return img && img.getAttribute('src') ? { src: img.src, alt: img.alt || '', cap: cap ? cap.textContent.trim() : '', fig } : null;
     }).filter(Boolean);
   }
 

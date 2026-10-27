@@ -31,6 +31,7 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
   const requestIds=new Map(forms.map(f=>[f,newId()]));
   const widgets=new Map();
   const SUCCESS="Thank you — we've received your request and the school team will call you shortly.";
+  const successFor=form=>form.dataset.schoolForm==='career'?"Thank you — we've received your application. Please also email your CV to info@theaarkinternational.com.":SUCCESS;
 
   function setStatus(status,kind,parts){
     if(!status)return;
@@ -62,10 +63,10 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
     const data=new FormData(form);
     if((data.get('company')||'').toString().trim()){
       // Honeypot field filled in: silently pretend success without contacting the API.
-      form.reset();setStatus(status,'success',[SUCCESS]);return;
+      form.reset();setStatus(status,'success',[successFor(form)]);return;
     }
     const field=k=>(data.get(k)||'').toString().trim();
-    const payload={type:form.dataset.schoolForm==='visit'?'visit':'admission',name:field('name'),phone:field('phone'),child:field('child'),grade:field('grade'),email:field('email'),company:'',requestId:requestIds.get(form)};
+    const kind=form.dataset.schoolForm;const payload={type:kind==='visit'||kind==='career'?kind:'admission',name:field('name'),phone:field('phone'),child:field('child'),grade:field('grade'),email:field('email'),message:field('message'),company:'',requestId:requestIds.get(form)};
     if(!payload.name||!payload.phone||!payload.grade){setStatus(status,'error',['Please fill in the required fields.']);return}
     if(widgets.has(form))payload.turnstileToken=window.turnstile.getResponse(widgets.get(form))||'';
     if(submitBtn)submitBtn.disabled=true;
@@ -75,7 +76,7 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
       const result=await res.json().catch(()=>({}));
       if(res.ok&&result.ok){
         form.reset();requestIds.set(form,newId());
-        setStatus(status,'success',[SUCCESS+(result.confirmationSent?' A confirmation has also been sent to your email.':'')]);
+        setStatus(status,'success',[successFor(form)+(result.confirmationSent?' A confirmation has also been sent to your email.':'')]);
       }else if(res.status===400&&result.error){
         setStatus(status,'error',[result.error]); // validation message written for parents
       }else{
@@ -152,4 +153,27 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
     closeBtn.addEventListener('click',close);
     overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
   }).catch(()=>{});
+})();
+
+/* WhatsApp: a floating chat button (bottom-left, clear of Sahay on the right),
+   opening a chat with the school office with a short greeting filled in. */
+(function(){
+  if(document.querySelector('.wa-float'))return;
+  const msg='Hello AARK International School, I would like to know more about admissions.';
+  const a=document.createElement('a');
+  a.className='wa-float';
+  a.href='https://wa.me/919909115550?text='+encodeURIComponent(msg);
+  a.target='_blank';a.rel='noopener';
+  a.setAttribute('aria-label','Chat with AARK on WhatsApp (opens WhatsApp)');
+  a.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.04 3C9 3 3.3 8.7 3.3 15.7c0 2.5.7 4.9 2 7L3 29l6.5-2.2c2 1.1 4.2 1.7 6.5 1.7 7 0 12.7-5.7 12.7-12.7S23.1 3 16.04 3zm0 23.2c-2.1 0-4.1-.6-5.9-1.7l-.4-.3-3.9 1.3 1.3-3.8-.3-.4a10.4 10.4 0 0 1-1.6-5.6c0-5.8 4.7-10.5 10.6-10.5 5.8 0 10.5 4.7 10.5 10.5 0 5.8-4.7 10.5-10.3 10.5zm5.8-7.8c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2c-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.6-.9-.8-1.6-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1.8.4 1.4.6 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.9-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.6-.3z"/></svg><span>WhatsApp</span>';
+  document.body.appendChild(a);
+})();
+
+/* Visitor statistics: Vercel Web Analytics (cookie-free, no personal data).
+   The script is served by Vercel from this site's own address once Web
+   Analytics is switched on for the project; until then it is simply absent. */
+(function(){
+  if(location.hostname==='localhost'||location.hostname==='127.0.0.1')return;
+  window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
+  const s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);
 })();
