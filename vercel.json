@@ -247,7 +247,7 @@
       "permanent": true
     },
     {
-      "source": "/category/:slug*",
+      "source": "/category/(.*)",
       "destination": "/gallery.html",
       "permanent": true
     },
@@ -262,12 +262,12 @@
       "permanent": true
     },
     {
-      "source": "/event/:slug*",
+      "source": "/event/(.*)",
       "destination": "/circulars.html",
       "permanent": true
     },
     {
-      "source": "/services/:slug*",
+      "source": "/services/(.*)",
       "destination": "/",
       "permanent": true
     },
@@ -282,7 +282,7 @@
       "permanent": true
     },
     {
-      "source": "/portfolio/:slug*",
+      "source": "/portfolio/(.*)",
       "destination": "/",
       "permanent": true
     },
@@ -297,7 +297,7 @@
       "permanent": true
     },
     {
-      "source": "/team/:slug*",
+      "source": "/team/(.*)",
       "destination": "/",
       "permanent": true
     },
@@ -312,7 +312,7 @@
       "permanent": true
     },
     {
-      "source": "/etn-:slug*",
+      "source": "/etn-(.*)",
       "destination": "/",
       "permanent": true
     }
