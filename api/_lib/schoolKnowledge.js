@@ -57,7 +57,7 @@ const SCHOOL_FACTS = `
 - Low-rise campus with natural light, open-air spaces and wide corridors; about 4,066 sq. metres.
 - 22 classrooms, 8 laboratories, technology-enabled classrooms, library, science and computer labs, AI & robotics facilities, arts and music spaces, sports facilities, swimming, cafeteria, outdoor green spaces, an outdoor musical wall and an adventure zone for younger children.
 - Fire safety certificate valid 29 May 2025 – 28 May 2028; building safety certificate from 30 April 2025; health, water and sanitation certificate valid to 28 March 2027.
-- Staff 2026–27: Principal, 3 coordinators, 25 teachers (including the librarian) and 4 administration staff.
+- Staff 2026–27: Principal, 3 coordinators, 25 teachers (including the librarian and a coach) and 4 administration staff.
 
 ## Other
 - The full 2026–27 school calendar (holidays, PTMs, exams, events) is published as a PDF on the Circulars page (circulars.html). The session began on 6 April 2026; Diwali vacation 6–19 Nov 2026; Annual Function 24 Dec 2026; Annual Result Day 20 Mar 2027.
