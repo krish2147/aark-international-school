@@ -10,7 +10,7 @@ const { createRateLimiter } = require('./_lib/rateLimit');
 const { SYSTEM_PROMPT } = require('./_lib/schoolKnowledge');
 
 const MODEL = 'claude-opus-5-5';
-const FALLBACK_TEXT = "Sorry, I can't answer that right now. Please call the school on +91 99091 15550 (office 9:00 AM – 12:00 PM) or book a campus visit.";
+const FALLBACK_TEXT = "For more information, please visit the school in person (office hours 9:00 AM – 12:00 PM). For admission queries, contact the Admission Cell on +91 99091 15550 or admissions@theaarkinternational.com.";
 
 // Abuse and cost guards. Per IP: a short burst window and a daily cap; plus one
 // daily ceiling across all visitors so a flood can't run up the bill.

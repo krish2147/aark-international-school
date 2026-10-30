@@ -163,9 +163,9 @@ window.SAHAY_ANSWERS = {
 
   // Said when nothing matches. Sahay adds topic buttons underneath.
   unknown: {
-    en: 'I don\'t have that answer yet. Please call the school on +91 99091 15550 (office 9:00 AM – 12:00 PM), or pick a topic below.',
-    hi: 'इसका जवाब अभी मेरे पास नहीं है। कृपया स्कूल को कॉल करें: +91 99091 15550 (ऑफिस: सुबह 9 से दोपहर 12 बजे), या नीचे कोई विषय चुनें।',
-    gu: 'આનો જવાબ હજુ મારી પાસે નથી. કૃપા કરીને શાળાને ફોન કરો: +91 99091 15550 (ઓફિસ: સવારે 9 થી બપોરે 12), અથવા નીચે કોઈ વિષય પસંદ કરો.'
+    en: 'For more information, please visit the school in person (office hours 9:00 AM – 12:00 PM). For admission queries, contact the Admission Cell on +91 99091 15550 or admissions@theaarkinternational.com. You can also pick a topic below.',
+    hi: 'अधिक जानकारी के लिए कृपया स्कूल में आकर मिलें (ऑफिस: सुबह 9 से दोपहर 12 बजे)। एडमिशन से जुड़े सवालों के लिए एडमिशन सेल से संपर्क करें: +91 99091 15550 या admissions@theaarkinternational.com। आप नीचे कोई विषय भी चुन सकते हैं।',
+    gu: 'વધુ માહિતી માટે કૃપા કરીને શાળાની રૂબરૂ મુલાકાત લો (ઓફિસ: સવારે 9 થી બપોરે 12). એડમિશન સંબંધિત પ્રશ્નો માટે એડમિશન સેલનો સંપર્ક કરો: +91 99091 15550 અથવા admissions@theaarkinternational.com. તમે નીચે કોઈ વિષય પણ પસંદ કરી શકો છો.'
   },
   greeting: {
     words: ['hi', 'hello', 'hey', 'namaste', 'namaskar', 'kem cho', 'good morning', 'नमस्ते', 'नमस्कार', 'નમસ્તે', 'કેમ છો'],

@@ -271,7 +271,7 @@
         } catch (e) { /* fall back to the built-in "call the school" reply */ }
       }
     } catch (e) {
-      result = { kind: 'unknown', text: 'Sorry, I can\'t answer right now. Please call the school on ' + PHONE + ' (office 9:00 AM – 12:00 PM).', next: [] };
+      result = { kind: 'unknown', text: 'For more information, please visit the school in person (office hours 9:00 AM – 12:00 PM). For admission queries, contact the Admission Cell on ' + PHONE + ' or admissions@theaarkinternational.com.', next: [] };
     }
     await new Promise(function (r) { setTimeout(r, result.kind === 'ai' ? 0 : 350); });   // a beat, so the reply doesn't feel abrupt
     reply.innerHTML = format(result.text);
