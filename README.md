@@ -11,7 +11,7 @@ rebrand.
 
 ## Current build
 - Responsive shared navigation and mobile menu
-- Continuous Learning Journey from Nursery to Grade 12
+- Continuous K–12 Learning Journey
 - Admissions 2026–27 information and FAQ structured data
 - Campus, student life, curriculum, careers and parent-resource pages
 - Campus visit and admissions enquiry interactions
