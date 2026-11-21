@@ -10,7 +10,7 @@ const SCHOOL_FACTS = `
 
 ## Basics
 - Name: AARK International School, a CBSE school in Sevasi, Vadodara, Gujarat.
-- Classes: Nursery (Pre-Nursery) to Grade 12.
+- Classes: K–12 (Nursery/Pre-Nursery, Junior KG, Senior KG and Grades 1–12).
 - Managed by: Daffodils Education Trust (registration DE-3544 / Vadodara).
 - Principal: Dr. Mukesh Udasi (PhD Maths, M.Sc, B.Ed).
 - Coordinators: Neeta Nilesh Rathore, Prabhjot Kaur Baveja, Bhavna Mukesh Udasi. The full 2026–27 staff list is on the Staff page (staff.html).
@@ -26,8 +26,8 @@ const SCHOOL_FACTS = `
 - Google Maps directions are linked from the Visit & Contact section of the website.
 
 ## Admissions 2026–27
-- Admissions are open for Nursery to Grade 12 for the 2026–27 session, subject to seat availability.
-- The school reopens for the 2026–27 session on 6 April 2026 (Nursery to Grade 12).
+- Admissions are open for K–12 for the 2026–27 session, subject to seat availability.
+- The school reopens for the 2026–27 session on 6 April 2026 (K–12).
 - Age criteria (age as on 31 May 2026): Nursery 3+, Junior KG (Prep Junior) 4+, Senior KG (Prep Senior) 5+, Grade 1 6+. For other grades, eligibility is confirmed individually by the admissions team.
 - Online applications: Nursery to Grade 8, through the official admission portal (https://aarkintschool-forms.zeroq.net). For Grades 9–12, the admission procedure is completed at the school.
 - Steps: (1) Visit the campus, recommended before applying; (2) Apply online and pay the ₹1,000 non-refundable application processing fee; (3) a short, friendly interaction with the school, not a high-stakes exam; (4) receive the result, complete formalities and confirm the seat.
@@ -48,7 +48,7 @@ const SCHOOL_FACTS = `
 - Routes, stops, timings and charges are not published yet. Parents should confirm them directly with the facilitator.
 
 ## Learning
-- One continuous Learning Journey from Nursery to Grade 12: Nursery (safe, playful start), Kindergarten (stories and play, language and creativity), Grades 1–2 (core skills and confidence), Grades 3–5 (hands-on STEM projects), Grades 6–8 (technology, labs, robotics and leadership), Grades 9–10 (focused preparation for CBSE milestones, with mentoring), Grades 11–12 (independence and future pathways).
+- One continuous K–12 Learning Journey: Nursery (safe, playful start), Kindergarten (stories and play, language and creativity), Grades 1–2 (core skills and confidence), Grades 3–5 (hands-on STEM projects), Grades 6–8 (technology, labs, robotics and leadership), Grades 9–10 (focused preparation for CBSE milestones, with mentoring), Grades 11–12 (independence and future pathways).
 - Approach: project-based and CBSE-aligned, concept-based, activity-based and child-friendly; inquiry before instruction; mastery over speed; reflection at the end of every unit.
 - Beyond academics: swimming, karate and skating at different age levels; visual and performing arts; farming and situational learning; yoga and meditation; cultural, library, science-lab and creative activities; personality development.
 - Vision: a happy, active, safe and home-like atmosphere where children learn life values and grow into responsible global citizens. Mission: academic excellence and character development in a caring environment.

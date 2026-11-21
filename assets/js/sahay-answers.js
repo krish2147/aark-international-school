@@ -82,9 +82,9 @@ window.SAHAY_ANSWERS = {
       chip: 'Curriculum',
       strong: ['curriculum', 'syllabus', 'board', 'cbse', 'nep', 'पाठ्यक्रम', 'सिलेबस', 'बोर्ड', 'અભ્યાસક્રમ', 'સિલેબસ', 'બોર્ડ'],
       words: ['teaching', 'study', 'studies', 'method', 'subjects', 'padhai', 'पढ़ाई', 'પઢાઈ', 'અભ્યાસ'],
-      en: 'AARK is a CBSE school (affiliation no. 430650) following NEP and NCF standards. Learning is project-based and hands-on, with one connected journey from Nursery to Grade 12, building curiosity, character and confidence. More: /curriculum.html',
-      hi: 'AARK एक CBSE स्कूल है (एफिलिएशन नं. 430650), जो NEP और NCF मानकों का पालन करता है। पढ़ाई प्रोजेक्ट-आधारित और व्यावहारिक है, और नर्सरी से कक्षा 12 तक एक जुड़ी हुई यात्रा है। ज़्यादा जानकारी: /curriculum.html',
-      gu: 'AARK એક CBSE શાળા છે (એફિલિએશન નં. 430650), જે NEP અને NCF ધોરણોને અનુસરે છે. અભ્યાસ પ્રોજેક્ટ આધારિત અને વ્યવહારુ છે, અને નર્સરીથી ધોરણ 12 સુધી એક જોડાયેલી સફર છે. વધુ માહિતી: /curriculum.html',
+      en: 'AARK is a CBSE school (affiliation no. 430650) following NEP and NCF standards. Learning is project-based and hands-on, with one connected K–12 journey, building curiosity, character and confidence. More: /curriculum.html',
+      hi: 'AARK एक CBSE स्कूल है (एफिलिएशन नं. 430650), जो NEP और NCF मानकों का पालन करता है। पढ़ाई प्रोजेक्ट-आधारित और व्यावहारिक है, और K–12 तक एक जुड़ी हुई यात्रा है। ज़्यादा जानकारी: /curriculum.html',
+      gu: 'AARK એક CBSE શાળા છે (એફિલિએશન નં. 430650), જે NEP અને NCF ધોરણોને અનુસરે છે. અભ્યાસ પ્રોજેક્ટ આધારિત અને વ્યવહારુ છે, અને K–12 સુધી એક જોડાયેલી સફર છે. વધુ માહિતી: /curriculum.html',
       next: ['activities', 'campus']
     },
     activities: {
@@ -109,9 +109,9 @@ window.SAHAY_ANSWERS = {
       chip: 'Classes & seats',
       strong: ['seat*', 'admission open', 'admissions open', 'which class', 'classes', 'grades', 'सीट', 'સીટ'],
       words: ['open', 'session', 'available', 'nursery', 'standard*', 'कक्षा', 'ધોરણ', 'नर्सरी', 'નર્સરી'],
-      en: 'AARK has classes from Nursery to Grade 12 (CBSE Senior Secondary). Admissions for 2026–27 are open for all grades, subject to seat availability. Apply online for Nursery to Grade 8: https://aarkintschool-forms.zeroq.net\nFor Grades 9–12, please apply at the school. For current seat availability, call +91 99091 15550.',
-      hi: 'AARK में नर्सरी से कक्षा 12 तक पढ़ाई होती है (CBSE सीनियर सेकेंडरी)। 2026–27 के लिए सभी कक्षाओं में प्रवेश खुले हैं, सीटें उपलब्ध होने पर। नर्सरी से कक्षा 8 के लिए ऑनलाइन आवेदन: https://aarkintschool-forms.zeroq.net\nकक्षा 9 से 12 के लिए स्कूल में आवेदन करें। सीटों की जानकारी के लिए कॉल करें: +91 99091 15550',
-      gu: 'AARKમાં નર્સરીથી ધોરણ 12 સુધીના વર્ગો છે (CBSE સિનિયર સેકન્ડરી). 2026–27 માટે બધા ધોરણોમાં પ્રવેશ ચાલુ છે, સીટ ઉપલબ્ધ હોય તો. નર્સરીથી ધોરણ 8 માટે ઓનલાઇન અરજી: https://aarkintschool-forms.zeroq.net\nધોરણ 9 થી 12 માટે શાળામાં અરજી કરો. સીટની માહિતી માટે ફોન કરો: +91 99091 15550',
+      en: 'AARK has classes across K–12 (CBSE Senior Secondary). Admissions for 2026–27 are open for all grades, subject to seat availability. Apply online for Nursery to Grade 8: https://aarkintschool-forms.zeroq.net\nFor Grades 9–12, please apply at the school. For current seat availability, call +91 99091 15550.',
+      hi: 'AARK में K–12 तक पढ़ाई होती है (CBSE सीनियर सेकेंडरी)। 2026–27 के लिए सभी कक्षाओं में प्रवेश खुले हैं, सीटें उपलब्ध होने पर। नर्सरी से कक्षा 8 के लिए ऑनलाइन आवेदन: https://aarkintschool-forms.zeroq.net\nकक्षा 9 से 12 के लिए स्कूल में आवेदन करें। सीटों की जानकारी के लिए कॉल करें: +91 99091 15550',
+      gu: 'AARKમાં K–12 સુધીના વર્ગો છે (CBSE સિનિયર સેકન્ડરી). 2026–27 માટે બધા ધોરણોમાં પ્રવેશ ચાલુ છે, સીટ ઉપલબ્ધ હોય તો. નર્સરીથી ધોરણ 8 માટે ઓનલાઇન અરજી: https://aarkintschool-forms.zeroq.net\nધોરણ 9 થી 12 માટે શાળામાં અરજી કરો. સીટની માહિતી માટે ફોન કરો: +91 99091 15550',
       next: ['apply', 'age', 'fees']
     },
     timings: {
