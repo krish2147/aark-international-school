@@ -1,14 +1,15 @@
 // Campus filmstrip: drifts sideways in an endless loop. A swipe (or drag,
 // or trackpad scroll) sets the direction it keeps drifting in; while the
-// strip is touched, hovered or focused it holds still, and it starts moving
-// again 2 seconds after the visitor lets go. The cards are copied (hidden
+// strip is touched, hovered or focused it holds still, and it carries on as
+// soon as the visitor lets go. The cards are copied (hidden
 // from screen readers and keyboard) so the loop never runs out, and the
 // strip stays still with reduced motion.
 (function(){
   const strip = document.querySelector('.v2-filmstrip');
   if (!strip) return;
-  const SPEED = 34;          // pixels per second
-  const RESUME_AFTER = 2000; // ms of stillness before drifting again
+  const SPEED = 52;          // pixels per second
+  const GLIDE_GAP = 120;     // ms between a swipe's scroll steps that still counts as the same swipe
+  const RESUME_AFTER = 200;  // ms after a swipe's glide ends before drifting again (must exceed GLIDE_GAP)
   const still = matchMedia('(prefers-reduced-motion: reduce)');
 
   const originals = [...strip.children];
@@ -77,7 +78,7 @@
   // A scroll counts as the visitor's only while a finger, mouse drag or
   // trackpad is actually involved (including the glide after a swipe); the
   // rest are the drift's own steps, which can be fractions of a pixel.
-  const byVisitor = () => held || dragging || performance.now() - inputAt < 250;
+  const byVisitor = () => held || dragging || performance.now() - inputAt < GLIDE_GAP;
   strip.addEventListener('scroll', () => {
     if (!byVisitor()) { prevLeft = strip.scrollLeft; return; }
     inputAt = performance.now();
