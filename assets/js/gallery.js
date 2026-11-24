@@ -14,3 +14,15 @@
     }).join('');
   }).catch(()=>{});
 })();
+
+// "Coming up": each event drops off the list the day after it happens, and the
+// list hides itself once every event has passed.
+(function(){
+  const box=document.querySelector('.gallery-upcoming');
+  if(!box) return;
+  const d=new Date();
+  const today=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const items=[...box.querySelectorAll('li[data-date]')];
+  items.forEach(li=>{ if(li.dataset.date<today) li.remove(); });
+  if(items.length&&!box.querySelector('li')) box.hidden=true;
+})();

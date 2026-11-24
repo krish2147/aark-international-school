@@ -26,7 +26,7 @@
         const copy = item.cloneNode(true);
         copy.setAttribute('aria-hidden', 'true');
         copy.tabIndex = -1;
-        copy.querySelectorAll('img').forEach(img => { img.alt = ''; img.loading = 'eager'; });
+        copy.querySelectorAll('img').forEach(img => { img.alt = ''; });
         strip.appendChild(copy);
       });
       copies++;
