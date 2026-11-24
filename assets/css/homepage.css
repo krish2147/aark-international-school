@@ -249,3 +249,8 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 .v2-form .form-status.is-success{color:#1d7a3e;font-weight:600}
 .v2-form .form-status.is-error{color:#b3311f;font-weight:600}
 @media(max-width:560px){.v2-form{grid-template-columns:1fr}}
+/* Campus filmstrip loop (assets/js/filmstrip-loop.js) */
+.v2-filmstrip.is-looping{scroll-snap-type:none;scrollbar-width:none;cursor:grab;-webkit-user-select:none;user-select:none}
+.v2-filmstrip.is-looping::-webkit-scrollbar{display:none}
+.v2-filmstrip.is-dragging{cursor:grabbing}
+.v2-filmstrip.is-looping .v2-filmstrip-item img{-webkit-user-drag:none}
