@@ -42,7 +42,7 @@
   let period = loopPeriod();
   let pos = period, dir = 1, last = 0, running = false, onScreen = false;
   let held = false, hovered = false, focused = false, dragging = null, lastTouch = -Infinity;
-  let selfScroll = false, prevLeft = strip.scrollLeft;
+  let inputAt = -Infinity, prevLeft = strip.scrollLeft;
   setLeft(pos);
 
   // keep the position within the second turn of the loop: [period, 2 × period)
@@ -54,9 +54,7 @@
   }
   function setLeft(x){
     pos = wrap(x);
-    const before = strip.scrollLeft;
     strip.scrollLeft = pos;
-    if (Math.abs(strip.scrollLeft - before) >= 1) selfScroll = true;
     prevLeft = strip.scrollLeft;
   }
 
@@ -76,9 +74,13 @@
   }
   function stop(){ running = false; }
 
-  // any scroll we didn't cause is the visitor: follow its direction, keep it looping
+  // A scroll counts as the visitor's only while a finger, mouse drag or
+  // trackpad is actually involved (including the glide after a swipe); the
+  // rest are the drift's own steps, which can be fractions of a pixel.
+  const byVisitor = () => held || dragging || performance.now() - inputAt < 250;
   strip.addEventListener('scroll', () => {
-    if (selfScroll) { selfScroll = false; return; }
+    if (!byVisitor()) { prevLeft = strip.scrollLeft; return; }
+    inputAt = performance.now();
     const left = strip.scrollLeft;
     const moved = left - prevLeft;
     if (Math.abs(moved) > 0.5 && Math.abs(moved) < period / 2) dir = moved > 0 ? 1 : -1;
@@ -89,15 +91,17 @@
   }, { passive: true });
 
   // touch: hold still while a finger is down
-  strip.addEventListener('touchstart', () => { held = true; lastTouch = performance.now(); }, { passive: true });
-  const release = () => { held = false; lastTouch = performance.now(); };
+  strip.addEventListener('touchstart', () => { held = true; lastTouch = inputAt = performance.now(); }, { passive: true });
+  strip.addEventListener('touchmove', () => { lastTouch = inputAt = performance.now(); }, { passive: true });
+  const release = () => { held = false; lastTouch = inputAt = performance.now(); };
   strip.addEventListener('touchend', release, { passive: true });
   strip.addEventListener('touchcancel', release, { passive: true });
-  strip.addEventListener('wheel', () => { lastTouch = performance.now(); }, { passive: true });
+  strip.addEventListener('wheel', () => { lastTouch = inputAt = performance.now(); }, { passive: true });
 
   // mouse: hover holds it, and click-and-drag scrolls it
-  strip.addEventListener('mouseenter', () => { hovered = true; });
-  strip.addEventListener('mouseleave', () => { hovered = false; lastTouch = performance.now(); });
+  // (only a real mouse: phones fire hover events on tap and never clear them)
+  strip.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hovered = true; });
+  strip.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { hovered = false; lastTouch = performance.now(); } });
   // keyboard focus holds it too (a mouse click also focuses the card, so skip that)
   strip.addEventListener('focusin', e => { focused = e.target.matches(':focus-visible'); });
   strip.addEventListener('focusout', () => { if (focused) lastTouch = performance.now(); focused = false; });
