@@ -155,6 +155,35 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
   }).catch(()=>{});
 })();
 
+/* Back to top: a round arrow on the right, above the Sahay chat launcher,
+   shown once the visitor has scrolled down most of a screen. */
+(function(){
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='to-top';
+  btn.setAttribute('aria-label','Back to top');
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
+  btn.tabIndex=-1;
+  document.body.appendChild(btn);
+  let shown=false;
+  function update(){
+    const want=scrollY>innerHeight*0.8;
+    if(want===shown)return;
+    shown=want;
+    btn.classList.toggle('is-shown',want);
+    btn.tabIndex=want?0:-1;
+  }
+  addEventListener('scroll',update,{passive:true});
+  update();
+  btn.addEventListener('click',()=>{
+    const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    scrollTo({top:0,behavior:still?'auto':'smooth'});
+    // keyboard users land back at the top of the page too
+    const first=document.querySelector('.site-header a, header a');
+    if(first)first.focus({preventScroll:true});
+  });
+})();
+
 /* Visitor statistics: Vercel Web Analytics (cookie-free, no personal data).
    The script is served by Vercel from this site's own address once Web
    Analytics is switched on for the project; until then it is simply absent. */
