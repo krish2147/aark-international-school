@@ -254,3 +254,14 @@ h1.v2-hero-title{font-size:var(--v2-text-hero);line-height:1.06;letter-spacing:-
 .v2-filmstrip.is-looping::-webkit-scrollbar{display:none}
 .v2-filmstrip.is-dragging{cursor:grabbing}
 .v2-filmstrip.is-looping .v2-filmstrip-item img{-webkit-user-drag:none}
+/* Campus filmstrip cards: photo torn along the bottom onto white paper, name in script below */
+.v2-filmstrip-item{display:block;background:#fffdf9;border-radius:var(--v2-radius-md);padding:8px 8px 4px;box-shadow:0 10px 28px rgba(40,20,60,.12),0 1px 0 rgba(255,255,255,.9) inset;text-decoration:none;color:inherit}
+.v2-filmstrip-item img{margin-bottom:0;border-radius:10px 10px 0 0;-webkit-mask:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 0H100V94.4L100.0 94.4L100.0 89.3L96.1 90.1L91.4 92.1L88.8 96.4L85.7 94.5L80.6 92.9L76.5 90.8L72.0 95.0L68.8 92.4L64.7 91.4L61.1 94.1L58.2 89.4L55.8 93.1L52.4 93.8L48.2 90.4L43.3 91.3L40.8 90.1L37.6 95.4L35.3 96.3L31.7 93.3L26.4 93.7L23.5 89.9L18.5 92.2L16.0 89.5L12.4 89.3L8.5 89.4L5.1 93.0L2.7 93.9L0.0 91.4Z"/></svg>') 0 0/100% 100% no-repeat;mask:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 0H100V94.4L100.0 94.4L100.0 89.3L96.1 90.1L91.4 92.1L88.8 96.4L85.7 94.5L80.6 92.9L76.5 90.8L72.0 95.0L68.8 92.4L64.7 91.4L61.1 94.1L58.2 89.4L55.8 93.1L52.4 93.8L48.2 90.4L43.3 91.3L40.8 90.1L37.6 95.4L35.3 96.3L31.7 93.3L26.4 93.7L23.5 89.9L18.5 92.2L16.0 89.5L12.4 89.3L8.5 89.4L5.1 93.0L2.7 93.9L0.0 91.4Z"/></svg>') 0 0/100% 100% no-repeat}
+.v2-filmstrip-item strong{display:block;padding:2px 6px 6px;font-family:"Great Vibes","Segoe Script","Brush Script MT",cursive;font-weight:400;font-size:30px;line-height:1.15;letter-spacing:.01em;text-align:center;color:#2a2238;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2-filmstrip-item:hover strong{color:var(--v2-color-accent)}
+.v2-filmstrip-item:focus-visible{outline:3px solid var(--v2-color-signal);outline-offset:3px}
+.v2-filmstrip.is-looping{padding:12px 2px 30px}
+.v2-filmstrip.is-looping{align-items:stretch}
+.v2-filmstrip.is-looping .v2-filmstrip-item,.v2-filmstrip.is-looping .v2-filmstrip-item.is-short,.v2-filmstrip.is-looping .v2-filmstrip-item.is-tall{flex:0 0 clamp(220px,22vw,290px);margin-top:0}
+.v2-filmstrip.is-looping .v2-filmstrip-item img{aspect-ratio:4/5;height:auto}
+@media(max-width:700px){.v2-filmstrip.is-looping .v2-filmstrip-item,.v2-filmstrip.is-looping .v2-filmstrip-item.is-short,.v2-filmstrip.is-looping .v2-filmstrip-item.is-tall{flex-basis:68vw}.v2-filmstrip-item strong{font-size:28px}}
