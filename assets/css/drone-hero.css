@@ -9,7 +9,6 @@
   radial-gradient(120% 85% at 50% 48%,rgba(14,18,44,.22) 0%,rgba(14,18,44,.55) 70%),
   linear-gradient(180deg,rgba(14,18,44,.45) 0%,rgba(14,18,44,.12) 30%,rgba(14,18,44,.25) 62%,rgba(14,18,44,.82) 100%)}
 .dh-content{position:relative;max-width:960px;padding:clamp(32px,6vh,80px) var(--v2-gutter-mobile) clamp(56px,8vh,96px);display:flex;flex-direction:column;align-items:center}
-.dh-logo{width:clamp(220px,26vw,360px);height:auto;margin-bottom:clamp(14px,2.6vh,28px);filter:drop-shadow(0 6px 22px rgba(0,0,0,.45))}
 .dh-kicker{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#f7d2ad;margin:0 0 14px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
 .dh-hero .dh-title{color:#fff;font-family:var(--v2-font-display);font-weight:400;font-size:clamp(36px,5.4vw,80px);line-height:1.04;letter-spacing:-.02em;margin:0;text-shadow:0 4px 30px rgba(0,0,0,.35)}
 .dh-lead{max-width:46ch;margin:16px auto 0;font-size:var(--v2-text-body-l);line-height:var(--v2-lh-relaxed);color:rgba(255,255,255,.94);text-shadow:0 1px 12px rgba(0,0,0,.45)}
@@ -22,5 +21,5 @@
 .dh-facts dd{margin:0;font-size:13px;color:rgba(255,255,255,.9)}
 .dh-hero + .sr-handoff{padding-top:var(--v2-space-xl)}
 @media(min-width:701px){.dh-content{padding-inline:var(--v2-gutter-tablet)}}
-@media(max-width:560px){.dh-logo{width:min(68vw,250px)}.dh-lead{font-size:15px;margin-top:12px}.dh-actions{gap:10px;margin-top:20px}.dh-actions .v2-btn{flex:1 1 0;padding:12px 10px;font-size:14px;white-space:nowrap}.dh-facts{display:none}}
+@media(max-width:560px){.dh-lead{font-size:15px;margin-top:12px}.dh-actions{gap:10px;margin-top:20px}.dh-actions .v2-btn{flex:1 1 0;padding:12px 10px;font-size:14px;white-space:nowrap}.dh-facts{display:none}}
 @media(prefers-reduced-motion:reduce){.dh-video{display:none}}
