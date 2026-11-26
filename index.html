@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="assets/css/homepage.css">
   <link rel="stylesheet" href="assets/css/journey-classic.css">
   <link rel="stylesheet" href="assets/css/sunrise-hero.css">
+  <link rel="stylesheet" href="assets/css/drone-hero.css">
 <link rel="stylesheet" href="assets/css/lightbox.css">
 <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"School","name":"AARK International School","url":"https://theaarkinternational.com/","telephone":"+91 99091 15550","email":"info@theaarkinternational.com","educationalLevel":"K–12","identifier":[{"@type":"PropertyValue","propertyID":"CBSE Affiliation Number","value":"430650"},{"@type":"PropertyValue","propertyID":"CBSE School Number","value":"11842"}],"parentOrganization":{"@type":"Organization","name":"Daffodils Education Trust"},"address":{"@type":"PostalAddress","streetAddress":"Nr. Shyam Icon, Bhayli-Sevasi Ring Road, Sevasi","addressLocality":"Vadodara","addressRegion":"Gujarat","postalCode":"391101","addressCountry":"IN"},"geo":{"@type":"GeoCoordinates","latitude":22.3084895,"longitude":73.1224201},"image":"https://theaarkinternational.com/assets/og-image.jpg","description":"CBSE school in Sevasi, Vadodara for K–12, affiliated to CBSE (affiliation no. 430650).","alternateName":"The AARK International School","hasMap":"https://maps.google.com/?q=AARK+International+School,+Sevasi,+Vadodara","logo":"https://theaarkinternational.com/assets/aark-full-logo.png"}
@@ -35,42 +36,30 @@
 <header class="site-header" id="top"></header>
 <main id="main">
 
-<!-- 01 Arrival: Sunrise over AARK (scroll-scrubbed on computers, plays once on phones, still with reduced motion) -->
-<section class="sr-hero" aria-labelledby="sr-title">
-  <div class="sr-stage">
-    <div class="sr-poster" aria-hidden="true"></div>
-    <video class="sr-video" preload="none" muted playsinline disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
-    <div class="sr-sunless" aria-hidden="true"></div>
-    <div class="sr-scrim" aria-hidden="true"></div>
-    <div class="sr-mark" role="img" aria-label="AARK International School, Vadodara">
-      <span class="sr-mark-glow"></span>
-      <img class="sr-mark-rays" src="assets/hero/aark-rays.webp" alt="" width="560" height="560" loading="lazy" decoding="async">
-      <img class="sr-mark-core" src="assets/hero/aark-core.webp" alt="" width="560" height="560" loading="lazy" decoding="async">
-      <img class="sr-mark-word" src="assets/hero/aark-wordmark.webp" alt="" width="1755" height="265" loading="lazy" decoding="async">
+<!-- 01 Arrival: drone footage of the campus and pool (still photo with reduced motion or data saver) -->
+<section class="dh-hero" aria-labelledby="dh-title">
+  <picture class="dh-poster">
+    <source media="(max-aspect-ratio: 4/5)" srcset="assets/video/hero-drone-portrait-poster.webp" width="720" height="1280">
+    <img src="assets/video/hero-drone-poster.webp" width="1600" height="900" alt="" fetchpriority="high" decoding="async">
+  </picture>
+  <video class="dh-video" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/hero-drone.mp4" data-src-portrait="assets/video/hero-drone-portrait.mp4"></video>
+  <div class="dh-scrim" aria-hidden="true"></div>
+  <div class="dh-content">
+    <img class="dh-logo" src="assets/logo-full-on-dark.png" width="640" height="279" alt="AARK International School, Vadodara">
+    <p class="dh-kicker">CBSE · Sevasi, Vadodara · K–12</p>
+    <h1 class="dh-title" id="dh-title">Every child arrives with a story.</h1>
+    <p class="dh-lead">A CBSE school in Sevasi, Vadodara, where curiosity, character and care grow together, through every year of K–12.</p>
+    <div class="dh-actions">
+      <a class="v2-btn v2-btn-primary" href="#visit">Book a Campus Visit</a>
+      <a class="v2-btn dh-btn-ghost" href="curriculum.html">Explore the Curriculum</a>
     </div>
-    <div class="sr-band sr-band-open" data-a="0" data-b="0.16">
-      <p class="sr-kicker">CBSE · Sevasi, Vadodara · K–12</p>
-      <h1 class="sr-title" id="sr-title" data-split>Every child arrives with a story.</h1>
-      <p class="sr-cue" aria-hidden="true"><span>Scroll</span><i></i></p>
-    </div>
-    <div class="sr-band sr-band-mid" data-a="0.2" data-b="0.44" aria-hidden="true">
-      <p class="sr-line sr-line-soft">Under every cloud, a sun is rising.</p>
-      <p class="sr-line sr-line-sharp">Under every cloud, a sun is rising.</p>
-    </div>
-    <div class="sr-band sr-band-settle" data-a="0.95" data-b="1" data-ramp="0.045">
-      <h2 class="sr-settle-title" data-split>Here, the next chapter begins.</h2>
-      <p class="sr-lead">A CBSE school in Sevasi, Vadodara, where curiosity, character and care grow together, through every year of K–12.</p>
-      <div class="sr-actions">
-        <a class="v2-btn v2-btn-primary" href="#visit">Book a Campus Visit</a>
-        <a class="v2-btn sr-btn-ghost" href="curriculum.html">Explore the Curriculum</a>
-      </div>
-      <dl class="sr-facts">
-        <div><dt>CBSE</dt><dd>Senior Secondary affiliation</dd></div>
-        <div><dt>K–12</dt><dd>One school, start to finish</dd></div>
-        <div><dt>Sevasi</dt><dd>Vadodara campus</dd></div>
-      </dl>
-    </div>
+    <dl class="dh-facts">
+      <div><dt>CBSE</dt><dd>Senior Secondary affiliation</dd></div>
+      <div><dt>K–12</dt><dd>One school, start to finish</dd></div>
+      <div><dt>Sevasi</dt><dd>Vadodara campus</dd></div>
+    </dl>
   </div>
+  <button class="dh-toggle" type="button" aria-label="Pause background video" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path class="dh-i-pause" d="M8 5h3v14H8zM13 5h3v14h-3z"/><path class="dh-i-play" d="M8 5l11 7-11 7z"/></svg></button>
 </section>
 
 <!-- Handoff: the real school morning takes over from the sunrise -->
@@ -297,10 +286,10 @@
 </footer>
 <script src="script.js"></script>
 <script src="assets/js/journey-classic.js"></script>
-<script src="assets/js/sunrise-hero.js"></script>
 <script src="assets/js/life-marquee.js"></script>
 <script src="assets/js/filmstrip-loop.js"></script>
 <script src="assets/js/visit-video.js"></script>
+<script src="assets/js/drone-hero.js"></script>
 <script src="assets/js/lightbox.js"></script>
 <script src="assets/js/chat-widget.js" defer></script></body>
 </html>
