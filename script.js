@@ -152,6 +152,9 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
       if(/^https:/i.test(item.link)){a.target='_blank';a.rel='noopener'}
       row.appendChild(a);body.appendChild(row);
     }
+    const follow=el('a','aark-popup-follow','Follow us on Instagram for more updates');
+    follow.href='https://www.instagram.com/aarkinternational';follow.target='_blank';follow.rel='noopener';
+    body.appendChild(follow);
     card.appendChild(body);overlay.appendChild(card);document.body.appendChild(overlay);
     requestAnimationFrame(()=>overlay.classList.add('is-open'));
     closeBtn.focus({preventScroll:true});
