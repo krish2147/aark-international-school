@@ -16,8 +16,6 @@
 
 const { blobToken } = require('./storageEnv');
 
-const LEGACY_KEY = 'content/db.json';
-const VERSION_PREFIX = 'content/versions/';
 const SEQ_WIDTH = 6;
 
 const DEFAULT_DB = { staff: [], gallery: [], events: [], schemes: [], fees: [] };
@@ -29,17 +27,24 @@ class ConflictError extends Error {
   constructor() { super('The content was changed by another save. Reload and try again.'); this.name = 'ConflictError'; }
 }
 
-const seqFromPathname = p => {
-  const m = /^content\/versions\/(\d+)\.json$/.exec(p);
+// Each store keeps its versions under <prefix>/versions/. The admin content uses
+// 'content'; the page-by-page website edits use 'site' (see siteEdits.js).
+const versionPrefix = prefix => `${prefix}/versions/`;
+const seqFromPathname = (p, prefix = 'content') => {
+  const m = new RegExp(`^${prefix}/versions/(\\d+)\\.json$`).exec(p);
   return m ? Number(m[1]) : null;
 };
-const pathnameForSeq = seq => `${VERSION_PREFIX}${String(seq).padStart(SEQ_WIDTH, '0')}.json`;
+const pathnameForSeq = (seq, prefix = 'content') => `${versionPrefix(prefix)}${String(seq).padStart(SEQ_WIDTH, '0')}.json`;
 
 function isAlreadyExists(err) {
   return Boolean(err) && (err.name === 'BlobPreconditionFailedError' || /already exists/i.test(err.message || ''));
 }
 
-function createContentStore({ blob = require('@vercel/blob'), fetchImpl = globalThis.fetch, token = blobToken('content') } = {}) {
+function createContentStore({ blob = require('@vercel/blob'), fetchImpl = globalThis.fetch, token = blobToken('content'), prefix = 'content', defaults = DEFAULT_DB } = {}) {
+  const VERSION_PREFIX = versionPrefix(prefix);
+  // Only the admin content predates versioning; other stores have no legacy file.
+  const LEGACY_KEY = prefix === 'content' ? 'content/db.json' : null;
+  const DEFAULTS = defaults;
   function requireToken() {
     if (!token) throw new StorageError('content storage is not configured for this environment');
     return token;
@@ -66,7 +71,7 @@ function createContentStore({ blob = require('@vercel/blob'), fetchImpl = global
     try {
       const blobs = await listAll(VERSION_PREFIX);
       return blobs
-        .map(b => ({ seq: seqFromPathname(b.pathname), url: b.url, uploadedAt: b.uploadedAt, size: b.size }))
+        .map(b => ({ seq: seqFromPathname(b.pathname, prefix), url: b.url, uploadedAt: b.uploadedAt, size: b.size }))
         .filter(v => v.seq !== null)
         .sort((a, b) => a.seq - b.seq);
     } catch (err) {
@@ -80,11 +85,11 @@ function createContentStore({ blob = require('@vercel/blob'), fetchImpl = global
       const versions = await listVersions();
       if (versions.length) {
         const latest = versions[versions.length - 1];
-        return { db: { ...DEFAULT_DB, ...(await fetchJson(latest.url)) }, version: latest.seq };
+        return { db: { ...DEFAULTS, ...(await fetchJson(latest.url)) }, version: latest.seq };
       }
-      const legacy = (await listAll(LEGACY_KEY)).find(b => b.pathname === LEGACY_KEY);
-      if (legacy) return { db: { ...DEFAULT_DB, ...(await fetchJson(legacy.url)) }, version: 0 };
-      return { db: { ...DEFAULT_DB }, version: 0 };
+      const legacy = await readLegacy();
+      if (legacy) return { db: legacy, version: 0 };
+      return { db: structuredClone(DEFAULTS), version: 0 };
     } catch (err) {
       throw err instanceof StorageError ? err : new StorageError('content read failed', err);
     }
@@ -94,7 +99,7 @@ function createContentStore({ blob = require('@vercel/blob'), fetchImpl = global
     if (!Number.isInteger(baseVersion) || baseVersion < 0) throw new StorageError('a base version is required to save');
     const seq = baseVersion + 1;
     try {
-      await blob.put(pathnameForSeq(seq), JSON.stringify(db, null, 2), {
+      await blob.put(pathnameForSeq(seq, prefix), JSON.stringify(db, null, 2), {
         access: 'public',
         contentType: 'application/json',
         addRandomSuffix: false,
@@ -111,7 +116,7 @@ function createContentStore({ blob = require('@vercel/blob'), fetchImpl = global
   async function readVersion(seq) {
     const v = (await listVersions()).find(x => x.seq === seq);
     if (!v) return null;
-    return { ...DEFAULT_DB, ...(await fetchJson(v.url)) };
+    return { ...DEFAULTS, ...(await fetchJson(v.url)) };
   }
 
   // Restoring copies an old version forward as the newest one; nothing is deleted.
@@ -123,8 +128,9 @@ function createContentStore({ blob = require('@vercel/blob'), fetchImpl = global
   }
 
   async function readLegacy() {
+    if (!LEGACY_KEY) return null;
     const legacy = (await listAll(LEGACY_KEY)).find(b => b.pathname === LEGACY_KEY);
-    return legacy ? { ...DEFAULT_DB, ...(await fetchJson(legacy.url)) } : null;
+    return legacy ? { ...DEFAULTS, ...(await fetchJson(legacy.url)) } : null;
   }
 
   return { read, write, listVersions, readVersion, restore };
