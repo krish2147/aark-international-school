@@ -11,6 +11,7 @@
     gallery: {
       label: 'Gallery',
       hasPhoto: true,
+      multiPhoto: true,
       fields: [
         { key: 'event', label: 'Event name', type: 'text', required: true, placeholder: 'e.g. Annual Sports Day' },
         { key: 'date', label: 'Date', type: 'text', placeholder: 'e.g. 30 Jan 2027' },
@@ -31,20 +32,28 @@
       subtitle: i => i.role,
     },
     events: {
-      label: 'Popup Events',
-      hasPhoto: false,
+      label: 'Popups',
+      singular: 'popup',
+      intro: 'Every visitor sees one popup each time they open the website, a moment after it loads. If a popup here is marked "Show", the newest one appears (with a "Follow us on Instagram" line). If none is marked "Show", visitors see the "Follow us on Instagram" popup instead.',
+      hasPhoto: true,
+      photoLabel: 'Photo (optional, shown at the top of the popup)',
       fields: [
+        { key: 'kind', label: 'Type', type: 'select', options: [['admission', 'Admissions'], ['scheme', 'Scheme / offer'], ['event', 'Event'], ['notice', 'Notice']] },
         { key: 'title', label: 'Popup title', type: 'text', required: true, placeholder: 'e.g. Admissions Open for 2026–27' },
         { key: 'message', label: 'Message', type: 'textarea', required: true },
-        { key: 'link', label: 'Link (optional)', type: 'text', placeholder: 'e.g. admissions.html' },
+        { key: 'buttonText', label: 'Button text (optional)', type: 'text', placeholder: 'e.g. Apply now' },
+        { key: 'link', label: 'Button link (optional)', type: 'text', placeholder: 'e.g. admissions.html or https://…' },
         { key: 'active', label: 'Show this popup on the site now', type: 'checkbox' },
       ],
       title: i => i.title,
-      subtitle: i => i.message,
+      subtitle: i => [({ admission: 'Admissions', scheme: 'Scheme', event: 'Event', notice: 'Notice' })[i.kind] || 'Notice', i.message].join(' · '),
       pill: i => (i.active ? 'Live on site' : 'Hidden'),
+      preview: true,
     },
     schemes: {
       label: 'Schemes',
+      singular: 'scheme',
+      intro: 'Live schemes are listed on the Admissions page. To announce one in a popup as well, add it under Popups with the type "Scheme / offer".',
       hasPhoto: false,
       fields: [
         { key: 'title', label: 'Scheme title', type: 'text', required: true, placeholder: 'e.g. Sibling Fee Concession' },
@@ -85,13 +94,31 @@
     return body;
   }
 
-  function fileToDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+  // Phone photos are often 5–10 MB: shrink to at most 1920px and re-encode
+  // (WebP where the browser can) so every upload fits the 3 MB limit.
+  async function fileToDataUrl(file) {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, 1920 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * scale);
+    c.height = Math.round(bmp.height * scale);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    let q = 0.86;
+    let url = c.toDataURL('image/webp', q);
+    const type = url.startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
+    if (type === 'image/jpeg') url = c.toDataURL(type, q);
+    while (url.length > 3.8e6 && q > 0.45) { q -= 0.1; url = c.toDataURL(type, q); }
+    return url;
+  }
+
+  async function uploadPhoto(file) {
+    const dataUrl = await fileToDataUrl(file);
+    const res = await api('/api/admin/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: file.name, dataUrl }),
     });
+    return res.url;
   }
 
   function renderPanel(key) {
@@ -105,6 +132,9 @@
       if (f.type === 'textarea') {
         return `<label>${escapeHtml(f.label)}<textarea name="${f.key}" ${f.required ? 'required' : ''}>${escapeHtml(val || '')}</textarea></label>`;
       }
+      if (f.type === 'select') {
+        return `<label>${escapeHtml(f.label)}<select name="${f.key}">${f.options.map(([v, l]) => `<option value="${v}" ${val === v ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select></label>`;
+      }
       if (f.type === 'checkbox') {
         return `<label class="checkline"><input type="checkbox" name="${f.key}" ${val ? 'checked' : ''}> ${escapeHtml(f.label)}</label>`;
       }
@@ -112,12 +142,15 @@
     }).join('');
 
     const photoHtml = cfg.hasPhoto
-      ? `<label>Photo ${editing && editing.photoUrl ? '(leave empty to keep current photo)' : ''}<input type="file" name="photo" accept="image/jpeg,image/png,image/webp,image/avif"></label>`
+      ? (cfg.multiPhoto && !editing
+        ? `<label>Photos (choose one or several; each becomes its own gallery photo)<input type="file" name="photo" multiple accept="image/jpeg,image/png,image/webp,image/avif"></label>`
+        : `<label>${escapeHtml(cfg.photoLabel || 'Photo')} ${editing && editing.photoUrl ? '(leave empty to keep current photo)' : ''}<input type="file" name="photo" accept="image/jpeg,image/png,image/webp,image/avif"></label>${editing && editing.photoUrl && cfg.photoLabel ? '<label class="checkline"><input type="checkbox" name="removePhoto"> Remove the current photo</label>' : ''}`)
       : '';
 
     panel.innerHTML = `
       <h2>${escapeHtml(cfg.label)}</h2>
-      <p class="hint">${editing ? 'Editing an existing entry.' : `Add a new ${cfg.label.toLowerCase()} entry.`}</p>
+      ${cfg.intro ? `<p class="hint">${escapeHtml(cfg.intro)}</p>` : ''}
+      <p class="hint">${editing ? 'Editing an existing entry.' : `Add a new ${cfg.singular || cfg.label.toLowerCase() + ' entry'}.`}</p>
       <form class="admin-form" data-resource="${key}">
         ${fieldsHtml}
         ${photoHtml}
@@ -144,6 +177,7 @@
             <p>${escapeHtml(cfg.subtitle(item) || '')}</p>
           </div>
           <div class="actions">
+            ${cfg.preview ? `<a class="small-btn" style="text-decoration:none;display:inline-flex;align-items:center" href="index.html?popup=${encodeURIComponent(item.id)}" target="_blank" rel="noopener">Preview</a>` : ''}
             <button type="button" data-edit>Edit</button>
             <button type="button" data-delete>Delete</button>
           </div>
@@ -185,20 +219,30 @@
         payload[f.key] = f.type === 'checkbox' ? el.checked : el.value.trim();
       });
 
-      if (cfg.hasPhoto) {
-        const fileInput = form.elements.photo;
-        if (fileInput && fileInput.files && fileInput.files[0]) {
-          statusEl.textContent = 'Uploading photo…';
-          const dataUrl = await fileToDataUrl(fileInput.files[0]);
-          const uploadRes = await api('/api/admin/upload', {
+      const files = cfg.hasPhoto && form.elements.photo ? [...(form.elements.photo.files || [])] : [];
+      if (cfg.multiPhoto && !s.editingId && files.length > 1) {
+        for (let i = 0; i < files.length; i++) {
+          statusEl.textContent = `Adding photo ${i + 1} of ${files.length}…`;
+          const photoUrl = await uploadPhoto(files[i]);
+          await api(`/api/content/${key}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: fileInput.files[0].name, dataUrl }),
+            body: JSON.stringify(Object.assign({}, payload, { photoUrl })),
           });
-          payload.photoUrl = uploadRes.url;
+        }
+        await loadResource(key);
+        return;
+      }
+
+      if (cfg.hasPhoto) {
+        if (files[0]) {
+          statusEl.textContent = 'Uploading photo…';
+          payload.photoUrl = await uploadPhoto(files[0]);
+        } else if (s.editingId && form.elements.removePhoto && form.elements.removePhoto.checked) {
+          payload.photoUrl = '';
         } else if (s.editingId) {
           const existing = s.items.find(i => i.id === s.editingId);
-          if (existing) payload.photoUrl = existing.photoUrl;
+          if (existing && existing.photoUrl) payload.photoUrl = existing.photoUrl;
         }
       }
 
@@ -252,7 +296,8 @@
   }
 
   // ---- Enquiries (stored by /api/enquiry; read-only except status + email retry) ----
-  const enquiryState = { month: new Date().toISOString().slice(0, 7), items: [] };
+  const enquiryState = { month: new Date().toISOString().slice(0, 7), items: [], type: '' };
+  const ENQ_TYPES = { admission: 'Admission', visit: 'Campus visit', career: 'Job application' };
   const NOTIFY_LABEL = { sent: 'Emailed', failed: 'Email failed', pending: 'Email pending', not_configured: 'Email not set up', skipped_duplicate: 'Duplicate' };
 
   async function loadEnquiries() {
@@ -270,11 +315,13 @@
   function renderEnquiries() {
     const panel = document.getElementById('panel-enquiries');
     const m = enquiryState.month;
-    const rows = enquiryState.items.map(i => {
+    const t = enquiryState.type;
+    const shown = enquiryState.items.filter(i => !t || i.type === t);
+    const rows = shown.map(i => {
       const n = (i.notification && i.notification.status) || 'pending';
       const when = new Date(i.receivedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
       return `<tr data-id="${escapeHtml(i.id)}">
-        <td>${escapeHtml(when)}<br><span class="hint">${escapeHtml(i.type === 'visit' ? 'Campus visit' : i.type === 'career' ? 'Job application' : 'Admission')}</span></td>
+        <td>${escapeHtml(when)}<br><span class="hint">${escapeHtml(ENQ_TYPES[i.type] || 'Admission')}</span></td>
         <td><strong>${escapeHtml(i.name)}</strong>${i.child ? `<br>Child: ${escapeHtml(i.child)}` : ''}<br>${i.type === 'career' ? 'Role: ' : ''}${escapeHtml(i.grade)}${i.message ? `<details class="enq-msg"><summary>Experience</summary><p>${escapeHtml(i.message)}</p></details>` : ''}</td>
         <td><a href="tel:${escapeHtml(i.phone)}">${escapeHtml(i.phone)}</a>${i.email ? `<br><a href="mailto:${escapeHtml(i.email)}">${escapeHtml(i.email)}</a>` : ''}</td>
         <td><span class="pill ${n === 'sent' ? 'on' : n === 'failed' ? 'warn' : 'off'}">${escapeHtml(NOTIFY_LABEL[n] || n)}</span>${n === 'failed' || n === 'not_configured' ? '<br><button type="button" class="small-btn" data-retry>Retry email</button>' : ''}</td>
@@ -286,12 +333,14 @@
       <p class="hint">Every campus-visit request, admission enquiry and job application from the website is saved here first, even if the notification email fails.</p>
       <div class="enq-toolbar">
         <label>Month <input type="month" value="${escapeHtml(m)}" data-month></label>
-        <a class="admin-btn secondary" href="/api/admin/enquiries?month=${encodeURIComponent(m)}&format=csv">Download CSV</a>
+        <label>Show <select data-type><option value="">All</option>${Object.entries(ENQ_TYPES).map(([v, l]) => `<option value="${v}" ${t === v ? 'selected' : ''}>${escapeHtml(l + 's')}</option>`).join('')}</select></label>
+        <a class="admin-btn secondary" href="/api/admin/enquiries?month=${encodeURIComponent(m)}&format=csv${t ? `&type=${t}` : ''}">Download CSV</a>
         <span class="admin-status" data-enq-status></span>
       </div>
-      ${enquiryState.items.length ? `<div class="table-wrap"><table class="enq-table"><thead><tr><th>Received</th><th>Name</th><th>Contact</th><th>Notification</th><th>Follow-up</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hint">No enquiries in this month.</p>'}`;
+      ${shown.length ? `<div class="table-wrap"><table class="enq-table"><thead><tr><th>Received</th><th>Name</th><th>Contact</th><th>Notification</th><th>Follow-up</th></tr></thead><tbody>${rows}</tbody></table></div>` : `<p class="hint">${t ? 'Nothing of this kind' : 'No enquiries'} in this month.</p>`}`;
 
     const statusEl = panel.querySelector('[data-enq-status]');
+    panel.querySelector('[data-type]').addEventListener('change', e => { enquiryState.type = e.target.value; renderEnquiries(); });
     panel.querySelector('[data-month]').addEventListener('change', e => { if (e.target.value) { enquiryState.month = e.target.value; loadEnquiries(); } });
     panel.querySelectorAll('[data-retry]').forEach(btn => btn.addEventListener('click', async () => {
       btn.disabled = true; statusEl.textContent = 'Sending…'; statusEl.className = 'admin-status';
@@ -316,7 +365,7 @@
     try {
       const res = await api('/api/admin/content-history');
       const items = res.versions.map((v, idx) => `<div class="admin-item" data-version="${v.version}"><div class="noimg"></div><div><h3>Version ${v.version}${idx === 0 ? '<span class="pill on">Live</span>' : ''}</h3><p>Saved ${escapeHtml(new Date(v.savedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }))}</p></div><div class="actions">${idx === 0 ? '' : '<button type="button" data-restore>Restore</button>'}</div></div>`).join('');
-      panel.innerHTML = `<h2>Content History</h2><p class="hint">Every save to Gallery, Staff, Popup Events, Schemes and Fees is kept. Restoring an older version makes a new save; nothing is deleted.</p><p class="admin-status" data-hist-status></p><div class="admin-list">${items || '<p class="hint">No saves yet. The original content from before versioning is kept as version 0.</p>'}</div>`;
+      panel.innerHTML = `<h2>Content History</h2><p class="hint">Every save to Gallery, Staff, Popups, Schemes and Fees is kept. Restoring an older version makes a new save; nothing is deleted.</p><p class="admin-status" data-hist-status></p><div class="admin-list">${items || '<p class="hint">No saves yet. The original content from before versioning is kept as version 0.</p>'}</div>`;
       panel.querySelectorAll('[data-restore]').forEach(btn => btn.addEventListener('click', async () => {
         const version = Number(btn.closest('[data-version]').dataset.version);
         if (!confirm(`Restore version ${version}? The current content stays in the history.`)) return;

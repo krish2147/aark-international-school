@@ -28,8 +28,8 @@ body{background:var(--v2-paper-100);font-family:var(--v2-font-body);color:var(--
 .panel>p.hint{margin:0 0 24px;max-width:62ch;line-height:1.55}
 .admin-form{display:grid;gap:20px;padding:26px 24px 22px;background:#fff;border:1px solid var(--v2-line);border-radius:22px;margin-bottom:30px;box-shadow:0 10px 30px rgba(24,32,51,.05)}
 .admin-form label{display:grid;gap:7px;font-weight:600;font-size:13px;color:var(--v2-brand-700)}
-.admin-form input,.admin-form textarea,.enq-toolbar input,.enq-table select{border:1.5px solid #d9cfe2;border-radius:14px;background:#fff;padding:12px 14px;font:inherit;font-size:15px;font-weight:400;color:var(--v2-ink-900);width:100%;transition:border-color .15s,box-shadow .15s}
-.admin-form input:focus,.admin-form textarea:focus,.enq-toolbar input:focus,.enq-table select:focus{outline:0;border-color:var(--v2-brand-500);box-shadow:0 0 0 4px rgba(79,37,109,.12)}
+.admin-form input,.admin-form textarea,.admin-form select,.enq-toolbar input,.enq-toolbar select,.enq-table select{border:1.5px solid #d9cfe2;border-radius:14px;background:#fff;padding:12px 14px;font:inherit;font-size:15px;font-weight:400;color:var(--v2-ink-900);width:100%;transition:border-color .15s,box-shadow .15s}
+.admin-form input:focus,.admin-form textarea:focus,.admin-form select:focus,.enq-toolbar input:focus,.enq-toolbar select:focus,.enq-table select:focus{outline:0;border-color:var(--v2-brand-500);box-shadow:0 0 0 4px rgba(79,37,109,.12)}
 .admin-form input::placeholder,.admin-form textarea::placeholder{color:#9a98a8}
 .admin-form textarea{min-height:96px;resize:vertical;line-height:1.5}
 .admin-form input[type=file]{padding:10px;border-style:dashed;background:var(--v2-paper-50);font-size:14px;cursor:pointer}
@@ -174,7 +174,7 @@ body{background:var(--v2-paper-100);font-family:var(--v2-font-body);color:var(--
       <button data-tab="website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>Edit Website</button>
       <button data-tab="gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>Gallery</button>
       <button data-tab="staff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.8-3.5 3.2-5.5 6-5.5s5.2 2 6 5.5"/><path d="M16 5.2a3 3 0 0 1 0 5.6M18 14.8c1.5.8 2.5 2.6 3 5.2"/></svg>Staff</button>
-      <button data-tab="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Popup Events</button>
+      <button data-tab="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Popups</button>
       <button data-tab="schemes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12 12 20l-8-8V4h8z"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>Schemes</button>
       <button data-tab="fees"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5h10M7 9h10M10 5c3.5 0 5 1.6 5 4s-1.5 4-5 4H7l7 6"/></svg>Fees</button>
       <p class="admin-nav-label">Safety</p>

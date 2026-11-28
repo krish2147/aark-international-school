@@ -1,6 +1,6 @@
 // Admin access to stored enquiries.
 //   GET  ?month=YYYY-MM              → list (newest first)
-//   GET  ?month=YYYY-MM&format=csv   → CSV download
+//   GET  ?month=YYYY-MM&format=csv   → CSV download (&type=visit etc. for one kind only)
 //   POST {action:'retry', id, month} → resend the school notification email
 //   POST {action:'status', id, month, status} → new | contacted | closed
 const { requireAdmin } = require('../_lib/auth');
@@ -10,6 +10,7 @@ const { createEnquiryService } = require('../_lib/enquiryService');
 const { createMailer } = require('../_lib/mailer');
 const { createRateLimiter } = require('../_lib/rateLimit');
 const { createTurnstile } = require('../_lib/turnstile');
+const { TYPES } = require('../_lib/enquiryValidation');
 
 const MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
 const ID_RE = /^[0-9a-f-]{36}$/i;
@@ -42,10 +43,12 @@ function createAdminEnquiriesHandler({ store, service, auth = requireAdmin, logg
       if (req.method === 'GET') {
         const month = String((req.query && req.query.month) || currentMonth(now));
         if (!MONTH_RE.test(month)) return res.status(400).json({ ok: false, error: 'month must be YYYY-MM.' });
-        const records = await store.list(month);
+        const type = String(req.query.type || '');
+        if (type && !TYPES[type]) return res.status(400).json({ ok: false, error: 'Unknown type.' });
+        const records = (await store.list(month)).filter(r => !type || r.type === type);
         if (req.query.format === 'csv') {
           res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-          res.setHeader('Content-Disposition', `attachment; filename="aark-enquiries-${month}.csv"`);
+          res.setHeader('Content-Disposition', `attachment; filename="aark-enquiries${type ? '-' + type : ''}-${month}.csv"`);
           return res.status(200).send('﻿' + toCsv(records));
         }
         return res.status(200).json({ ok: true, month, items: records });

@@ -117,6 +117,28 @@ element, the old edit is skipped rather than landing somewhere wrong. Only plain
 safe links (site pages, https, tel, mailto) and photos from the site or its upload storage can be
 saved (`api/_lib/siteEdits.js`). Every publish is kept: Edit Website → Website history → Restore.
 
+### Adding photos to the gallery
+
+Two ways, both live straight away (no Publish needed):
+
+- Gallery page in edit mode → **Add photos** → choose one or several photos, give the event a name
+  (date and caption optional) → **Add to gallery**. Click an added photo in edit mode to remove it.
+- Admin → **Gallery** tab → choose several photos at once with the same event details.
+
+Each photo is resized to at most 1920 px and saved as a separate gallery entry. Added photos show
+first on the Gallery page (newest first), ahead of the school's own photos, which always stay.
+Removed photos can be brought back from Content History.
+
 Note: preview deployments have no storage (only PREVIEW_-prefixed tokens are read there, see
 `api/_lib/storageEnv.js`), so edit mode can only publish on the live site; on a preview the pages
 simply show without edits.
+
+## 10. Popups
+
+**Popups** (Admin → Popups): one popup per visit (browser tab), a few seconds after the first page
+opens; never in the admin or edit mode. With no admin popup live, a built-in "Follow us on
+Instagram" popup is shown instead (`?popup=instagram` previews it). Choose a type (Admissions, Scheme / offer,
+Event, Notice), a title and message, and optionally a button (text + link) and a photo. Only the
+newest popup marked "Show" is used. **Preview** opens the home page with that popup straight away
+(`index.html?popup=<id>`), even if it is not live yet. Updates reach parents only on the website
+(popups, Admissions schemes, Gallery); the school does not collect numbers for broadcasts.
