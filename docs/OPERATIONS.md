@@ -142,7 +142,7 @@ Event, Notice), a title and message, optionally a button (text + link), a photo,
 **Preview** opens the home page with that popup straight away (`index.html?popup=<id>`), even if
 it is not live yet.
 
-**Get updates sign-up**: on the Gallery and Admissions pages (and in popups that include it).
+**Get updates sign-up**: inside any popup with "Include the Get updates sign-up form" ticked.
 Parents give a name, WhatsApp number, optional email and the topics they want (Admissions,
 Schemes & offers, Events & news). Each sign-up is stored with the enquiries (type `updates`,
 topics in the `grade` column), the school gets a short email, and the parent gets a fixed
