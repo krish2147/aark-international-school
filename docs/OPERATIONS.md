@@ -117,5 +117,6 @@ element, the old edit is skipped rather than landing somewhere wrong. Only plain
 safe links (site pages, https, tel, mailto) and photos from the site or its upload storage can be
 saved (`api/_lib/siteEdits.js`). Every publish is kept: Edit Website → Website history → Restore.
 
-Note: preview deployments share the same storage as the live site, so anything published while
-testing on a preview is the live content too.
+Note: preview deployments have no storage (only PREVIEW_-prefixed tokens are read there, see
+`api/_lib/storageEnv.js`), so edit mode can only publish on the live site; on a preview the pages
+simply show without edits.
