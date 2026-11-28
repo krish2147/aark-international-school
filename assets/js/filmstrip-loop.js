@@ -22,16 +22,21 @@
     const period = loopPeriod() || strip.scrollWidth;
     const need = 1 + Math.max(1, Math.ceil(strip.clientWidth / Math.max(period, 1)));
     while (copies < need) {
-      originals.forEach(item => {
-        const copy = item.cloneNode(true);
-        copy.setAttribute('aria-hidden', 'true');
-        copy.tabIndex = -1;
-        copy.querySelectorAll('img').forEach(img => { img.alt = ''; });
-        strip.appendChild(copy);
-      });
+      originals.forEach(item => strip.appendChild(copyOf(item)));
       copies++;
     }
   }
+  function copyOf(item){
+    const copy = item.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    copy.tabIndex = -1;
+    copy.querySelectorAll('img').forEach(img => { img.alt = ''; });
+    return copy;
+  }
+  // website edits (assets/js/site-edits.js) change the originals: refresh the copies
+  document.addEventListener('aark:edits-applied', () => {
+    [...strip.children].slice(originals.length).forEach((copy, i) => copy.replaceWith(copyOf(originals[i % originals.length])));
+  });
   // distance from a card to its first copy: one full turn of the loop
   function loopPeriod(){
     const copy = strip.children[originals.length];
@@ -59,7 +64,7 @@
     prevLeft = strip.scrollLeft;
   }
 
-  const paused = () => held || hovered || focused || dragging || performance.now() - lastTouch < RESUME_AFTER;
+  const paused = () => held || hovered || focused || dragging || document.documentElement.classList.contains('aark-editing') || performance.now() - lastTouch < RESUME_AFTER;
 
   function frame(now){
     if (!running) return;

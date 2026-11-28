@@ -9,14 +9,15 @@
   const SPEED = 38;   // pixels per second
   const rows = [...box.querySelectorAll('.lm-row')];
 
+  const copyOf = item => {
+    const copy = item.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    copy.querySelectorAll('img').forEach(img => { img.alt = ''; });
+    return copy;
+  };
   rows.forEach(row => {
     const track = row.querySelector('.lm-track');
-    [...track.children].forEach(item => {
-      const copy = item.cloneNode(true);
-      copy.setAttribute('aria-hidden', 'true');
-      copy.querySelectorAll('img').forEach(img => { img.alt = ''; });
-      track.appendChild(copy);
-    });
+    [...track.children].forEach(item => track.appendChild(copyOf(item)));
     // touch: hold to pause, let go to carry on
     let release = null;
     row.addEventListener('pointerdown', () => { clearTimeout(release); row.classList.add('is-held'); }, { passive: true });
@@ -34,6 +35,16 @@
   }
   setSpeed();
   addEventListener('resize', setSpeed, { passive: true });
+  // website edits (assets/js/site-edits.js) change the originals: refresh the copies
+  document.addEventListener('aark:edits-applied', () => {
+    rows.forEach(row => {
+      const track = row.querySelector('.lm-track');
+      const items = [...track.children];
+      const originals = items.filter(i => !i.hasAttribute('aria-hidden'));
+      items.filter(i => i.hasAttribute('aria-hidden')).forEach((copy, i) => copy.replaceWith(copyOf(originals[i % originals.length])));
+    });
+    setSpeed();
+  });
   box.querySelectorAll('img').forEach(img => img.addEventListener('load', setSpeed, { once: true }));
 
   if ('IntersectionObserver' in window) {

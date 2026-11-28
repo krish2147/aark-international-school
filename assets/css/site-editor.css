@@ -1,0 +1,58 @@
+/* Click-to-edit mode (assets/js/site-editor.js); loaded only for signed-in admins */
+.aark-editing [data-ed]{cursor:text;transition:outline-color .15s}
+.aark-editing [data-ed="img"]{cursor:pointer}
+.aark-editing [data-ed]:hover{outline:2px dashed #f5b301;outline-offset:3px}
+.aark-editing [data-ed][data-edit-key]{outline:1px dotted rgba(245,179,1,.55);outline-offset:3px}
+.aark-editing [data-ed][data-ed-dirty]{outline:2px solid #2f9e6a;outline-offset:3px}
+.aark-editing [contenteditable="true"]{outline:2px solid #3a7bfd!important;outline-offset:4px;background:rgba(58,123,253,.06);cursor:text}
+.aark-editing [data-ed-active]{outline:3px solid #3a7bfd!important;outline-offset:3px}
+/* keep things still and out of the way while editing */
+.aark-editing .lm-track{animation-play-state:paused!important}
+.aark-editing .ac-launch,.aark-editing .ac-nudge,.aark-editing .to-top{display:none!important}
+.aark-editing body{padding-bottom:96px}
+
+.aark-ed-ui{font:500 14px/1.35 "Work Sans",system-ui,-apple-system,sans-serif;color:#1d1a28;box-sizing:border-box}
+.aark-ed-ui *{box-sizing:border-box}
+.aark-ed-ui button,.aark-ed-ui select{font:inherit;min-height:40px;padding:8px 14px;border-radius:10px;border:1px solid #cfd3e2;background:#fff;color:#1d1a28;cursor:pointer}
+.aark-ed-ui button:hover{background:#f2f4fb}
+.aark-ed-ui button:disabled{opacity:.45;cursor:default}
+.aark-ed-ui button.is-primary{background:#d9653a;border-color:#d9653a;color:#fff;font-weight:700}
+.aark-ed-ui button.is-primary:hover{background:#c4552c}
+.aark-ed-ui button:focus-visible,.aark-ed-ui select:focus-visible,.aark-ed-ui textarea:focus-visible{outline:3px solid #fac803;outline-offset:2px}
+
+.aark-ed-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:6000;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;width:max-content;justify-content:center;max-width:calc(100vw - 24px);padding:10px 12px;border-radius:16px;background:#fff;box-shadow:0 18px 50px rgba(20,24,52,.28),0 0 0 1px rgba(20,24,52,.08)}
+.aark-ed-title{padding:0 6px;color:#d9653a;white-space:nowrap}
+.aark-ed-bar select{max-width:220px}
+.aark-ed-count{padding:0 6px;color:#555b70;white-space:nowrap}
+@media(max-width:700px){
+  .aark-ed-bar{left:8px;right:8px;bottom:8px;transform:none;max-width:none;width:auto;flex-wrap:wrap;gap:6px;padding:8px}
+  .aark-ed-title,.aark-ed-count{display:none}
+  .aark-ed-bar select{flex:1 1 100%;max-width:none}
+  .aark-ed-bar button{flex:1 1 0;padding:8px 6px}
+}
+
+.aark-ed-toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,10px);z-index:6001;max-width:min(560px,calc(100vw - 24px));padding:12px 16px;border-radius:12px;background:#1d2340;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.aark-ed-toast.is-shown{opacity:1;transform:translate(-50%,0)}
+.aark-ed-toast.is-ok{background:#1f7a52}
+.aark-ed-toast.is-error{background:#b3261e}
+@media(max-width:700px){.aark-ed-toast{bottom:120px}}
+
+.aark-ed-tools{position:absolute;z-index:6002;display:none;gap:6px;padding:6px;border-radius:12px;background:#fff;box-shadow:0 10px 30px rgba(20,24,52,.25),0 0 0 1px rgba(20,24,52,.08)}
+.aark-ed-tools.is-shown{display:flex}
+.aark-ed-tools button{min-height:34px;padding:6px 10px}
+.aark-ed-tools button[title="Bold"]{font-weight:800}
+.aark-ed-tools button[title="Italic"]{font-style:italic}
+
+.aark-ed-panel{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:6002;width:min(360px,calc(100vw - 32px));max-height:calc(100vh - 140px);overflow:auto;padding:18px;border-radius:18px;background:#fff;box-shadow:0 24px 60px rgba(20,24,52,.3),0 0 0 1px rgba(20,24,52,.08)}
+.aark-ed-panel[hidden]{display:none}
+.aark-ed-panel h3{margin:0 0 12px;font:700 18px/1.2 "Work Sans",system-ui,sans-serif;color:#1d1a28}
+.aark-ed-preview{display:block;width:100%;height:180px;object-fit:cover;border-radius:12px;background:#eef0f7;margin-bottom:12px}
+.aark-ed-file{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;background:#1d2340;color:#fff;font-weight:700;cursor:pointer}
+.aark-ed-file input{position:absolute;width:1px;height:1px;opacity:0}
+.aark-ed-file:focus-within{outline:3px solid #fac803;outline-offset:2px}
+.aark-ed-hint{margin:8px 0 14px;font-size:12.5px;color:#666b80}
+.aark-ed-alt{display:block;font-size:13px;font-weight:600;color:#3a3f55}
+.aark-ed-alt textarea{display:block;width:100%;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px solid #cfd3e2;font:inherit;resize:vertical}
+.aark-ed-row{display:flex;gap:8px;margin-top:14px}
+.aark-ed-row button{flex:1}
+@media(max-width:700px){.aark-ed-panel{top:auto;bottom:84px;right:8px;left:8px;width:auto;transform:none;max-height:60vh}}

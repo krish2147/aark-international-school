@@ -247,6 +247,7 @@
     nav.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.tab === key));
     if (key === 'enquiries') return loadEnquiries();
     if (key === 'history') return loadHistory();
+    if (key === 'website') return loadWebsite();
     if (!state[key].items.length) loadResource(key);
   }
 
@@ -328,6 +329,55 @@
       }));
     } catch (err) {
       panel.innerHTML = `<h2>Content History</h2><p class="admin-status err">${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  // ---- Edit Website: click-to-edit any page (assets/js/site-editor.js) ----
+  const SITE_PAGES = [
+    ['index', 'Home'], ['about', 'About'], ['curriculum', 'Curriculum'], ['admissions', 'Admissions'],
+    ['student-life', 'Student Life'], ['campus-detail', 'Campus'],
+    ['campus-detail?area=classrooms', 'Campus · Classrooms'], ['campus-detail?area=robotics', 'Campus · AI & Robotics'],
+    ['campus-detail?area=swimming', 'Campus · Swimming & Sports'], ['campus-detail?area=arts', 'Campus · Arts & Culture'],
+    ['gallery', 'Gallery'], ['staff', 'Our Staff'], ['careers', 'Careers'], ['circulars', 'Calendar & Circulars'],
+    ['disclosures', 'Public Disclosure'], ['policies', 'Policies'], ['transport', 'Transport'], ['privacy', 'Privacy Notice'],
+    ['_global', 'Header & footer (every page)'],
+  ];
+  const pageUrl = (page, edit) => {
+    const [file, query] = (page === '_global' ? 'index' : page).split('?');
+    const q = [query, edit ? 'edit=1' : ''].filter(Boolean).join('&');
+    return `${file}.html${q ? `?${q}` : ''}`;
+  };
+
+  async function loadWebsite() {
+    const panel = document.getElementById('panel-website');
+    panel.innerHTML = '<h2>Edit Website</h2><p class="hint">Loading…</p>';
+    try {
+      const [edits, hist] = await Promise.all([api('/api/site/edits?fresh=1'), api('/api/site/edits?history=1')]);
+      const pages = edits.pages || {};
+      const rows = SITE_PAGES.map(([key, label]) => {
+        const n = Object.keys(pages[key] || {}).length;
+        return `<div class="admin-item"><div class="noimg"></div><div><h3>${escapeHtml(label)}${n ? `<span class="pill on">${n} change${n > 1 ? 's' : ''}</span>` : ''}</h3><p>${key === '_global' ? 'Menu, contact details and footer. Edit them from any page.' : escapeHtml(pageUrl(key))}</p></div><div class="actions"><a class="admin-btn" href="${escapeHtml(pageUrl(key, true))}" target="_blank" rel="noopener">Edit page</a><a class="admin-btn secondary" href="${escapeHtml(pageUrl(key))}" target="_blank" rel="noopener">View</a></div></div>`;
+      }).join('');
+      const versions = (hist.versions || []).slice(0, 30).map((v, idx) => `<div class="admin-item" data-version="${v.version}"><div class="noimg"></div><div><h3>Version ${v.version}${idx === 0 ? '<span class="pill on">Live</span>' : ''}</h3><p>Published ${escapeHtml(new Date(v.savedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }))}</p></div><div class="actions">${idx === 0 ? '' : '<button type="button" data-site-restore>Restore</button>'}</div></div>`).join('');
+      panel.innerHTML = `
+        <h2>Edit Website</h2>
+        <p class="hint">Open any page in edit mode, click a heading, paragraph, button or photo to change it, then press <strong>Publish</strong>. Changes go live within a minute. The layout and design are protected, so nothing can be broken by accident.</p>
+        <div class="admin-list">${rows}</div>
+        <h2 style="margin-top:36px">Website history</h2>
+        <p class="hint">Every publish is kept. Restoring an older version publishes it again; nothing is deleted.</p>
+        <p class="admin-status" data-site-status></p>
+        <div class="admin-list">${versions || '<p class="hint">Nothing has been published from edit mode yet.</p>'}</div>`;
+      panel.querySelectorAll('[data-site-restore]').forEach(btn => btn.addEventListener('click', async () => {
+        const version = Number(btn.closest('[data-version]').dataset.version);
+        if (!confirm(`Restore the website to version ${version}? The current version stays in the history.`)) return;
+        const st = panel.querySelector('[data-site-status]');
+        try {
+          await api('/api/site/edits', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ restore: version }) });
+          await loadWebsite();
+        } catch (err) { st.textContent = err.message; st.className = 'admin-status err'; }
+      }));
+    } catch (err) {
+      panel.innerHTML = `<h2>Edit Website</h2><p class="admin-status err">${escapeHtml(err.message)}</p>`;
     }
   }
 

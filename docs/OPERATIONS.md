@@ -99,3 +99,24 @@ Forms show the check automatically; confirmation emails to parents start once it
 **Still needed from the school.**
 - Building Safety Certificate and Health, Water & Sanitation Certificate PDFs (the disclosure page says copies are at the school office until then).
 - Transport routes (optional): currently the page asks parents to call the office.
+
+## 9. Editing the website (click-to-edit)
+
+Admin → **Edit Website** lists every page. **Edit page** opens it with an edit bar at the bottom:
+
+- Click any heading, paragraph, list item, caption or button to type over it (Bold, Italic, Link, Original, Done).
+  Enter finishes a heading or button; in paragraphs it adds a line break. Esc cancels.
+- Click any photo to replace it (resized for the web automatically) and set its description.
+- Nothing is public until **Publish**. Undo steps back; Discard drops everything unpublished.
+- Menu and footer edits apply to every page.
+
+How it works: pages stay static HTML. Published changes are stored as versions on Vercel Blob
+(`site/versions/NNNNNN.json`) and applied by `assets/js/site-edits.js`, which finds each element
+by its position and a fingerprint of its original content; if a redesign moves or changes that
+element, the old edit is skipped rather than landing somewhere wrong. Only plain formatting,
+safe links (site pages, https, tel, mailto) and photos from the site or its upload storage can be
+saved (`api/_lib/siteEdits.js`). Every publish is kept: Edit Website → Website history → Restore.
+
+Note: preview deployments have no storage (only PREVIEW_-prefixed tokens are read there, see
+`api/_lib/storageEnv.js`), so edit mode can only publish on the live site; on a preview the pages
+simply show without edits.
