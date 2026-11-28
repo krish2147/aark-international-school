@@ -1,6 +1,6 @@
 // Admin access to stored enquiries.
 //   GET  ?month=YYYY-MM              → list (newest first)
-//   GET  ?month=YYYY-MM&format=csv   → CSV download (&type=updates etc. for one kind only)
+//   GET  ?month=YYYY-MM&format=csv   → CSV download (&type=visit etc. for one kind only)
 //   POST {action:'retry', id, month} → resend the school notification email
 //   POST {action:'status', id, month, status} → new | contacted | closed
 const { requireAdmin } = require('../_lib/auth');
@@ -48,7 +48,7 @@ function createAdminEnquiriesHandler({ store, service, auth = requireAdmin, logg
         const records = (await store.list(month)).filter(r => !type || r.type === type);
         if (req.query.format === 'csv') {
           res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-          res.setHeader('Content-Disposition', `attachment; filename="aark-${type === 'updates' ? 'update-signups' : 'enquiries'}-${month}.csv"`);
+          res.setHeader('Content-Disposition', `attachment; filename="aark-enquiries${type ? '-' + type : ''}-${month}.csv"`);
           return res.status(200).send('﻿' + toCsv(records));
         }
         return res.status(200).json({ ok: true, month, items: records });

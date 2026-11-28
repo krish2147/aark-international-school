@@ -239,26 +239,6 @@ h3{font-size:clamp(24px,2.4vw,34px);line-height:1.1}
 
 /* Cultural-day portrait: keep the student's face in frame wherever it is cropped */
 img[src*="18-cultural-dress"]{object-position:center 18% !important}
-/* "Get updates" sign-up form (inside site popups) */
-.notify-form{display:grid;gap:12px;position:relative}
-.notify-form .notify-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.notify-form label{display:grid;gap:6px;font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--muted)}
-.notify-form input:not([type=checkbox]){width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--v2-color-text,#1d1a28);padding:11px 13px;font:inherit;font-size:15px}
-.notify-form input:focus{outline:none;border-color:var(--v2-color-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--v2-color-accent) 22%,transparent)}
-.notify-form .notify-wide{grid-column:1/-1}
-.notify-form fieldset{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.notify-form legend{font-size:12px;font-weight:700;letter-spacing:.03em;color:#d9d3e6;margin-bottom:8px;padding:0}
-.notify-form .notify-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.22);color:#fff;font-size:13px;font-weight:600;letter-spacing:0;cursor:pointer}
-.notify-form .notify-chip input{accent-color:var(--v2-color-signal,#fac803);width:16px;height:16px;margin:0}
-.notify-form .notify-chip:has(input:checked){background:rgba(250,200,3,.14);border-color:rgba(250,200,3,.6)}
-.notify-form .notify-chip:focus-within{outline:3px solid var(--v2-color-signal,#fac803);outline-offset:2px}
-.notify-form .button{justify-self:start;min-width:180px}
-.notify-form .form-status{min-height:20px;margin:0;font-size:13px}
-.notify-form .form-status.is-success{color:#1a7f37;font-weight:600}
-.notify-form .form-status.is-error{color:#c0362c;font-weight:600}
-.notify-form .form-privacy{margin:0;font-size:12px;color:var(--muted)}
-.notify-form .form-turnstile{min-height:0}
-@media(max-width:520px){.notify-form .notify-fields{grid-template-columns:1fr}.notify-form .button{justify-self:stretch}}
 /* Site popup */
 .aark-popup-overlay{position:fixed;inset:0;z-index:7000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(20,13,25,.6);opacity:0;transition:opacity .25s}
 .aark-popup-overlay.is-open{opacity:1}
@@ -275,9 +255,5 @@ img[src*="18-cultural-dress"]{object-position:center 18% !important}
 .aark-popup-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .aark-popup-close{position:absolute;top:12px;right:12px;z-index:1;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(0,0,0,.15);font-size:22px;line-height:1;cursor:pointer;color:#1d1a28}
 .aark-popup-close:focus-visible{outline:3px solid var(--v2-color-signal,#fac803);outline-offset:2px}
-.notify-form-compact{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
-.notify-form-compact .notify-form-title{margin:0;font-weight:800;color:var(--v2-color-text,#1d1a28)}
 @media(max-width:520px){.aark-popup-body{padding:22px 20px 20px}}
 @media(prefers-reduced-motion:reduce){.aark-popup-overlay,.aark-popup-card{transition:none}}
-.notify-form .field-optional{font-weight:500;color:inherit;opacity:.75}
-.notify-form .form-status:empty{display:none}

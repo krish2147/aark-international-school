@@ -35,7 +35,7 @@ rebrand.
 The admin panel at `/admin.html` lets a signed-in admin manage:
 - **Gallery** — add/edit/delete event photos
 - **Staff** — add/edit/delete staff directory entries (name, role, photo, bio)
-- **Popups** — a site-wide announcement (admissions, scheme, event or notice) with optional photo, button and "Get updates" sign-up form, shown once per visitor session when marked active
+- **Popups** — a site-wide announcement (admissions, scheme, event or notice) with optional photo and button, shown once per visitor session when marked active
 - **Schemes** — admission offers/schemes shown on the Admissions page when marked active
 - **Fees** — the fee table on the Admissions page
 

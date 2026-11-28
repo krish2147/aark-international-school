@@ -133,19 +133,11 @@ Note: preview deployments have no storage (only PREVIEW_-prefixed tokens are rea
 `api/_lib/storageEnv.js`), so edit mode can only publish on the live site; on a preview the pages
 simply show without edits.
 
-## 10. Popups and the "Get updates" sign-up
+## 10. Popups
 
 **Popups** (Admin → Popups): an announcement shown once per visit on every page, a few seconds
 after it opens; never in the admin or edit mode. Choose a type (Admissions, Scheme / offer,
-Event, Notice), a title and message, optionally a button (text + link), a photo, and whether the
-"Get updates" sign-up form appears inside it. Only the newest popup marked "Show" is used.
-**Preview** opens the home page with that popup straight away (`index.html?popup=<id>`), even if
-it is not live yet.
-
-**Get updates sign-up**: inside any popup with "Include the Get updates sign-up form" ticked.
-Parents give a name, WhatsApp number, optional email and the topics they want (Admissions,
-Schemes & offers, Events & news). Each sign-up is stored with the enquiries (type `updates`,
-topics in the `grade` column), the school gets a short email, and the parent gets a fixed
-confirmation if they gave an email. To message them: Admin → Enquiries → Show "Update sign-ups"
-→ Download CSV (one month at a time), then send through WhatsApp Business broadcast or email.
-Anyone who asks to stop must be removed from your broadcast list (privacy notice says so).
+Event, Notice), a title and message, and optionally a button (text + link) and a photo. Only the
+newest popup marked "Show" is used. **Preview** opens the home page with that popup straight away
+(`index.html?popup=<id>`), even if it is not live yet. Updates reach parents only on the website
+(popups, Admissions schemes, Gallery); the school does not collect numbers for broadcasts.

@@ -43,7 +43,6 @@
         { key: 'message', label: 'Message', type: 'textarea', required: true },
         { key: 'buttonText', label: 'Button text (optional)', type: 'text', placeholder: 'e.g. Apply now' },
         { key: 'link', label: 'Button link (optional)', type: 'text', placeholder: 'e.g. admissions.html or https://…' },
-        { key: 'signup', label: 'Include the "Get updates" sign-up form in the popup', type: 'checkbox' },
         { key: 'active', label: 'Show this popup on the site now', type: 'checkbox' },
       ],
       title: i => i.title,
@@ -298,7 +297,7 @@
 
   // ---- Enquiries (stored by /api/enquiry; read-only except status + email retry) ----
   const enquiryState = { month: new Date().toISOString().slice(0, 7), items: [], type: '' };
-  const ENQ_TYPES = { admission: 'Admission', visit: 'Campus visit', career: 'Job application', updates: 'Update sign-up' };
+  const ENQ_TYPES = { admission: 'Admission', visit: 'Campus visit', career: 'Job application' };
   const NOTIFY_LABEL = { sent: 'Emailed', failed: 'Email failed', pending: 'Email pending', not_configured: 'Email not set up', skipped_duplicate: 'Duplicate' };
 
   async function loadEnquiries() {
@@ -323,7 +322,7 @@
       const when = new Date(i.receivedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
       return `<tr data-id="${escapeHtml(i.id)}">
         <td>${escapeHtml(when)}<br><span class="hint">${escapeHtml(ENQ_TYPES[i.type] || 'Admission')}</span></td>
-        <td><strong>${escapeHtml(i.name)}</strong>${i.child ? `<br>Child: ${escapeHtml(i.child)}` : ''}<br>${i.type === 'career' ? 'Role: ' : i.type === 'updates' ? 'Wants: ' : ''}${escapeHtml(i.grade)}${i.message ? `<details class="enq-msg"><summary>Experience</summary><p>${escapeHtml(i.message)}</p></details>` : ''}</td>
+        <td><strong>${escapeHtml(i.name)}</strong>${i.child ? `<br>Child: ${escapeHtml(i.child)}` : ''}<br>${i.type === 'career' ? 'Role: ' : ''}${escapeHtml(i.grade)}${i.message ? `<details class="enq-msg"><summary>Experience</summary><p>${escapeHtml(i.message)}</p></details>` : ''}</td>
         <td><a href="tel:${escapeHtml(i.phone)}">${escapeHtml(i.phone)}</a>${i.email ? `<br><a href="mailto:${escapeHtml(i.email)}">${escapeHtml(i.email)}</a>` : ''}</td>
         <td><span class="pill ${n === 'sent' ? 'on' : n === 'failed' ? 'warn' : 'off'}">${escapeHtml(NOTIFY_LABEL[n] || n)}</span>${n === 'failed' || n === 'not_configured' ? '<br><button type="button" class="small-btn" data-retry>Retry email</button>' : ''}</td>
         <td><select data-status aria-label="Follow-up status">${['new', 'contacted', 'closed'].map(st => `<option value="${st}" ${i.status === st ? 'selected' : ''}>${st[0].toUpperCase() + st.slice(1)}</option>`).join('')}</select></td>
@@ -331,10 +330,10 @@
     }).join('');
     panel.innerHTML = `
       <h2>Enquiries</h2>
-      <p class="hint">Every campus-visit request, admission enquiry, job application and update sign-up from the website is saved here first, even if the notification email fails. To message parents who asked for updates, choose "Update sign-ups" and download the CSV.</p>
+      <p class="hint">Every campus-visit request, admission enquiry and job application from the website is saved here first, even if the notification email fails.</p>
       <div class="enq-toolbar">
         <label>Month <input type="month" value="${escapeHtml(m)}" data-month></label>
-        <label>Show <select data-type><option value="">All</option>${Object.entries(ENQ_TYPES).map(([v, l]) => `<option value="${v}" ${t === v ? 'selected' : ''}>${escapeHtml(l === 'Update sign-up' ? 'Update sign-ups' : l + 's')}</option>`).join('')}</select></label>
+        <label>Show <select data-type><option value="">All</option>${Object.entries(ENQ_TYPES).map(([v, l]) => `<option value="${v}" ${t === v ? 'selected' : ''}>${escapeHtml(l + 's')}</option>`).join('')}</select></label>
         <a class="admin-btn secondary" href="/api/admin/enquiries?month=${encodeURIComponent(m)}&format=csv${t ? `&type=${t}` : ''}">Download CSV</a>
         <span class="admin-status" data-enq-status></span>
       </div>

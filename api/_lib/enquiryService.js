@@ -9,24 +9,6 @@ const FALLBACK = `Please call the school on ${SCHOOL_PHONE} or email info@theaar
 const LIMITS = { perIp: [5, 600], perIpDay: [20, 86400], replyPerAddress: [1, 86400] };
 
 function schoolNotification(record) {
-  if (record.type === 'updates') {
-    return {
-      subject: `${record.typeLabel} — ${record.name}`,
-      text: [
-        'A parent asked to receive school updates from the website.',
-        '',
-        `Name: ${record.name}`,
-        `Phone (WhatsApp): ${record.phone}`,
-        `Email: ${record.email || '—'}`,
-        `Interested in: ${record.grade}`,
-        '',
-        'The full list is in Admin → Enquiries (choose "Update sign-ups", then Download CSV).',
-        '',
-        `Reference: ${record.id}`,
-        `Received: ${record.receivedAt}`,
-      ].join('\n'),
-    };
-  }
   if (record.type === 'career') {
     return {
       subject: `${record.typeLabel} — ${record.grade} — ${record.name}`,
@@ -82,22 +64,6 @@ const PARENT_CONFIRMATION = {
     'Nr. Shyam Icon, Bhayli-Sevasi Ring Road, Sevasi, Vadodara – 391101',
     '',
     'If you did not make this request, you can ignore this email.',
-  ].join('\n'),
-};
-
-const UPDATES_CONFIRMATION = {
-  subject: 'You are signed up for updates — AARK International School',
-  text: [
-    'Thank you for signing up for updates from AARK International School.',
-    '',
-    'We will let you know about admissions, schemes and school events.',
-    '',
-    `To stop receiving updates at any time, reply to this email or call us on ${SCHOOL_PHONE}.`,
-    '',
-    'AARK International School',
-    'Nr. Shyam Icon, Bhayli-Sevasi Ring Road, Sevasi, Vadodara – 391101',
-    '',
-    'If you did not sign up, you can ignore this email.',
   ].join('\n'),
 };
 
@@ -221,7 +187,7 @@ function createEnquiryService({ store, mailer, limiter, turnstile, logger = cons
       const perAddress = await limiter.hit(`enq:reply:${record.email}`, ...LIMITS.replyPerAddress);
       if (perAddress.allowed) {
         try {
-          await mailer.sendToParent(record.email, record.type === 'career' ? APPLICANT_CONFIRMATION : record.type === 'updates' ? UPDATES_CONFIRMATION : PARENT_CONFIRMATION);
+          await mailer.sendToParent(record.email, record.type === 'career' ? APPLICANT_CONFIRMATION : PARENT_CONFIRMATION);
           confirmationSent = true;
         } catch (err) {
           logger.error(`enquiry ${record.id}: confirmation email failed:`, err.code || err.name);
@@ -245,4 +211,4 @@ function createEnquiryService({ store, mailer, limiter, turnstile, logger = cons
   return { submit, retryNotification };
 }
 
-module.exports = { createEnquiryService, PARENT_CONFIRMATION, APPLICANT_CONFIRMATION, UPDATES_CONFIRMATION, LIMITS, schoolNotification };
+module.exports = { createEnquiryService, PARENT_CONFIRMATION, APPLICANT_CONFIRMATION, LIMITS, schoolNotification };
