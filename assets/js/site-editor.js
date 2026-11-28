@@ -34,7 +34,7 @@
   let changes = 0;
 
   // ---------- which elements can be edited ----------
-  const skip = el => E.isCopy(el) || !!el.closest('.aark-ed-ui,[class^="ac-"],[class*=" ac-"],.lb,.to-top,button,select,textarea,option,script,style,noscript,svg,video');
+  const skip = el => E.isCopy(el) || !!el.closest('.aark-ed-ui,[class^="ac-"],[class*=" ac-"],.lb,.to-top,[data-admin-photo],button,select,textarea,option,script,style,noscript,svg,video');
   const isLeafText = el => (el.textContent || '').trim() && [...el.querySelectorAll('*')].every(d => E.INLINE.includes(d.tagName));
   function mark(){
     for (const r of Object.values(E.roots())) {
@@ -65,7 +65,9 @@
   const bDiscard = el('button', { type: 'button' }, 'Discard');
   const bPublish = el('button', { type: 'button', class: 'is-primary' }, 'Publish');
   const bExit = el('button', { type: 'button' }, 'Exit');
+  const bAdd = el('button', { type: 'button' }, 'Add photos');
   bar.append(title, pick, count, bUndo, bDiscard, bPublish, bExit);
+  if (PAGE === 'gallery') bar.insertBefore(bAdd, bUndo);
   document.body.appendChild(bar);
 
   const toast = el('div', { class: 'aark-ed-ui aark-ed-toast', role: 'status', 'aria-live': 'polite' });
@@ -347,10 +349,68 @@
     }
   });
 
+  // ---------- gallery: add or remove photos (live straight away) ----------
+  const gPanel = el('div', { class: 'aark-ed-ui aark-ed-panel', role: 'dialog', 'aria-modal': 'false', 'aria-label': 'Add photos to the gallery', hidden: '' });
+  gPanel.innerHTML = '<h3>Add photos to the gallery</h3><label class="aark-ed-file">Choose photos<input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif"></label><p class="aark-ed-hint" data-g-files>You can pick several photos at once. They are resized for the web automatically.</p><label class="aark-ed-alt">Event name (required)<input type="text" maxlength="120" data-g="event" placeholder="e.g. Annual Sports Day"></label><label class="aark-ed-alt">Date<input type="text" maxlength="60" data-g="date" placeholder="e.g. 30 Jan 2027"></label><label class="aark-ed-alt">Caption<input type="text" maxlength="240" data-g="caption" placeholder="Optional"></label><p class="aark-ed-hint">Photos go live as soon as they are added: no need to press Publish. To remove one later, click it here in edit mode.</p><div class="aark-ed-row"><button type="button" data-act="cancel">Cancel</button><button type="button" class="is-primary" data-act="add">Add to gallery</button></div>';
+  document.body.appendChild(gPanel);
+  const gFile = gPanel.querySelector('input[type=file]');
+  const gFiles = gPanel.querySelector('[data-g-files]');
+  const gField = k => gPanel.querySelector(`[data-g="${k}"]`);
+  const gAdd = gPanel.querySelector('[data-act=add]');
+  let gBusy = false;
+  const reloadGallery = () => window.AARKGallery && window.AARKGallery.reload();
+  bAdd.addEventListener('click', () => { finishText(); closePhoto(); gPanel.hidden = false; gField('event').focus(); });
+  gPanel.querySelector('[data-act=cancel]').addEventListener('click', () => { if (!gBusy) gPanel.hidden = true; });
+  gFile.addEventListener('change', () => {
+    const n = gFile.files ? gFile.files.length : 0;
+    gFiles.textContent = n ? `${n} photo${n > 1 ? 's' : ''} chosen.` : 'You can pick several photos at once.';
+  });
+  async function postJson(url, method, body){
+    const res = await fetch(url, { method, credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body && JSON.stringify(body) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error || `Request failed (${res.status})`);
+    return data;
+  }
+  gAdd.addEventListener('click', async () => {
+    if (gBusy) return;
+    const files = [...(gFile.files || [])];
+    const info = { event: gField('event').value.trim(), date: gField('date').value.trim(), caption: gField('caption').value.trim() };
+    if (!files.length) { say('Choose at least one photo first.', 'is-error'); return; }
+    if (!info.event) { say('Please give the event a name.', 'is-error'); gField('event').focus(); return; }
+    gBusy = true; gAdd.disabled = true;
+    let done = 0;
+    try {
+      for (const file of files) {
+        say(`Adding photo ${done + 1} of ${files.length}…`);
+        const up = await postJson('/api/admin/upload', 'POST', { dataUrl: await shrink(file), filename: file.name });
+        await postJson('/api/content/gallery', 'POST', { ...info, photoUrl: up.url });
+        done++;
+      }
+      say(`${done} photo${done > 1 ? 's' : ''} added to the gallery.`, 'is-ok');
+      gFile.value = ''; gFiles.textContent = 'You can pick several photos at once.';
+      gPanel.hidden = true;
+    } catch (err) {
+      say(`${done ? `${done} added, then: ` : ''}${err.message}`, 'is-error');
+    } finally {
+      gBusy = false; gAdd.disabled = false;
+      reloadGallery();
+    }
+  });
+  async function removeGalleryPhoto(fig){
+    if (!confirm('Remove this photo from the gallery? It can be brought back from Content History in the admin.')) return;
+    try {
+      await postJson(`/api/content/gallery?id=${encodeURIComponent(fig.dataset.adminPhoto)}`, 'DELETE');
+      fig.remove();
+      say('Photo removed from the gallery.', 'is-ok');
+    } catch (err) { say(err.message, 'is-error'); }
+  }
+
   // ---------- clicks: edit, never navigate ----------
   addEventListener('click', e => {
     const t = e.target;
     if (!(t instanceof Element) || t.closest('.aark-ed-ui')) return;
+    const added = t.closest('[data-admin-photo]');
+    if (added) { e.preventDefault(); e.stopImmediatePropagation(); finishText(); removeGalleryPhoto(added); return; }
     const ed = t.closest('[data-ed]');
     const inActive = active && active.contains(t);
     if (t.closest('a,summary,label,button') || ed) e.preventDefault();
