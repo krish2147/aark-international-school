@@ -58,6 +58,7 @@ function serve() {
   for (const page of PAGES) {
     for (const width of WIDTHS) {
       const ctx = await browser.newContext({ viewport: { width, height: 900 }, ignoreHTTPSErrors: true, reducedMotion: 'reduce' });
+      await ctx.addInitScript(() => { try { sessionStorage.setItem('aark_visit_popup', '1'); } catch {} }); // as if this visit's popup was already closed
       const p = await ctx.newPage();
       // Third-party media is irrelevant to these checks and slow/flaky offline.
       await p.route(/images\.unsplash\.com|maps\.google|google\.com\/maps/, r => r.abort());
@@ -114,6 +115,7 @@ function serve() {
   // Enquiry failure path: the parent must be given a working phone and email link.
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript(() => { try { sessionStorage.setItem('aark_visit_popup', '1'); } catch {} }); // as if this visit's popup was already closed
     const p = await ctx.newPage();
     await p.route(/images\.unsplash\.com|maps\.google|google\.com\/maps/, r => r.abort());
     await p.route('**/api/enquiry', r => r.fulfill({ status: 500, contentType: 'application/json', body: '{"ok":false,"error":"Server email is not configured."}' }));
@@ -130,9 +132,26 @@ function serve() {
     await ctx.close();
   }
 
+  // Popup: a first-time visit sees one popup (Instagram when no admin popup is live); it closes with Esc.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const p = await ctx.newPage();
+    await p.route('**/api/content/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"items":[]}' }));
+    await p.goto(base + 'about.html');
+    await p.waitForSelector('.aark-popup-overlay.is-open', { timeout: 8000 }).catch(() => fail('no popup on a first visit'));
+    if (!/Instagram/.test(await p.textContent('.aark-popup-card h2').catch(() => ''))) fail('first-visit popup is not the Instagram one');
+    await p.keyboard.press('Escape');
+    if (await p.$('.aark-popup-overlay')) fail('popup did not close with Esc');
+    await p.goto(base + 'curriculum.html');
+    await p.waitForTimeout(3200);
+    if (await p.$('.aark-popup-overlay')) fail('popup shown twice in one visit');
+    await ctx.close();
+  }
+
   // Success path: payload carries a UUID requestId, which rotates after a successful send.
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    await ctx.addInitScript(() => { try { sessionStorage.setItem('aark_visit_popup', '1'); } catch {} }); // as if this visit's popup was already closed
     const p = await ctx.newPage();
     await p.route(/images\.unsplash\.com|maps\.google|google\.com\/maps|fonts\./, r => r.abort());
     await p.route('**/api/content/**', r => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"items":[]}' }));

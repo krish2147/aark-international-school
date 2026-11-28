@@ -275,3 +275,14 @@ img[src*="18-cultural-dress"]{object-position:center 18% !important}
 .ig-band-cta{flex:0 0 auto;padding:11px 20px;border-radius:999px;background:#fff;color:#5b2a86;font-weight:800;font-size:15px}
 @media(max-width:600px){.ig-band{flex-wrap:wrap;padding:20px}.ig-band-icon{width:48px;height:48px}.ig-band-copy{flex-basis:calc(100% - 70px)}.ig-band-cta{flex:1 1 100%;text-align:center}}
 .aark-popup-card .aark-popup-follow{display:inline-block;margin-top:16px;font-size:13px;font-weight:700;color:#b1306f;text-decoration:underline;text-underline-offset:3px}
+/* Instagram popup */
+.aark-popup-ig-head{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:34px 20px 26px;color:#fff;background:linear-gradient(125deg,#5b2a86 0%,#b1306f 55%,#e8793a 100%)}
+.aark-popup-ig-icon{display:inline-flex;align-items:center;justify-content:center;width:68px;height:68px;border-radius:20px;background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.aark-popup-ig-handle{font-weight:800;font-size:15px;letter-spacing:.02em}
+.aark-popup-card.is-instagram .aark-popup-body{text-align:center}
+.aark-popup-card.is-instagram h2{margin-top:2px}
+.aark-popup-card.is-instagram .aark-popup-actions{justify-content:center;align-items:center;flex-direction:column;gap:6px}
+.aark-popup-card .aark-popup-ig-btn{background:linear-gradient(115deg,#5b2a86,#b1306f 60%,#e8793a);border:0;color:#fff;width:100%;justify-content:center}
+.aark-popup-later{background:none;border:0;padding:10px 14px;font:inherit;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.aark-popup-later:focus-visible{outline:3px solid var(--v2-color-signal,#fac803);outline-offset:2px;border-radius:8px}
+.aark-popup-card.is-instagram .aark-popup-close{background:rgba(255,255,255,.22);color:#fff;box-shadow:none}

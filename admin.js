@@ -34,7 +34,7 @@
     events: {
       label: 'Popups',
       singular: 'popup',
-      intro: 'A popup shows once per visit on every page of the website, a moment after it opens. Only the newest popup marked "Show" appears. Use it for admissions, schemes, events or notices.',
+      intro: 'Every visitor sees one popup each time they open the website, a moment after it loads. If a popup here is marked "Show", the newest one appears (with a "Follow us on Instagram" line). If none is marked "Show", visitors see the "Follow us on Instagram" popup instead.',
       hasPhoto: true,
       photoLabel: 'Photo (optional, shown at the top of the popup)',
       fields: [

@@ -109,52 +109,77 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
   bar.addEventListener('touchcancel',resume,{passive:true});
 })();
 
-/* Site popup, managed in the admin's "Popups" tab: an admission, scheme, event or
-   notice announcement with an optional photo and button.
-   The newest live popup is shown once per browser tab, a moment after the page
-   loads; never in the admin or in edit mode. Built with DOM APIs (textContent),
-   since everything in it is admin-entered. */
+/* Site popup, once per visit (browser tab), a moment after the first page opens;
+   never in the admin or in edit mode.
+   - If the admin's "Popups" tab has a live popup (admissions, scheme, event or
+     notice), the newest one is shown, with a "follow us on Instagram" line.
+   - Otherwise a "Follow us on Instagram" popup is shown.
+   Built with DOM APIs (textContent), since popup text is admin-entered. */
 (function(){
   const params=new URLSearchParams(location.search);
   if(params.has('edit')||/admin\.html$/i.test(location.pathname))return;
-  const KIND={admission:'Admissions',scheme:'Scheme',event:'Event',notice:'Notice'};
+  const IG='https://www.instagram.com/aarkinternational';
+  const KIND={admission:'Admissions',scheme:'Scheme',event:'Event',notice:'Notice',instagram:'Instagram'};
+  const VISIT_KEY='aark_visit_popup';
   const store=(k,v)=>{try{return v===undefined?sessionStorage.getItem(k):sessionStorage.setItem(k,v)}catch{return null}};
   const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
+  const INSTAGRAM={kind:'instagram',title:'Follow us on Instagram',message:'For more updates: events, photos, admission news and everyday moments at AARK.',buttonText:'Follow @aarkinternational',link:IG};
 
-  fetch('/api/content/events').then(r=>r.json()).then(data=>{
+  const preview=params.get('popup');
+  if(!preview&&store(VISIT_KEY))return;
+  const start=Date.now();
+  fetch('/api/content/events').then(r=>r.json()).catch(()=>null).then(data=>{
     const items=data&&data.ok&&data.items||[];
-    // ?popup=<id> (the admin's Preview link) shows that popup now, live or not.
-    const preview=params.get('popup')&&items.find(i=>i.id===params.get('popup'));
-    if(preview){show(preview);return}
+    // ?popup=<id> (the admin's Preview link) shows that popup now, live or not;
+    // ?popup=instagram shows the Instagram one.
+    if(preview){const it=preview==='instagram'?INSTAGRAM:items.find(i=>i.id===preview);if(it)show(it);return}
     const live=items.filter(i=>i.active);
-    const item=live[live.length-1];
-    if(!item||store('aark_popup_seen_'+item.id))return;
-    setTimeout(()=>show(item),2500);
-  }).catch(()=>{});
+    const item=live[live.length-1]||INSTAGRAM;
+    setTimeout(()=>{if(!store(VISIT_KEY))show(item)},Math.max(0,2500-(Date.now()-start)));
+  });
+
+  function igIcon(size){
+    const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('width',size);svg.setAttribute('height',size);svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.9');svg.setAttribute('aria-hidden','true');
+    const r=document.createElementNS(ns,'rect');r.setAttribute('x','3');r.setAttribute('y','3');r.setAttribute('width','18');r.setAttribute('height','18');r.setAttribute('rx','5');
+    const c=document.createElementNS(ns,'circle');c.setAttribute('cx','12');c.setAttribute('cy','12');c.setAttribute('r','4.2');
+    const d=document.createElementNS(ns,'circle');d.setAttribute('cx','17.4');d.setAttribute('cy','6.6');d.setAttribute('r','1.1');d.setAttribute('fill','currentColor');d.setAttribute('stroke','none');
+    svg.append(r,c,d);return svg;
+  }
 
   function show(item){
     if(document.querySelector('.aark-popup-overlay'))return;
-    store('aark_popup_seen_'+item.id,'1');
+    store(VISIT_KEY,'1');
+    const ig=item.kind==='instagram';
     const before=document.activeElement;
     const overlay=el('div','aark-popup-overlay');
-    const card=el('div','aark-popup-card');
+    const card=el('div','aark-popup-card'+(ig?' is-instagram':''));
     card.setAttribute('role','dialog');card.setAttribute('aria-modal','true');card.setAttribute('aria-labelledby','aark-popup-title');
     const closeBtn=el('button','aark-popup-close','×');closeBtn.type='button';closeBtn.setAttribute('aria-label','Close');
     card.appendChild(closeBtn);
-    if(item.photoUrl){const img=el('img','aark-popup-photo');img.src=item.photoUrl;img.alt='';card.appendChild(img)}
+    if(ig){
+      const head=el('div','aark-popup-ig-head');
+      const badge=el('span','aark-popup-ig-icon');badge.appendChild(igIcon(34));
+      head.append(badge,el('span','aark-popup-ig-handle','@aarkinternational'));
+      card.appendChild(head);
+    }else if(item.photoUrl){const img=el('img','aark-popup-photo');img.src=item.photoUrl;img.alt='';card.appendChild(img)}
     const body=el('div','aark-popup-body');
-    body.appendChild(el('span','aark-popup-kind kind-'+(KIND[item.kind]?item.kind:'notice'),KIND[item.kind]||KIND.notice));
+    if(!ig)body.appendChild(el('span','aark-popup-kind kind-'+(KIND[item.kind]?item.kind:'notice'),KIND[item.kind]||KIND.notice));
     const h=el('h2',null,item.title||'');h.id='aark-popup-title';body.appendChild(h);
     body.appendChild(el('p','aark-popup-msg',item.message||''));
     if(item.link){
       const row=el('div','aark-popup-actions');
-      const a=el('a','button button-primary',item.buttonText||'Learn more');a.href=item.link;
+      const a=el('a','button button-primary'+(ig?' aark-popup-ig-btn':''),item.buttonText||'Learn more');a.href=item.link;
       if(/^https:/i.test(item.link)){a.target='_blank';a.rel='noopener'}
-      row.appendChild(a);body.appendChild(row);
+      row.appendChild(a);
+      if(ig){const later=el('button','aark-popup-later','Maybe later');later.type='button';later.addEventListener('click',()=>close());row.appendChild(later)}
+      body.appendChild(row);
     }
-    const follow=el('a','aark-popup-follow','Follow us on Instagram for more updates');
-    follow.href='https://www.instagram.com/aarkinternational';follow.target='_blank';follow.rel='noopener';
-    body.appendChild(follow);
+    if(!ig){
+      const follow=el('a','aark-popup-follow','Follow us on Instagram for more updates');
+      follow.href=IG;follow.target='_blank';follow.rel='noopener';
+      body.appendChild(follow);
+    }
     card.appendChild(body);overlay.appendChild(card);document.body.appendChild(overlay);
     requestAnimationFrame(()=>overlay.classList.add('is-open'));
     closeBtn.focus({preventScroll:true});

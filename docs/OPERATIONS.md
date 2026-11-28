@@ -135,8 +135,9 @@ simply show without edits.
 
 ## 10. Popups
 
-**Popups** (Admin → Popups): an announcement shown once per visit on every page, a few seconds
-after it opens; never in the admin or edit mode. Choose a type (Admissions, Scheme / offer,
+**Popups** (Admin → Popups): one popup per visit (browser tab), a few seconds after the first page
+opens; never in the admin or edit mode. With no admin popup live, a built-in "Follow us on
+Instagram" popup is shown instead (`?popup=instagram` previews it). Choose a type (Admissions, Scheme / offer,
 Event, Notice), a title and message, and optionally a button (text + link) and a photo. Only the
 newest popup marked "Show" is used. **Preview** opens the home page with that popup straight away
 (`index.html?popup=<id>`), even if it is not live yet. Updates reach parents only on the website
