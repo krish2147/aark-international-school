@@ -132,3 +132,20 @@ Removed photos can be brought back from Content History.
 Note: preview deployments have no storage (only PREVIEW_-prefixed tokens are read there, see
 `api/_lib/storageEnv.js`), so edit mode can only publish on the live site; on a preview the pages
 simply show without edits.
+
+## 10. Popups and the "Get updates" sign-up
+
+**Popups** (Admin → Popups): an announcement shown once per visit on every page, a few seconds
+after it opens; never in the admin or edit mode. Choose a type (Admissions, Scheme / offer,
+Event, Notice), a title and message, optionally a button (text + link), a photo, and whether the
+"Get updates" sign-up form appears inside it. Only the newest popup marked "Show" is used.
+**Preview** opens the home page with that popup straight away (`index.html?popup=<id>`), even if
+it is not live yet.
+
+**Get updates sign-up**: on the Gallery and Admissions pages (and in popups that include it).
+Parents give a name, WhatsApp number, optional email and the topics they want (Admissions,
+Schemes & offers, Events & news). Each sign-up is stored with the enquiries (type `updates`,
+topics in the `grade` column), the school gets a short email, and the parent gets a fixed
+confirmation if they gave an email. To message them: Admin → Enquiries → Show "Update sign-ups"
+→ Download CSV (one month at a time), then send through WhatsApp Business broadcast or email.
+Anyone who asks to stop must be removed from your broadcast list (privacy notice says so).

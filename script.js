@@ -26,12 +26,11 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
    returns a site key. */
 (function(){
   const forms=[...document.querySelectorAll('[data-school-form]')];
-  if(!forms.length)return;
   const newId=()=>(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'';
   const requestIds=new Map(forms.map(f=>[f,newId()]));
   const widgets=new Map();
   const SUCCESS="Thank you — we've received your request and the school team will call you shortly.";
-  const successFor=form=>form.dataset.schoolForm==='career'?"Thank you — we've received your application. Please also email your CV to info@theaarkinternational.com.":SUCCESS;
+  const successFor=form=>form.dataset.schoolForm==='career'?"Thank you — we've received your application. Please also email your CV to info@theaarkinternational.com.":form.dataset.schoolForm==='updates'?"You're on the list! We'll send you AARK updates on admissions, schemes and events.":SUCCESS;
 
   function setStatus(status,kind,parts){
     if(!status)return;
@@ -46,17 +45,27 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
     return [lead+' Please call the school on ',call,' or email ',mail,' and we will help you directly.'];
   }
 
-  fetch('/api/public-config').then(r=>r.ok?r.json():null).then(cfg=>{
-    if(!cfg||!cfg.turnstileSiteKey)return;
-    window.aarkTurnstileReady=()=>forms.forEach(form=>{
-      const slot=document.createElement('div');slot.className='form-turnstile';
-      const btn=form.querySelector('button[type="submit"]');form.insertBefore(slot,btn);
-      widgets.set(form,window.turnstile.render(slot,{sitekey:cfg.turnstileSiteKey,size:'flexible'}));
+  // Turnstile, when configured: loaded on the first form that needs it.
+  let siteKey=null,tsLoading=null;
+  const config=fetch('/api/public-config').then(r=>r.ok?r.json():null).catch(()=>null);
+  function addTurnstile(form){
+    config.then(cfg=>{
+      if(!cfg||!cfg.turnstileSiteKey||widgets.has(form))return;
+      siteKey=cfg.turnstileSiteKey;
+      const render=()=>{if(widgets.has(form))return;const slot=document.createElement('div');slot.className='form-turnstile';
+        const btn=form.querySelector('button[type="submit"]');form.insertBefore(slot,btn);
+        widgets.set(form,window.turnstile.render(slot,{sitekey:siteKey,size:'flexible'}));};
+      if(window.turnstile){render();return}
+      tsLoading=tsLoading||new Promise(res=>{window.aarkTurnstileReady=res;const s=document.createElement('script');s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=aarkTurnstileReady';s.async=true;document.head.appendChild(s)});
+      tsLoading.then(render);
     });
-    const s=document.createElement('script');s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=aarkTurnstileReady';s.async=true;document.head.appendChild(s);
-  }).catch(()=>{});
+  }
 
-  forms.forEach(form=>form.addEventListener('submit',async e=>{
+  // Forms added later (the site popup's sign-up form) call window.aarkBindForm.
+  function bind(form){
+  if(!requestIds.has(form))requestIds.set(form,newId());
+  addTurnstile(form);
+  form.addEventListener('submit',async e=>{
     e.preventDefault();
     const status=form.querySelector('.form-status');
     const submitBtn=form.querySelector('button[type="submit"]');
@@ -66,8 +75,8 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
       form.reset();setStatus(status,'success',[successFor(form)]);return;
     }
     const field=k=>(data.get(k)||'').toString().trim();
-    const kind=form.dataset.schoolForm;const payload={type:kind==='visit'||kind==='career'?kind:'admission',name:field('name'),phone:field('phone'),child:field('child'),grade:field('grade'),email:field('email'),message:field('message'),company:'',requestId:requestIds.get(form)};
-    if(!payload.name||!payload.phone||!payload.grade){setStatus(status,'error',['Please fill in the required fields.']);return}
+    const kind=form.dataset.schoolForm;const payload={type:['visit','career','updates'].includes(kind)?kind:'admission',name:field('name'),phone:field('phone'),child:field('child'),grade:kind==='updates'?data.getAll('interest').join(', '):field('grade'),email:field('email'),message:field('message'),company:'',requestId:requestIds.get(form)};
+    if(!payload.name||!payload.phone||(!payload.grade&&kind!=='updates')){setStatus(status,'error',['Please fill in the required fields.']);return}
     if(widgets.has(form))payload.turnstileToken=window.turnstile.getResponse(widgets.get(form))||'';
     if(submitBtn)submitBtn.disabled=true;
     setStatus(status,null,['Sending your request…']);
@@ -76,6 +85,7 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
       const result=await res.json().catch(()=>({}));
       if(res.ok&&result.ok){
         form.reset();requestIds.set(form,newId());
+        if(kind==='updates'){try{localStorage.setItem('aark_updates_signed_up','1')}catch{}}
         setStatus(status,'success',[successFor(form)+(result.confirmationSent?' A confirmation has also been sent to your email.':'')]);
       }else if(res.status===400&&result.error){
         setStatus(status,'error',[result.error]); // validation message written for parents
@@ -88,7 +98,10 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
       if(submitBtn)submitBtn.disabled=false;
       if(widgets.has(form))window.turnstile.reset(widgets.get(form));
     }
-  }));
+  });
+  }
+  forms.forEach(bind);
+  window.aarkBindForm=bind;
 })();
 
 /* Utility bar marquee: pause on hover (desktop) and press-and-hold
@@ -109,50 +122,68 @@ const siteHeader=document.querySelector('.site-header');function updateStickyHea
   bar.addEventListener('touchcancel',resume,{passive:true});
 })();
 
-/* Site-wide popup event banner, driven by the admin panel's "Popup Events".
-   Shown at most once per browser tab per event (sessionStorage), and built
-   via DOM APIs (not innerHTML interpolation) since the title/message/link
-   come from admin-entered content. */
+/* Site popup, managed in the admin's "Popups" tab: an admission, scheme, event or
+   notice announcement with an optional photo, button and "get updates" sign-up.
+   The newest live popup is shown once per browser tab, a moment after the page
+   loads; never in the admin or in edit mode. Built with DOM APIs (textContent),
+   since everything in it is admin-entered. */
 (function(){
+  const params=new URLSearchParams(location.search);
+  if(params.has('edit')||/admin\.html$/i.test(location.pathname))return;
+  const KIND={admission:'Admissions',scheme:'Scheme',event:'Event',notice:'Notice'};
+  const INTEREST={admission:'Admissions',scheme:'Schemes & offers',event:'Events & news'};
+  const store=(k,v)=>{try{return v===undefined?sessionStorage.getItem(k):sessionStorage.setItem(k,v)}catch{return null}};
+  const signedUp=()=>{try{return localStorage.getItem('aark_updates_signed_up')==='1'}catch{return false}};
+  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
+
   fetch('/api/content/events').then(r=>r.json()).then(data=>{
-    if(!data.ok||!data.items||!data.items.length) return;
-    const item=(data.items||[]).find(i=>i.active);
-    if(!item) return;
-    const seenKey='aark_popup_seen_'+item.id;
-    if(sessionStorage.getItem(seenKey)) return;
+    const items=data&&data.ok&&data.items||[];
+    // ?popup=<id> (the admin's Preview link) shows that popup now, live or not.
+    const preview=params.get('popup')&&items.find(i=>i.id===params.get('popup'));
+    if(preview){show(preview);return}
+    const live=items.filter(i=>i.active);
+    const item=live[live.length-1];
+    if(!item||store('aark_popup_seen_'+item.id))return;
+    setTimeout(()=>show(item),2500);
+  }).catch(()=>{});
 
-    const style=document.createElement('style');
-    style.textContent='.aark-popup-overlay{position:fixed;inset:0;background:rgba(20,13,25,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}.aark-popup-card{background:#fff;border-radius:22px;max-width:420px;width:100%;padding:30px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3)}.aark-popup-card h3{margin:0 0 10px;font-size:22px}.aark-popup-card p{color:var(--muted,#687083);margin:0 0 18px;line-height:1.6}.aark-popup-close{position:absolute;top:14px;right:14px;background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted,#687083);line-height:1}';
-    document.head.appendChild(style);
-
-    const overlay=document.createElement('div');
-    overlay.className='aark-popup-overlay';
-    const card=document.createElement('div');
-    card.className='aark-popup-card';
-    const closeBtn=document.createElement('button');
-    closeBtn.className='aark-popup-close';
-    closeBtn.setAttribute('aria-label','Close');
-    closeBtn.textContent='×';
-    const h3=document.createElement('h3');
-    h3.textContent=item.title||'';
-    const p=document.createElement('p');
-    p.textContent=item.message||'';
-    card.append(closeBtn,h3,p);
+  function show(item){
+    if(document.querySelector('.aark-popup-overlay'))return;
+    store('aark_popup_seen_'+item.id,'1');
+    const before=document.activeElement;
+    const overlay=el('div','aark-popup-overlay');
+    const card=el('div','aark-popup-card');
+    card.setAttribute('role','dialog');card.setAttribute('aria-modal','true');card.setAttribute('aria-labelledby','aark-popup-title');
+    const closeBtn=el('button','aark-popup-close','×');closeBtn.type='button';closeBtn.setAttribute('aria-label','Close');
+    card.appendChild(closeBtn);
+    if(item.photoUrl){const img=el('img','aark-popup-photo');img.src=item.photoUrl;img.alt='';card.appendChild(img)}
+    const body=el('div','aark-popup-body');
+    body.appendChild(el('span','aark-popup-kind kind-'+(KIND[item.kind]?item.kind:'notice'),KIND[item.kind]||KIND.notice));
+    const h=el('h2',null,item.title||'');h.id='aark-popup-title';body.appendChild(h);
+    body.appendChild(el('p','aark-popup-msg',item.message||''));
     if(item.link){
-      const a=document.createElement('a');
-      a.className='button button-primary';
-      a.href=item.link;
-      a.textContent='Learn More';
-      card.appendChild(a);
+      const row=el('div','aark-popup-actions');
+      const a=el('a','button button-primary',item.buttonText||'Learn more');a.href=item.link;
+      if(/^https:/i.test(item.link)){a.target='_blank';a.rel='noopener'}
+      row.appendChild(a);body.appendChild(row);
     }
-    overlay.appendChild(card);
-    document.body.appendChild(overlay);
-    sessionStorage.setItem(seenKey,'1');
-
-    function close(){overlay.remove()}
+    if(item.signup&&!signedUp()&&window.aarkBindForm){
+      const form=el('form','notify-form notify-form-compact');form.dataset.schoolForm='updates';
+      form.innerHTML='<p class="notify-form-title">Get updates on your phone</p><label class="hp-field" aria-hidden="true">Leave this field empty<input name="company" tabindex="-1" autocomplete="off"></label><div class="notify-fields"><label><span>Your name</span><input name="name" required autocomplete="name" placeholder="Your name"></label><label><span>WhatsApp number</span><input name="phone" required inputmode="tel" autocomplete="tel" placeholder="+91"></label></div><button class="button button-primary" type="submit">Notify me</button><p class="form-status" role="status" aria-live="polite"></p><p class="form-privacy">We’ll only send school updates. Stop any time. <a href="privacy.html">Privacy notice</a></p>';
+      const want=INTEREST[item.kind];
+      (want?[want]:Object.values(INTEREST)).forEach(v=>{const i=document.createElement('input');i.type='hidden';i.name='interest';i.value=v;form.appendChild(i)});
+      body.appendChild(form);
+      window.aarkBindForm(form);
+    }
+    card.appendChild(body);overlay.appendChild(card);document.body.appendChild(overlay);
+    requestAnimationFrame(()=>overlay.classList.add('is-open'));
+    closeBtn.focus({preventScroll:true});
+    function close(){overlay.remove();document.removeEventListener('keydown',onKey);if(before&&before.focus)before.focus({preventScroll:true})}
+    function onKey(e){if(e.key==='Escape')close()}
     closeBtn.addEventListener('click',close);
     overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
-  }).catch(()=>{});
+    document.addEventListener('keydown',onKey);
+  }
 })();
 
 /* Back to top: a round arrow on the right, above the Sahay chat launcher,

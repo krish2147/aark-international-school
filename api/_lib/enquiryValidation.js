@@ -1,6 +1,8 @@
 // Validation + normalisation for public enquiry submissions.
 
-const TYPES = { visit: 'Campus Visit Request', admission: 'Admissions Enquiry', career: 'Job Application' };
+const TYPES = { visit: 'Campus Visit Request', admission: 'Admissions Enquiry', career: 'Job Application', updates: 'Updates Sign-up' };
+// What a parent can ask to hear about (Updates Sign-up).
+const INTERESTS = ['Admissions', 'Schemes & offers', 'Events & news'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EMAIL_RE = /^[^\s@()<>,;:"[\]\\]+@[a-z0-9-]+(\.[a-z0-9-]+)+$/i;
 
@@ -25,7 +27,10 @@ function validateEnquiry(body) {
   const name = clean(body.name, 100);
   const phone = normalisePhone(body.phone);
   const child = clean(body.child, 100);
-  const grade = clean(body.grade, 60);
+  // Update sign-ups: "grade" carries the topics chosen (only known topics are kept).
+  const grade = type === 'updates'
+    ? (INTERESTS.filter(t => String(body.grade || '').split(',').map(x => x.trim()).includes(t)).join(', ') || INTERESTS.join(', '))
+    : clean(body.grade, 60);
   const email = clean(body.email, 200).toLowerCase();
   // Job applications: "grade" carries the role applied for, "child" stays empty,
   // and the applicant's experience note goes in "message".
@@ -36,11 +41,12 @@ function validateEnquiry(body) {
     if (!name || !body.phone || !grade) return { error: 'Please enter your name, phone number and the role you are applying for.' };
     if (!email) return { error: 'Please enter your email address so HR can reply to you.' };
   }
+  if (type === 'updates' && (!name || !body.phone)) return { error: 'Please enter your name and phone number.' };
   if (!name || !body.phone || !grade) return { error: 'Please enter your name, phone number and the grade you are interested in.' };
   if (!phone) return { error: 'Please enter a valid phone number, for example 98765 43210.' };
   if (email && !EMAIL_RE.test(email)) return { error: 'That email address looks incorrect. Please check it, or leave it blank.' };
 
-  return { value: { type, typeLabel: TYPES[type], name, phone, child: type === 'career' ? '' : child, grade, email, message, requestId } };
+  return { value: { type, typeLabel: TYPES[type], name, phone, child: type === 'career' || type === 'updates' ? '' : child, grade, email, message, requestId } };
 }
 
-module.exports = { validateEnquiry, normalisePhone, TYPES };
+module.exports = { validateEnquiry, normalisePhone, TYPES, INTERESTS };

@@ -18,7 +18,9 @@ const PAGES = ['admin.html', 'index.html', 'about.html', 'admissions.html', 'cur
   'circulars.html', 'policies.html', '404.html'];
 const WIDTHS = [375, 768, 1024, 1440];
 const BANNED_CLAIMS = [/\b12\+/, /1:15/, /founding philosophy/i, /name to be added with permission/i];
-const PLACEHOLDER_PAGES = ['staff.html', 'gallery.html', 'transport.html'];
+// Pages still waiting for real content: not linked from the menu, not in the sitemap, noindex.
+// (Staff and Gallery have real content now and are linked normally.)
+const PLACEHOLDER_PAGES = ['transport.html'];
 
 function loadPlaywright() {
   const candidates = [process.env.PLAYWRIGHT_MODULE, 'playwright', '/opt/node22/lib/node_modules/playwright'].filter(Boolean);

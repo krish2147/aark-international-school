@@ -4,7 +4,8 @@
 const RESOURCES = {
   gallery: { text: { event: 120, date: 60, caption: 240 }, urls: ['photoUrl'], required: ['event'] },
   staff: { text: { name: 120, role: 120, bio: 600 }, urls: ['photoUrl'], required: ['name', 'role'] },
-  events: { text: { title: 160, message: 600 }, links: ['link'], bools: ['active'], required: ['title', 'message'] },
+  // Site popups: kind is one of POPUP_KINDS; signup shows the "get updates" form in it.
+  events: { text: { title: 160, message: 600, buttonText: 40 }, choices: { kind: ['admission', 'scheme', 'event', 'notice'] }, links: ['link'], urls: ['photoUrl'], bools: ['active', 'signup'], required: ['title', 'message'] },
   schemes: { text: { title: 160, description: 800 }, bools: ['active'], required: ['title', 'description'] },
   fees: { text: { className: 80, amount: 80 }, required: ['className', 'amount'] },
 };
@@ -38,8 +39,14 @@ function sanitize(resource, body, { partial = false } = {}) {
     if (body[key] === undefined) continue;
     item[key] = String(body[key]).replace(/\s+/g, ' ').trim().slice(0, max);
   }
+  for (const [key, allowed] of Object.entries(schema.choices || {})) {
+    if (body[key] === undefined) continue;
+    if (!allowed.includes(String(body[key]))) return { error: `Unknown ${key}.` };
+    item[key] = String(body[key]);
+  }
   for (const key of schema.urls || []) {
-    if (body[key] === undefined || body[key] === '') continue;
+    if (body[key] === undefined) continue;
+    if (body[key] === '') { item[key] = ''; continue; } // photo removed
     if (!isBlobImageUrl(String(body[key]))) return { error: 'Photos must be uploaded through the admin panel.' };
     item[key] = String(body[key]);
   }
